@@ -30,8 +30,8 @@
 #include "stdio.h"
 #include "time.h"
 #include <SDL2/SDL.h>
-#include "iicu_assets/plotsdl/sdl_plot.h"
-#include "iicu_assets/plotsdl/sdl_plot_linked_list.h"
+#include "../iicu_assets/sdl_tools/sdl_plot.h"
+#include "../iicu_assets/sdl_tools/sdl_plot_linked_list.h"
 
 int main(int argc, char* argv[]){
 	if(argc!= 2){
@@ -50,11 +50,6 @@ int main(int argc, char* argv[]){
 	plot_params screen_params;
 
 	//populate plot parameter object
-	screen_params.screen_width=800;
-	screen_params.screen_heigth=640;
-	screen_params.plot_window_title="plot-sdl";
-	screen_params.font_text_path=argv[1];
-	screen_params.font_text_size=18;
 	screen_params.caption_text_x="Time (s)";
 	screen_params.caption_text_y="Speed (Mbit/s)";
 	// screen_params.caption_list = caption_list;

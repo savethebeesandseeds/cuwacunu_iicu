@@ -33,124 +33,58 @@
 #ifdef __ANDROID__
 #	include "SDL.h"
 #	include "SDL_ttf.h"
+#	include "android/log.h"
 #	define APP_NAME "plot_sdl_impl"
 #else
 #	include "SDL2/SDL.h"
 #	include "SDL2/SDL_ttf.h"
 #endif
 
+#include "math.h"
+#include "stdio.h"
+#include "stdlib.h"
 #include "sdl_plot_linked_list.h"
 
-#define DOT_RADIUS 6
-#define CAPTION_OFFSET_CIRCLE_TO_TEXT 10
-#define CAPTION_OFFSET_DELIMITER 40
-#define GRADUATION_HEIGTH 10
-#define CAPTION_Y_LABEL_OFFSET 10
-#define CAPTION_MARGIN 30
-
-//-------------color structure  ------------
-typedef struct rgb_color_struct{
-	int red;
-	int green;
-	int blue;
-	int alpha;
-} rgb_color;
-//-------------Plot parameter structure  ------------
-typedef struct plot_params_struct{
-	int screen_width;
-	int screen_heigth;
-	char * plot_window_title;
-	char * font_text_path;
-	int font_text_size;
-	char * caption_text_x;
-	char * caption_text_y;
-	captionlist caption_list;
-	coordlist coordinate_list;
-	float scale_x;
-	float scale_y;
-	float max_x;
-	float max_y;
-	rgb_color *plot_backgrownd_color;
-	rgb_color *screen_backgrownd_color;
-	rgb_color *borders_color;
-	rgb_color *text_color;
-
-} plot_params;
-
-//-------------Plot SDL objects structure  ------------
-typedef struct plot_struct{
-	TTF_Font *font;
-	SDL_Window *screen;
-	SDL_Surface *plot_surface;
-	SDL_Surface *plot_mask_surface;
-	SDL_Surface *caption_surface;
-	SDL_Surface *caption_mask_surface;
-	SDL_Surface *captionX;
-	SDL_Surface *captionY;
-	SDL_Texture *textureX;
-	SDL_Texture *textureY;
-	SDL_Renderer *renderer;
-
-} splot;
-
-#include "../sdl_utils.h"
-
-/**
- * @brief evaluate_params
- *      create a new SDL window and plot grap with given parameters
- * @param params
- *      plot parameters (cf plot_params struct)
- */
-int evaluate_params(plot_params *params);
+#include "sdl_screen.h"
+#include "sdl_utils.h"
+#include "../config/sdl_config.h"
 
 /**
  * @brief make_plot
  *      create a new SDL window and plot grap with given parameters
- * @param params
+ * @param plot
+ *      plot object (cf splot struct)
+  * @param params
  *      plot parameters (cf plot_params struct)
- * @param screen
- *      SDL_Window (screen, if NULL then make_plot create one)
  */
-int make_plot(splot *plot, plot_params *params, SDL_Window *screen);
-/**
- * @brief update_plot
- *      create a new SDL window and plot grap with given parameters
- */
-int update_plot(splot *plot, plot_params *params, surfacelist *surface_list);
+void make_plot(splot *plot, plot_params *params);
 
 /**
- * @brief plot_graph
- *      call draw_plot function, when exit event received clean everything
- * @param params
- *      plot parameters (cf plot_params struct)
+ * @brief initialize_screen
  */
-int plot_graph(plot_params *params);
+sdl_screen_object_t initialize_screen(sdl_screen_object_t obj_sdl);
+
+/**
+ * @brief intialize_central_plot
+ *      create a new SDL window and plot grap with given parameters
+ */
+int draw_plot_static_parts(sdl_screen_object_t obj_sdl);
+
+/**
+ * @brief step_screen
+ *      create a new SDL window and plot grap with given parameters
+ */
+int step_screen(sdl_screen_object_t obj_sdl);
+
+/**
+ * @brief draw_screen
+ *      create a new SDL window and plot grap with given parameters
+ */
+int draw_screen(sdl_screen_object_t obj_sdl);
 
 /**
  * @brief draw_scale_graduation
  *      draw graduation for the graph
- * @param renderer
- *      SDL renderer object
- * @param params
- *      plot parameters (cf plot_params struct)
- * @param plot
- *      structure containing textures and surfaces
- * @param plot_width
- *      plot base width (with proportion to screen width)
- * @param plot_heigth
- *      plot bas heigth (with proportion to screen heigth)
- * @param plot_mask_position
- *      SDL rectangle giving position of plot base (x,y) from max x or max y due to stroke width
- * @param font
- *      SDL font used for captions
- * @param font_color
- *      font color to be used
- * @param surface_list
- *      list of surfaces stored to be freed later
- * @param plot_position_x
- *      x position of plot
- * @param plot_position_y
- *      y position of plot
  */
 void draw_scale_graduation(SDL_Renderer * renderer,
 	plot_params *params,
@@ -160,7 +94,6 @@ void draw_scale_graduation(SDL_Renderer * renderer,
 	SDL_Rect plot_mask_position,
 	TTF_Font *font,
 	SDL_Color font_color,
-	surfacelist *surface_list,
 	int plot_position_x,
 	int plot_position_y);
 
@@ -180,7 +113,12 @@ void draw_scale_graduation(SDL_Renderer * renderer,
  * @param plot_mask_position
  *      SDL rectangle giving position of plot base (x,y) from max x or max y due to stroke width
  */
-void draw_points(SDL_Renderer* renderer,caption_item* caption_item,plot_params *params,float plot_width,float plot_heigth,SDL_Rect plot_mask_position);
+void draw_points(SDL_Renderer* renderer,
+	caption_item* caption_item,
+	plot_params *params,
+	float plot_width,
+	float plot_heigth,
+	SDL_Rect plot_mask_position);
 
 /**
  * @brief draw_plot
@@ -189,23 +127,20 @@ void draw_points(SDL_Renderer* renderer,caption_item* caption_item,plot_params *
  *      plot containing SDL objects
  * @param params
  *      plot parameters (cf plot_params struct)
-  * @param surface_list
- *      list of surfaces stored to be freed later
  */
-void draw_plot(splot *plot, plot_params *params, surfacelist *surface_list);
+void draw_central_plot(sdl_screen_object_t obj_sdl);
 
 /**
  * @brief clean_plot
  *      full clean of SDL pointers and linked list clear
- * @param splot
- *      plot containing SDL items
- * @param params
- *      plot parameters (cf plot_params struct)
-  * @param surface_list
- *      list of surfaces stored to be freed later
  */
-void clean_plot(splot *plot, plot_params *params, surfacelist *surface_list);
+void clean_plot(splot *plot, plot_params *params);
 
+/**
+ * @brief clean_screen
+ *      full clean of SDL pointers and linked list clear
+ */
+void clean_screen(sdl_screen_object_t obj_sdl);
 /*
  * from : http://content.gpwiki.org/index.php/SDL:Tutorials:Drawing_and_Filling_Circles
  * 
