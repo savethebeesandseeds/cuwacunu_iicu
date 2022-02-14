@@ -4,8 +4,28 @@
 #define SCREEN_TITLE "IICU (cuwacunu:waajacu)"
 #define SCREEN_WIDTH 1000
 #define SCREEN_HEIGHT 640
-#define SCREEN_FONT "./iicu_resources/opensans.ttf" // #FIXME change to monospaced font FreeMono
+#define STATE_PANEL_w_ZERO 20
+#define STATE_PANEL_h_ZERO 20
+#define STATE_PANEL_x_ZERO SCREEN_WIDTH - STATE_PANEL_w_ZERO - 10
+#define STATE_PANEL_y_ZERO 10
+
+#define SCREEN_FONT "./iicu_resources/NotoSansMono-Light.ttf"// "./iicu_resources/VT323-Regular.ttf" // "./iicu_resources/opensans.ttf"
 #define SCREEN_FONT_SIZE 12
+#define HOME_FONT "./iicu_resources/BungeeShade-Regular.ttf"
+#define HOME_FONT_SIZE 36
+#define MARK_FONT "./iicu_resources/NanumBrushScript-Regular.ttf"
+#define MARK_FONT_SIZE 36
+
+#define HOME_STATE_ID (int) 0xFE000
+#define LOADING_STATE_ID (int) 0xFE001
+#define LOGIN_STATE_ID (int) 0xFE002
+#define CONFIG_PANEL_STATE_ID (int) 0xFE003
+#define CENTRAL_SCREEN_PANEL_STATE_ID (int) 0xFE004
+
+#define STATE_PANEL_WIFI "./iicu_resources/wifi-solid_white.png"
+#define STATE_PANEL_BROKER "./iicu_resources/Binance-coin-bnb-logo.png"
+#define STATE_PANEL_KEYBOARD "./iicu_resources/keyboard-solid_white.png"
+#define STATE_PANEL_CONTROLLER "./iicu_resources/Controller_white.png"
 
 #define SDL_RENDERER_METHOD 0 // SDL_RENDERER_SOFTWARE // SDL_RENDERER_ACCELERATED // SDL_RENDERER_PRESENTVSYNC // SDL_RENDERER_TARGETTEXTURE
 // #define SCREEN_MAXIMIZED SDL_WINDOW_FULLSCREEN_DESKTOP // SDL_WINDOW_FULLSCREEN // 0
@@ -20,7 +40,7 @@
 #define ORBITAL_EXCENTRICITY 0.3
 #define MATH_PI (float) acos(-1)
 
-#define __cwcn_DEBUG_EVENTS__
+// #define __cwcn_DEBUG_EVENTS__
 #define __cwcn_DEBUG_JOYSTICK_EVENTS__
 #define __cwcn_DEBUG_KEYBOARD_EVENTS__
 // #define __cwcn_DEBUG_MOUSE_EVENTS__
@@ -37,7 +57,7 @@
 
 #include "../sdl_tools/sdl_screen.h"
 
-plot_params central_plot_config(plot_params c_plot_params);
+void central_plot_config(plot_params *c_plot_params);
 
 #if !defined(__cwcn_WAIT_KEY_EVENT__) && !defined(__cwcn_WAIT_POLL_EVENT__) && !defined(__cwcn_WAIT_NO_EVENT__)
 #error (sdl_config.h) Please define the __cwcn_WAIT_(*)_EVENT__ : __cwcn_WAIT_NO_EVENT__ or __cwcn_WAIT_KEY_EVENT__ or __cwcn_WAIT_POLL_EVENT__

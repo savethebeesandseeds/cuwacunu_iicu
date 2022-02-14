@@ -25,15 +25,24 @@
  */
 #include <stdio.h>
 #include <curl/curl.h>
+#include <time.h>
 
 int main(void)
 {
+  clock_t begin;
+	clock_t end;
+	double time_spent;
+  char *target_url="http://api.binance.com/api/v1/time";
+  // char *target_url="http://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT";
+  begin = clock();
   CURL *curl;
   CURLcode res;
 
   curl = curl_easy_init();
   if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "http://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT");
+    // curl_easy_setopt(curl, CURLOPT_URL, target_url);
+    curl_easy_setopt(curl, CURLOPT_URL, target_url);
+    fprintf(stdout,"requesting : %s\n",target_url);
     /* example.com is redirected, so we tell libcurl to follow redirection */
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 
@@ -47,5 +56,9 @@ int main(void)
     /* always cleanup */
     curl_easy_cleanup(curl);
   }
+  end = clock();
+  time_spent = (double)(end-begin) / CLOCKS_PER_SEC;
+  printf("[waka] :: request :: %f [s]\n",time_spent);
+  printf("[waka] :: request :: %f [s]\n",1/time_spent);
   return 0;
 }

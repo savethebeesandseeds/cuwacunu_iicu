@@ -1,276 +1,60 @@
 #include "sdl_utils.h"
-
-int handle_joystick_events(const SDL_Event * event){
-	int keyCode=__cwcn_EVENT_WAIT;
-    switch (event->type){ // SDL_JOYAXISMOTION,SDL_JOYBALLMOTION,SDL_JOYHATMOTION,SDL_JOYBUTTONDOWN,SDL_JOYBUTTONUP,SDL_JOYDEVICEADDED,SDL_JOYDEVICEREMOVED
-    case SDL_JOYDEVICEADDED:
-        #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
-        fprintf(stdout,"SDL_JOYDEVICEADDED...\n");
-        #endif
-        break;
-    case SDL_JOYDEVICEREMOVED:
-        #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
-        fprintf(stdout,"SDL_JOYDEVICEREMOVED...\n");
-        #endif
-        break;
-    case SDL_JOYBUTTONDOWN:
-        #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
-        fprintf(stdout,"[waka] Joystick-KEY : jbutton.button: %d\n",
-            event->jbutton.button);
-        #endif
-        break;
-    case SDL_JOYAXISMOTION:
-        // event->jaxis.value == -129 means the jaxis action return to steady position
-        #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
-        fprintf(stdout,"[waka] Joystick-KEY : jbutton.button: %d ,jaxis.axis: %d, jaxis.value: %d \n",
-            event->jbutton.button,
-            event->jaxis.axis,
-            event->jaxis.value);
-        #endif
-        break;
-    default:
-        break;
-    }
-    return keyCode;
+void draw_text(
+    char *caption,
+    int captionX,
+    int captionY,
+    SDL_Color font_color,
+    TTF_Font *font,
+    SDL_Renderer *renderer){
+    SDL_Surface *text_caption = TTF_RenderText_Blended(font, caption, font_color);
+	SDL_Rect text_rect;
+	SDL_Texture *caption_texture = SDL_CreateTextureFromSurface(renderer, text_caption);
+	SDL_QueryTexture(caption_texture, NULL, NULL, &text_rect.w, &text_rect.h);
+	text_rect.x=captionX;
+	text_rect.y=captionY;
+	SDL_RenderCopy(renderer, caption_texture, NULL, &text_rect);
 }
+void draw_png(
+    char *img_path,
+    int x,int y,int w,int h,
+    SDL_Renderer *renderer){
+    SDL_Surface *surface = IMG_Load(img_path);
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,surface);
+    SDL_FreeSurface(surface);
+    SDL_Rect destination;
+    destination.x = x;
+    destination.y = y;
+    destination.w = w;
+    destination.h = h;
+    SDL_RenderCopy(renderer,texture,NULL,&destination);
+}
+void DrawCircle(SDL_Renderer * renderer, int32_t centreX, int32_t centreY, int32_t radius){
+    const int32_t diameter = (radius * 2);
+    int32_t x = (radius - 1);
+    int32_t y = 0;
+    int32_t tx = 1;
+    int32_t ty = 1;
+    int32_t error = (tx - diameter);
+    while (x >= y){
+        //  Each of the following renders an octant of the circle
+        SDL_RenderDrawPoint(renderer, centreX + x, centreY - y);
+        SDL_RenderDrawPoint(renderer, centreX + x, centreY + y);
+        SDL_RenderDrawPoint(renderer, centreX - x, centreY - y); // 
+        SDL_RenderDrawPoint(renderer, centreX - x, centreY + y); // 
+        SDL_RenderDrawPoint(renderer, centreX + y, centreY - x);
+        SDL_RenderDrawPoint(renderer, centreX + y, centreY + x);
+        SDL_RenderDrawPoint(renderer, centreX - y, centreY - x);
+        SDL_RenderDrawPoint(renderer, centreX - y, centreY + x);
 
-int handle_keyboard_events(const SDL_Event * event){
-	int keyCode=__cwcn_EVENT_WAIT;
-    #ifdef __cwcn_DEBUG_KEYBOARD_EVENTS__
-    fprintf(stdout,"KEYBOARD-KEY : [%d] : %s \n",event->type,SDL_GetKeyName(event->key.keysym.sym));
-    #endif
-    if(!event->key.repeat){
-        switch (event->type){ // SDL_KEYDOWN,SDL_KEYUP;
-        case SDL_KEYDOWN:
-            switch (event->key.keysym.sym){
-            case SDLK_ESCAPE:
-                sdl_abandon_ship();
-            case SDLK_q:
-                keyCode=__cwcn_EVENT_CONTINUE;
-                break;
-            default:
-                break;
-            }
-        // case SDL_KEYUP:
-        //     switch (event->key.keysym.sym){
-        //     default:
-        //         break;
-        //     }
-        default:
-            break;
+        if (error <= 0){
+            ++y;
+            error += ty;
+            ty += 2;
+        }
+        if (error > 0){
+            --x;
+            tx += 2;
+            error += (tx - diameter);
         }
     }
-    return keyCode;
-}
-
-int handle_mouse_events(const SDL_Event * event){
-	int keyCode=__cwcn_EVENT_WAIT;
-    #ifdef __cwcn_DEBUG_MOUSE_EVENTS__
-    fprintf(stdout,"Mouse-KEY : %d \n",event->jbutton.button);
-    #endif
-    // switch (event->type){
-    //     case SDL_MOUSEBUTTONDOWN:
-    //         keyCode=event->key.keysym.sym;
-    //         switch (event->button.button){
-    //             case SDL_BUTTON_LEFT:
-    //                 fprintf(stdout,"SDL_BUTTON_LEFT  (x=%d,y=%d)\n",event->button.x,event->button.y);
-    //                 break;
-    //             case SDL_BUTTON_RIGHT:
-    //                 fprintf(stdout,"SDL_BUTTON_RIGHT (x=%d,y=%d)\n",event->button.x,event->button.y);
-    //                 break;
-    //         }
-            // default:
-            // fprintf(stdout,"Window %d got unknown event %d",
-            //         event->window.windowID, event->window.event);
-            // break;
-    //     break;
-    // }
-    return keyCode;
-}
-
-int handle_window_events(const SDL_Event * event){
-    int keyCode=__cwcn_EVENT_WAIT;
-    switch (event->window.event) {
-    case SDL_WINDOWEVENT_SHOWN:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d shown\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_HIDDEN:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d hidden\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_EXPOSED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d exposed\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_MOVED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d moved to %d,%d\n",
-                event->window.windowID, event->window.data1,
-                event->window.data2);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_RESIZED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d resized to %dx%d\n",
-                event->window.windowID, event->window.data1,
-                event->window.data2);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_SIZE_CHANGED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d size changed to %dx%d\n",
-                event->window.windowID, event->window.data1,
-                event->window.data2);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_MINIMIZED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d minimized\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_MAXIMIZED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d maximized\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_RESTORED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d restored\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_ENTER:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Mouse entered window %d\n",
-                event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_LEAVE:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Mouse left window %d\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_FOCUS_GAINED:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d gained keyboard focus\n",
-                event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_FOCUS_LOST:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d lost keyboard focus\n",
-                event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_CLOSE:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d closed\n", event->window.windowID);
-        #endif
-        break;
-    #if SDL_VERSION_ATLEAST(2, 0, 5)
-    case SDL_WINDOWEVENT_TAKE_FOCUS:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d is offered a focus\n", event->window.windowID);
-        #endif
-        break;
-    case SDL_WINDOWEVENT_HIT_TEST:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d has a special hit test\n", event->window.windowID);
-        #endif
-        break;
-    #endif
-    default:
-        #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
-        fprintf(stdout,"Window %d got unknown event %d\n",
-                event->window.windowID, event->window.event);
-        #endif
-        break;
-    }
-    return keyCode;
-}
-
-// ---- ---- ---- ---- ---- 
-void sdl_abandon_ship(){
-    fprintf(stdout,"[cuwacunu:] iicu quit...\n");
-    exit(0);
-}
-// ---- ---- ---- ---- ---- 
-int is_sdl_event(SDL_Event * event){
-    #ifdef __cwcn_WAIT_KEY_EVENT__ // activate if blocking update is needed
-    return SDL_WaitEvent(event) || 1;
-    #elif defined(__cwcn_WAIT_POLL_EVENT__) || defined(__cwcn_WAIT_NO_EVENT__)// activate if constat update is needed (high cpu usage)
-    return SDL_PollEvent(event);
-    #else
-    fprintf(stderr,"ERROR: no cwcn event handling method configured...\n");
-    sdl_abandon_ship();
-    return 0;
-    #endif
-}
-// ---- ---- ---- ---- ---- 
-int is_sdl_quit_event(const SDL_Event * event){
-    return event->type==SDL_QUIT;
-}
-int is_sdl_keyboard_event(const SDL_Event * event){
-    return event->type==SDL_KEYDOWN || event->type==SDL_KEYUP;
-}
-int is_sdl_joystick_event(const SDL_Event * event){
-    return event->type==SDL_JOYAXISMOTION ||
-    event->type==SDL_JOYBALLMOTION ||
-    event->type==SDL_JOYHATMOTION ||
-    event->type==SDL_JOYBUTTONDOWN ||
-    event->type==SDL_JOYBUTTONUP ||
-    event->type==SDL_JOYDEVICEADDED ||
-    event->type==SDL_JOYDEVICEREMOVED;
-}
-int is_sdl_window_event(const SDL_Event * event){
-    return event->type == SDL_WINDOWEVENT;
-}
-int is_sdl_mouse_event(const SDL_Event * event){
-    return event->type==SDL_MOUSEMOTION || 
-    event->type==SDL_MOUSEBUTTONDOWN || 
-    event->type==SDL_MOUSEBUTTONUP || 
-    event->type==SDL_MOUSEWHEEL;
-}
-// ---- ---- ---- ---- ---- 
-
-/**
- * @brief wait_for_sdl_event
- *      wait for an event
- */
-int wait_for_sdl_event(sdl_screen_object_t obj_sdl){
-    #ifdef __cwcn_DEBUG_EVENTS__
-    fprintf(stdout,"[waka] [start] wait_for_sdl_event...\n");
-    #endif
-	int keyCode=__cwcn_EVENT_WAIT;
-	while (0xFF){
-        #ifdef __cwcn_DEBUG_EVENTS__
-        fprintf(stdout,"[waka] [loop]\n");
-        #endif
-        if(is_sdl_event(&obj_sdl.event)){
-    #ifdef __cwcn_WAIT_NO_EVENT__
-    break;
-    #endif
-            if(is_sdl_quit_event(&obj_sdl.event)){
-                sdl_abandon_ship();
-            } else if(is_sdl_keyboard_event(&obj_sdl.event)){
-                keyCode=handle_keyboard_events(&obj_sdl.event);
-            } else if(is_sdl_joystick_event(&obj_sdl.event)){
-                keyCode=handle_joystick_events(&obj_sdl.event);
-            } else if(is_sdl_window_event(&obj_sdl.event)){
-                keyCode=handle_window_events(&obj_sdl.event);
-            } else if(is_sdl_mouse_event(&obj_sdl.event)){
-                keyCode=handle_mouse_events(&obj_sdl.event);
-            }  // else: unrecognized event
-        }
-        if(keyCode!=__cwcn_EVENT_WAIT){
-            break;
-        }
-    }
-    #ifdef __cwcn_DEBUG_EVENTS__
-    fprintf(stdout,"[waka] [end  ] wait_for_sdl_event...\n");
-    #endif
-	return keyCode;
 }

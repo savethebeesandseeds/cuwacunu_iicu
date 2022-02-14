@@ -7,7 +7,25 @@
 #	include "SDL2/SDL.h"
 #	include "SDL2/SDL_ttf.h"
 #endif
+#include <time.h>
 #include "sdl_plot_linked_list.h"
+//-------------SDL  FLAGs ------------ ------------ ---
+typedef struct screen_flags {
+	int interface_id;
+
+} screen_flags_t;
+
+typedef struct cwcn_iicu_state {
+	int network_is_up;
+	clock_t network_last_update;
+	int broker_is_up;
+	clock_t broker_last_update;
+	int keyboard_is_up;
+	clock_t keyboard_last_update;
+	int controller_is_up;
+	clock_t controller_last_update;
+} cwcn_iicu_state_t;
+
 //-------------Plot SDL objects structure  ------------
 typedef struct plot_struct{
 	SDL_Surface *plot_surface; 			// not in use
@@ -54,10 +72,39 @@ typedef struct plot_params_struct{
 typedef struct sdl_struct{
 	splot central_plot;
 	plot_params central_plot_params;
-	TTF_Font *font;
+	TTF_Font *screen_font;
+	TTF_Font *home_font;
+	TTF_Font *mark_font;
 	SDL_Window *screen;
 	SDL_Renderer *renderer;
 	SDL_Event event;
+	screen_flags_t screen_state;
+	cwcn_iicu_state_t iicu_state;
 
 } sdl_screen_object_t;
+
+#include "../config/sdl_config.h"
+#include "sdl_plot.h"
+/**
+ * @brief initialize_screen
+ */
+void initialize_screen(sdl_screen_object_t *obj_sdl);
+
+/**
+ * @brief clean_screen
+ */
+void clean_screen(sdl_screen_object_t *obj_sdl);
+
+/**
+ * @brief step_screen
+ *      create a new SDL window and plot grap with given parameters
+ */
+int step_screen(sdl_screen_object_t *obj_sdl);
+
+/**
+ * @brief draw_screen
+ *      create a new SDL window and plot grap with given parameters
+ */
+int draw_screen(sdl_screen_object_t *obj_sdl);
+
 #endif

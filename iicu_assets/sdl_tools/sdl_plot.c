@@ -49,127 +49,37 @@ void make_plot(splot *plot, plot_params *params){
 
 }
 
-
-/**
- * @brief initialize_screen
- *      create a new SDL window and plot grap with given parameters
- * @param params
- *      plot parameters (cf plot_params struct)
- */
-sdl_screen_object_t initialize_screen(sdl_screen_object_t obj_sdl){
-	// --- --- --- --- · --- --- --- --- OS
-	setvbuf(stdout, NULL, _IONBF, 0);
-	SDL_Init(SDL_INIT_EVERYTHING); // SDL_Init(SDL_INIT_EVENTS);
-	if(SDL_NumJoysticks()==0){
-        fprintf(stdout,"WARNING: wait_for_sdl_joystick_event : no joystick device were found, calling wait_for_sdl_keyboard_event() instead...\n");
-    } else {
-        SDL_JoystickEventState(SDL_ENABLE);
-        if(!SDL_JoystickOpen(0)){ // SDL_Joystick *joy = SDL_JoystickOpen(0);
-            fprintf(stdout,"WARNING: wait_for_sdl_joystick_event : unable to open joystick device, calling wait_for_sdl_keyboard_event() instead...\n");
-        }
-    }
-	// --- --- --- --- · --- --- --- --- FONT
-	if(TTF_Init() == -1){
-		fprintf(stderr, "Error SDL TTF_Init error : %s\n", TTF_GetError());
-		exit(-1);
-	}
-	if (SDL_Init(SDL_INIT_VIDEO)==-1){
-		fprintf(stderr, "Error SDL init failure : %s\n", SDL_GetError());
-		exit(-1);
-	}
-	obj_sdl.font = TTF_OpenFont(SCREEN_FONT, (int) SCREEN_FONT_SIZE);
-	if(obj_sdl.font ==NULL){
-		printf("Error font file read failure, check your font file\n");
-		exit(-1);
-	}
-
-	// --- --- --- --- · --- --- --- --- WINDOW
-	obj_sdl.screen = SDL_CreateWindow(
-		SCREEN_TITLE,
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		SCREEN_WIDTH, 
-		SCREEN_HEIGHT,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-	if(obj_sdl.screen==NULL){
-		fprintf(stderr, "Error cant allocate memory for screen : %s\n", SDL_GetError());
-		exit(-1);
-	}
-	#ifdef SCREEN_MAXIMIZED
-    SDL_SetWindowFullscreen(obj_sdl.screen,SCREEN_MAXIMIZED);
-    #endif
-	
-	// --- --- --- --- · --- --- --- --- RENDERER
-    obj_sdl.renderer = SDL_CreateRenderer(obj_sdl.screen, -1, SDL_RENDERER_METHOD); // only use of screen
-	if(obj_sdl.renderer==NULL){
-		fprintf(stderr, "Error cant allocate memory for renderer : %s\n", SDL_GetError());
-		exit(-1);
-	}
-	// --- --- --- --- · --- --- --- --- PLOT
-	obj_sdl.central_plot_params=central_plot_config(obj_sdl.central_plot_params);
-	make_plot(&obj_sdl.central_plot, &obj_sdl.central_plot_params);
-    
-	return obj_sdl;
-}
 /**
  * @brief draw_plot_static_parts
  *      create a new SDL window and plot grap with given parameters
  */
-int draw_plot_static_parts(sdl_screen_object_t obj_sdl){
+int draw_plot_static_parts(sdl_screen_object_t *obj_sdl){
 
 	//------------ texts -----------------------
 	SDL_Color font_color = {255,255,255}; // outside screen labels and scales color
-	obj_sdl.central_plot.captionX = TTF_RenderText_Blended(obj_sdl.font, obj_sdl.central_plot_params.caption_text_x, font_color);
-	obj_sdl.central_plot.captionY = TTF_RenderText_Blended(obj_sdl.font, obj_sdl.central_plot_params.caption_text_y, font_color);
+	obj_sdl->central_plot.captionX = TTF_RenderText_Blended(obj_sdl->screen_font, obj_sdl->central_plot_params.caption_text_x, font_color);
+	obj_sdl->central_plot.captionY = TTF_RenderText_Blended(obj_sdl->screen_font, obj_sdl->central_plot_params.caption_text_y, font_color);
 
 	//------------ background-----------------------
-	SDL_SetRenderDrawColor(obj_sdl.renderer,0,0,0,255); // outside plot area (labels, caption, backgrownd) color
-	SDL_RenderFillRect(obj_sdl.renderer, &obj_sdl.central_plot_params.plot_zone);
+	SDL_SetRenderDrawColor(obj_sdl->renderer,0,0,0,255); // outside plot area (labels, caption, backgrownd) color
+	SDL_RenderFillRect(obj_sdl->renderer, &obj_sdl->central_plot_params.plot_zone);
 
-	SDL_SetRenderDrawColor(obj_sdl.renderer,255, 255, 255,255); // plot screen border
-	SDL_RenderFillRect(obj_sdl.renderer,&obj_sdl.central_plot_params.plot_mask_position);
+	SDL_SetRenderDrawColor(obj_sdl->renderer,255, 255, 255,255); // plot screen border
+	SDL_RenderFillRect(obj_sdl->renderer,&obj_sdl->central_plot_params.plot_mask_position);
 
-	SDL_SetRenderDrawColor(obj_sdl.renderer,0, 0, 0,255); // plot screen backgrownd
-	SDL_RenderFillRect(obj_sdl.renderer,&obj_sdl.central_plot_params.plot_position);
+	SDL_SetRenderDrawColor(obj_sdl->renderer,0, 0, 0,255); // plot screen backgrownd
+	SDL_RenderFillRect(obj_sdl->renderer,&obj_sdl->central_plot_params.plot_position);
 
-	SDL_SetRenderDrawColor(obj_sdl.renderer,0, 0, 0,255); // legend screen border 
-	SDL_RenderFillRect(obj_sdl.renderer,&obj_sdl.central_plot_params.plot_caption_mask_position);
+	SDL_SetRenderDrawColor(obj_sdl->renderer,0, 0, 0,255); // legend screen border 
+	SDL_RenderFillRect(obj_sdl->renderer,&obj_sdl->central_plot_params.plot_caption_mask_position);
 
-	SDL_SetRenderDrawColor(obj_sdl.renderer,0, 0, 0,255); // legend screen backgrownd
-	SDL_RenderFillRect(obj_sdl.renderer,&obj_sdl.central_plot_params.plot_caption_position);
+	SDL_SetRenderDrawColor(obj_sdl->renderer,0, 0, 0,255); // legend screen backgrownd
+	SDL_RenderFillRect(obj_sdl->renderer,&obj_sdl->central_plot_params.plot_caption_position);
 
 	// draw_screen(obj_sdl);
 	return EXIT_SUCCESS;
 }
 
-
-/**
- * @brief step_screen
- *      create a new SDL window and plot grap with given parameters
- * @param params
- *      plot parameters (cf plot_params struct)
- */
-int step_screen(sdl_screen_object_t obj_sdl){
-	
-	SDL_SetRenderDrawColor(obj_sdl.renderer,
-		obj_sdl.central_plot_params.plot_backgrownd_color.r,
-		obj_sdl.central_plot_params.plot_backgrownd_color.g,
-		obj_sdl.central_plot_params.plot_backgrownd_color.b,
-		obj_sdl.central_plot_params.plot_backgrownd_color.a);
-	SDL_RenderClear(obj_sdl.renderer);
-	return EXIT_SUCCESS;
-}
-
-/**
- * @brief draw_screen
- *      create a new SDL window and plot grap with given parameters
- * @param params
- *      plot parameters (cf plot_params struct)
- */
-int draw_screen(sdl_screen_object_t obj_sdl){
-	SDL_RenderPresent(obj_sdl.renderer);
-	return EXIT_SUCCESS;
-}
 /**
  * @brief clean_plot
  *      full clean of SDL pointers and linked list clear
@@ -193,14 +103,6 @@ void clean_plot(splot *plot, plot_params *params){
 
 }
 
-void clean_screen(sdl_screen_object_t obj_sdl){
-	SDL_DestroyRenderer(obj_sdl.renderer);
-	SDL_DestroyWindow(obj_sdl.screen);
-
-	TTF_CloseFont(obj_sdl.font);
-	TTF_Quit();
-	SDL_Quit();
-}
 
 /**
  * @brief draw_central_plot
@@ -210,79 +112,79 @@ void clean_screen(sdl_screen_object_t obj_sdl){
  * @param params
  *      plot parameters (cf plot_params struct)
  */
-void draw_central_plot(sdl_screen_object_t obj_sdl){
+void draw_central_plot(sdl_screen_object_t *obj_sdl){
 	
 	//---------------------------------------------
 	SDL_Color font_color= {255,255,255}; // outside screen labels and scales color
 	draw_plot_static_parts(obj_sdl);
-	draw_scale_graduation(obj_sdl.renderer,
-		&obj_sdl.central_plot_params,
-		&obj_sdl.central_plot,
-		obj_sdl.central_plot_params.real_plot_width,
-		obj_sdl.central_plot_params.real_plot_heigth,
-		obj_sdl.central_plot_params.plot_mask_position,
-		obj_sdl.font,
+	draw_scale_graduation(obj_sdl->renderer,
+		&obj_sdl->central_plot_params,
+		&obj_sdl->central_plot,
+		obj_sdl->central_plot_params.real_plot_width,
+		obj_sdl->central_plot_params.real_plot_heigth,
+		obj_sdl->central_plot_params.plot_mask_position,
+		obj_sdl->screen_font,
 		font_color,
-		obj_sdl.central_plot_params.plot_position.x,
-		obj_sdl.central_plot_params.plot_position.y);
+		obj_sdl->central_plot_params.plot_position.x,
+		obj_sdl->central_plot_params.plot_position.y);
 
-	if (obj_sdl.central_plot_params.caption_list!=NULL){
-		caption_item *tmp = obj_sdl.central_plot_params.caption_list;
+	if (obj_sdl->central_plot_params.caption_list!=NULL){
+		caption_item *tmp = obj_sdl->central_plot_params.caption_list;
 
 		if (tmp!=NULL){
 			int caption_offset=CAPTION_MARGIN;
 
 			while(tmp != NULL){
 				//plot cercle1
-				int circle_x1=obj_sdl.central_plot_params.plot_caption_mask_position.x+caption_offset;
-				int circle_y1=obj_sdl.central_plot_params.plot_caption_mask_position.y+obj_sdl.central_plot_params.real_plot_caption_heigth/2+obj_sdl.central_plot_params.stroke_width;
+				int circle_x1=obj_sdl->central_plot_params.plot_caption_mask_position.x+caption_offset;
+				int circle_y1=obj_sdl->central_plot_params.plot_caption_mask_position.y+obj_sdl->central_plot_params.real_plot_caption_heigth/2+obj_sdl->central_plot_params.stroke_width;
 
-				SDL_SetRenderDrawColor(obj_sdl.renderer,0,0,0,255); // legend item border left
-				fill_circle(obj_sdl.renderer,circle_x1,circle_y1,DOT_RADIUS);
+				SDL_SetRenderDrawColor(obj_sdl->renderer,0,0,0,255); // legend item border left
+				fill_circle(obj_sdl->renderer,circle_x1,circle_y1,DOT_RADIUS);
 
-				SDL_SetRenderDrawColor(obj_sdl.renderer,
+				SDL_SetRenderDrawColor(obj_sdl->renderer,
 					(tmp->caption_color & 0xFF0000)>>16, 
 					(tmp->caption_color & 0x00FF00)>>8,
 					tmp->caption_color & 0x0000FF,255); // legent item sphere left 
 
-				fill_circle(obj_sdl.renderer,circle_x1,circle_y1,DOT_RADIUS-2);
+				fill_circle(obj_sdl->renderer,circle_x1,circle_y1,DOT_RADIUS-2);
 
 				//plot cercle2
 				caption_offset+=40;
 
-				int circle_x2=obj_sdl.central_plot_params.plot_caption_mask_position.x+caption_offset;
+				int circle_x2=obj_sdl->central_plot_params.plot_caption_mask_position.x+caption_offset;
 				int circle_y2=circle_y1;
 
-				SDL_SetRenderDrawColor(obj_sdl.renderer,0,0,0,255); // legend item border right
-				fill_circle(obj_sdl.renderer,circle_x2,circle_y2,DOT_RADIUS);
+				SDL_SetRenderDrawColor(obj_sdl->renderer,0,0,0,255); // legend item border right
+				fill_circle(obj_sdl->renderer,circle_x2,circle_y2,DOT_RADIUS);
 
-				SDL_SetRenderDrawColor(obj_sdl.renderer,
+				SDL_SetRenderDrawColor(obj_sdl->renderer,
 					(tmp->caption_color & 0xFF0000)>>16, 
 					(tmp->caption_color & 0x00FF00)>>8,
 					tmp->caption_color & 0x0000FF,255); // legent item sphere right
 
-				fill_circle(obj_sdl.renderer,circle_x2,circle_y2,DOT_RADIUS-2);
+				fill_circle(obj_sdl->renderer,circle_x2,circle_y2,DOT_RADIUS-2);
 
 				//draw line between two circles
-				SDL_RenderDrawLine(obj_sdl.renderer,circle_x1+DOT_RADIUS+1,circle_y1,circle_x2-DOT_RADIUS-1,circle_y2);
+				SDL_RenderDrawLine(obj_sdl->renderer,circle_x1+DOT_RADIUS+1,circle_y1,circle_x2-DOT_RADIUS-1,circle_y2);
 
 				//display caption
-				SDL_Surface *caption_text_surface = TTF_RenderText_Blended(obj_sdl.font, tmp->caption_txt, font_color);
+				SDL_Surface *caption_text_surface = TTF_RenderText_Blended(obj_sdl->screen_font, tmp->caption_txt, font_color);
 				SDL_Rect caption_text;
-				SDL_Texture * texture_text = SDL_CreateTextureFromSurface(obj_sdl.renderer, caption_text_surface);
+				SDL_Texture * texture_text = SDL_CreateTextureFromSurface(obj_sdl->renderer, caption_text_surface);
 				SDL_QueryTexture(texture_text, NULL, NULL, &caption_text.w, &caption_text.h);
 				caption_text.x=circle_x2+DOT_RADIUS+CAPTION_OFFSET_CIRCLE_TO_TEXT;
 				caption_text.y=circle_y2-caption_text.h/2;
-				SDL_RenderCopy(obj_sdl.renderer, texture_text, NULL, &caption_text);
+				SDL_RenderCopy(obj_sdl->renderer, texture_text, NULL, &caption_text);
 
 				caption_offset+=caption_text.w+DOT_RADIUS+CAPTION_OFFSET_CIRCLE_TO_TEXT+CAPTION_OFFSET_DELIMITER;
 
-				draw_points(obj_sdl.renderer,
+				draw_points(obj_sdl->renderer,
 					tmp,
-					&obj_sdl.central_plot_params,
-					obj_sdl.central_plot_params.real_plot_width,
-					obj_sdl.central_plot_params.real_plot_heigth,
-					obj_sdl.central_plot_params.plot_mask_position);
+					&obj_sdl->central_plot_params,
+					obj_sdl->central_plot_params.real_plot_width,
+					obj_sdl->central_plot_params.real_plot_heigth,
+					obj_sdl->central_plot_params.plot_mask_position);
 				
 				tmp = tmp->nxt;
 			}

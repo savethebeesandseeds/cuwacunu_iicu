@@ -48,7 +48,6 @@
 #include "sdl_screen.h"
 #include "sdl_utils.h"
 #include "../config/sdl_config.h"
-
 /**
  * @brief make_plot
  *      create a new SDL window and plot grap with given parameters
@@ -59,28 +58,12 @@
  */
 void make_plot(splot *plot, plot_params *params);
 
-/**
- * @brief initialize_screen
- */
-sdl_screen_object_t initialize_screen(sdl_screen_object_t obj_sdl);
 
 /**
  * @brief intialize_central_plot
  *      create a new SDL window and plot grap with given parameters
  */
-int draw_plot_static_parts(sdl_screen_object_t obj_sdl);
-
-/**
- * @brief step_screen
- *      create a new SDL window and plot grap with given parameters
- */
-int step_screen(sdl_screen_object_t obj_sdl);
-
-/**
- * @brief draw_screen
- *      create a new SDL window and plot grap with given parameters
- */
-int draw_screen(sdl_screen_object_t obj_sdl);
+int draw_plot_static_parts(sdl_screen_object_t *obj_sdl);
 
 /**
  * @brief draw_scale_graduation
@@ -128,7 +111,7 @@ void draw_points(SDL_Renderer* renderer,
  * @param params
  *      plot parameters (cf plot_params struct)
  */
-void draw_central_plot(sdl_screen_object_t obj_sdl);
+void draw_central_plot(sdl_screen_object_t *obj_sdl);
 
 /**
  * @brief clean_plot
@@ -140,7 +123,7 @@ void clean_plot(splot *plot, plot_params *params);
  * @brief clean_screen
  *      full clean of SDL pointers and linked list clear
  */
-void clean_screen(sdl_screen_object_t obj_sdl);
+void clean_screen(sdl_screen_object_t *obj_sdl);
 /*
  * from : http://content.gpwiki.org/index.php/SDL:Tutorials:Drawing_and_Filling_Circles
  * 

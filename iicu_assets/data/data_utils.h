@@ -10,5 +10,5 @@
 #   include "SDL2/SDL_ttf.h"
 #endif
 #include "../sdl_tools/sdl_screen.h"
-sdl_screen_object_t populate_central_plot_coordinate_list(sdl_screen_object_t obj_sdl);
+void populate_central_plot_coordinate_list(sdl_screen_object_t *obj_sdl);
 #endif
