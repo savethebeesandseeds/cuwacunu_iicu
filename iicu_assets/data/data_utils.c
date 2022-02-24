@@ -14,15 +14,15 @@ void populate_central_plot_coordinate_list(sdl_screen_object_t *obj_sdl){
 }
 
 void test_populate_alliu(__mewaajacune_t *_mewaajacune){
-    float rand_float;
+    __cwcn_type_t rand_float;
     kill_load(_mewaajacune);
     // --- --- --- --- · --- --- --- --- populate coordinate list
     for(int data_x=0;data_x<64;data_x++){
-        rand_float=(float)rand()/(float)RAND_MAX*64;
+        rand_float=(__cwcn_type_t)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)64);
         // fprintf(stdout,"rand_float:%f\n",rand_float);
         yield_next_trayectory(_mewaajacune);
-        // glti(_mewaajacune)->__alliu_state[0]=rand_float;
-        glti(_mewaajacune)->__alliu_state[0]=sin(2*2*3.141592/64*((__cwcn_type_t)data_x+1));
+        glti(_mewaajacune)->__alliu_state[0]=rand_float;
+        // glti(_mewaajacune)->__alliu_state[0]=sin(2*2*3.141592/64*((__cwcn_type_t)data_x+1));
         // glti(_mewaajacune)->__alliu_state[0]=(__cwcn_type_t)data_x;
     }
 }

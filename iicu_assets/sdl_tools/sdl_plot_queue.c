@@ -18,6 +18,7 @@ void sdl_draw_y_plot_queue(SDL_Renderer * renderer,
     __cwcn_type_t graph_min=min_alliu_in_load(_mewaajacune,alliu_index);
     __cwcn_type_t x_delta=(__cwcn_type_t)_mewaajacune->__load_size;
     __cwcn_type_t y_delta=((__cwcn_type_t)graph_max-graph_min);
+    __cwcn_type_t y_mid=(graph_max+graph_min)/((__cwcn_type_t)2);
     __cwcn_type_t dot_dx=(__cwcn_type_t)abs(((__cwcn_type_t)box_w)/x_delta); // (dot) by multiplying it transform to speak about pixels in term of plot_scale  
     __cwcn_type_t dot_dy=(__cwcn_type_t)abs(((__cwcn_type_t)box_h)/y_delta);
     __cwcn_type_t dot_x=0;//=(__cwcn_type_t)box_x;
@@ -26,13 +27,15 @@ void sdl_draw_y_plot_queue(SDL_Renderer * renderer,
     // if(box_h<graph_max-graph_min){fprintf(stderr,"[WARNING:] not enough discrete pixels to print [%d] items in plot of size [%d]\n",_mewaajacune->__load_size,box_w);return;}
     __cwcn_type_t past_x;
     __cwcn_type_t past_y;
-    __cwcn_type_t bias_y=((__cwcn_type_t) box_y)+((__cwcn_type_t) box_h)/((__cwcn_type_t) 2);//-y_delta*dot_dy/((__cwcn_type_t)2);
+    __cwcn_type_t bias_y=((__cwcn_type_t)box_y)+((__cwcn_type_t)box_h)/((__cwcn_type_t)2);//-y_delta*dot_dy/((__cwcn_type_t)2);
+    // __cwcn_type_t bias_y=((__cwcn_type_t) box_y);//+((__cwcn_type_t) box_h)/((__cwcn_type_t)2);//-y_delta*dot_dy/((__cwcn_type_t)2);
     int start_index=_mewaajacune->__load_index;
     ___cwcn_bool_t s_flag=0x0;
     SDL_SetRenderDrawColor(renderer,line_color.r,line_color.g,line_color.b,line_color.a);
     load_to_start(_mewaajacune);
-    fprintf(stdout,"waka [graph_max]%f -> %f\n",graph_max,bias_y-(graph_max)*dot_dy);
-    fprintf(stdout,"waka [graph_min]%f -> %f\n",graph_min,bias_y-(graph_min)*dot_dy);
+    fprintf(stdout,"waka [graph_max]%f -> %f\n",graph_max,bias_y-(graph_max-y_mid)*dot_dy);
+    fprintf(stdout,"waka [graph_min]%f -> %f\n",graph_min,bias_y-(graph_min-y_mid)*dot_dy);
+    fprintf(stdout,"waka [y_mid]%f\n",y_mid);
     fprintf(stdout,"waka [x_delta]%f\n",x_delta);
     fprintf(stdout,"waka [y_delta]%f\n",y_delta);
     fprintf(stdout,"waka [dot_dx]%f\n",dot_dx);
@@ -45,7 +48,7 @@ void sdl_draw_y_plot_queue(SDL_Renderer * renderer,
     load_to_start(_mewaajacune);
     do{
         dot_x+=dot_dx;
-        dot_y=bias_y-(glti(_mewaajacune)->__alliu_state[alliu_index])*dot_dy;
+        dot_y=bias_y-(glti(_mewaajacune)->__alliu_state[alliu_index]-y_mid)*dot_dy;
         if(!s_flag){
             s_flag=0x1;
             past_x=dot_x;
@@ -54,8 +57,6 @@ void sdl_draw_y_plot_queue(SDL_Renderer * renderer,
         fprintf(stdout,"... --- ... ---\n");
         fprintf(stdout,"waka [dot_x]%f\n",dot_x);
         fprintf(stdout,"waka [dot_y]%f\n",dot_y);
-        fprintf(stdout,"waka [past_x]%f\n",past_x);
-        fprintf(stdout,"waka [past_y]%f\n",past_y);
         if(draw_line){ // draw_line
             sdl_draw_line(renderer,
                 (int)(round(dot_x)),
