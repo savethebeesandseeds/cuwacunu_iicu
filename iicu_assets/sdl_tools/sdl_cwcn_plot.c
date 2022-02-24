@@ -1,5 +1,5 @@
-#include "sdl_orbital.h"
-void DrawOrbital(sdl_screen_object_t *obj_sdl, char *caption, int32_t centreX, int32_t centreY, int32_t radius, float angle){
+#include "sdl_cwcn_plot.h"
+void DrawPlot(sdl_screen_object_t *obj_sdl, char *caption, int32_t centreX, int32_t centreY, int32_t radius, float angle){
     int x1=centreX;
     int x2=centreX+(1+ORBITAL_EXCENTRICITY)*radius*0.95;
     int y1=centreY;

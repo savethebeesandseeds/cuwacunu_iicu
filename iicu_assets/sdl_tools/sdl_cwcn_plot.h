@@ -1,5 +1,5 @@
-#ifndef __SDL_ORBITAL__
-#define __SDL_ORBITAL__
+#ifndef __CWCN_PLOT__
+#define __CWCN_PLOT__
 #ifdef __ANDROID__
 #	include "SDL.h"
 #	include "SDL_ttf.h"
@@ -11,5 +11,5 @@
 #include "sdl_utils.h"
 #include "../config/sdl_config.h"
 #include "sdl_object.h"
-void DrawOrbital(sdl_screen_object_t *obj_sdl, char *caption, int32_t centreX, int32_t centreY, int32_t radius, float angle);
+
 #endif

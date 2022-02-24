@@ -2,6 +2,6 @@
 #define __LOADING_INTERFACE__
 #include "../config/sdl_config.h"
 #include "../sdl_tools/sdl_utils.h"
-#include "../sdl_tools/sdl_screen.h"
+#include "../sdl_tools/sdl_object.h"
 void render_loading(sdl_screen_object_t *obj_sdl);
 #endif

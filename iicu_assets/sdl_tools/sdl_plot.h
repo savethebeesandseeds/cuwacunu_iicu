@@ -45,33 +45,32 @@
 #include "stdlib.h"
 #include "sdl_plot_linked_list.h"
 
-#include "sdl_screen.h"
+#include "sdl_object.h"
 #include "sdl_utils.h"
 #include "../config/sdl_config.h"
-/**
- * @brief make_plot
- *      create a new SDL window and plot grap with given parameters
- * @param plot
- *      plot object (cf splot struct)
-  * @param params
- *      plot parameters (cf plot_params struct)
- */
-void make_plot(splot *plot, plot_params *params);
-
 
 /**
  * @brief intialize_central_plot
- *      create a new SDL window and plot grap with given parameters
  */
-int draw_plot_static_parts(sdl_screen_object_t *obj_sdl);
+void make_splot(sdl_screen_object_t *obj_sdl, int sceen_index);
+
+/**
+ * @brief draw_plot
+ */
+void draw_central_plot(splot_t *cplot);
+
+/**
+ * @brief draw_plot_static_parts
+ */
+void draw_plot_static_parts(splot_t *cplot);
 
 /**
  * @brief draw_scale_graduation
  *      draw graduation for the graph
  */
 void draw_scale_graduation(SDL_Renderer * renderer,
-	plot_params *params,
-	splot *plot,
+	splot_params_t *params,
+	splot_t *plot,
 	float plot_width,
 	float plot_heigth,
 	SDL_Rect plot_mask_position,
@@ -88,7 +87,7 @@ void draw_scale_graduation(SDL_Renderer * renderer,
  * @param caption_item
  *      caption item structure
  * @param params
- *      plot parameters (cf plot_params struct)
+ *      plot parameters (cf splot_params_t struct)
  * @param plot_width
  *      plot base width (with proportion to screen width)
  * @param plot_heigth
@@ -98,32 +97,10 @@ void draw_scale_graduation(SDL_Renderer * renderer,
  */
 void draw_points(SDL_Renderer* renderer,
 	caption_item* caption_item,
-	plot_params *params,
+	splot_params_t *params,
 	float plot_width,
 	float plot_heigth,
 	SDL_Rect plot_mask_position);
-
-/**
- * @brief draw_plot
- *      create a new SDL window and plot grap with given parameters
- * @param splot
- *      plot containing SDL objects
- * @param params
- *      plot parameters (cf plot_params struct)
- */
-void draw_central_plot(sdl_screen_object_t *obj_sdl);
-
-/**
- * @brief clean_plot
- *      full clean of SDL pointers and linked list clear
- */
-void clean_plot(splot *plot, plot_params *params);
-
-/**
- * @brief clean_screen
- *      full clean of SDL pointers and linked list clear
- */
-void clean_screen(sdl_screen_object_t *obj_sdl);
 /*
  * from : http://content.gpwiki.org/index.php/SDL:Tutorials:Drawing_and_Filling_Circles
  * 

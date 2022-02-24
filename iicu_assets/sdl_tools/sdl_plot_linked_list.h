@@ -46,7 +46,7 @@ struct caption_item
 	struct caption_item *nxt;
 };
 
-typedef caption_item* captionlist;
+typedef caption_item* captionlist_t;
 //----------------------------------------
 
 //-------------COORDINATE STRUCT ------------
@@ -60,7 +60,7 @@ struct coordinate_item
 	struct coordinate_item *nxt;
 };
 
-typedef coordinate_item* coordlist;
+typedef coordinate_item* coordlist_t;
 //----------------------------------------
 
 //-------------SDL_Surface STRUCT ------------
@@ -85,7 +85,7 @@ typedef surface_item* surfacelist;
  * @param y
  *      y coordinate
  */
-coordlist push_back_coord(coordlist list,int caption_id, float x,float y);
+coordlist_t push_back_coord(coordlist_t list,int caption_id, float x,float y);
 
 /**
  * @brief print_list_coord
@@ -93,7 +93,7 @@ coordlist push_back_coord(coordlist list,int caption_id, float x,float y);
  * @param list
  *      list of coordinate items
  */
-void print_list_coord(coordlist list);
+void print_list_coord(coordlist_t list);
 
 /**
  * @brief clear_coord
@@ -101,7 +101,7 @@ void print_list_coord(coordlist list);
  * @param list
  *      list of coordinate items
  */
-coordlist clear_coord(coordlist list);
+coordlist_t clear_coord(coordlist_t list);
 
 /**
  * @brief push_back_caption
@@ -115,7 +115,7 @@ coordlist clear_coord(coordlist list);
  * @param color
  *      caption color
  */
-captionlist push_back_caption(captionlist list, char* caption_txt,int caption_id,int color);
+captionlist_t push_back_caption(captionlist_t list, char* caption_txt,int caption_id,int color);
 
 /**
  * @brief print_list_caption
@@ -123,7 +123,7 @@ captionlist push_back_caption(captionlist list, char* caption_txt,int caption_id
  * @param list
  *      list of caption items
  */
-void print_list_caption(captionlist list);
+void print_list_caption(captionlist_t list);
 
 /**
  * @brief clear_caption
@@ -131,7 +131,7 @@ void print_list_caption(captionlist list);
  * @param list
  *      list of caption items
  */
-captionlist clear_caption(captionlist list);
+captionlist_t clear_caption(captionlist_t list);
 
 /**
  * @brief push_back_surface

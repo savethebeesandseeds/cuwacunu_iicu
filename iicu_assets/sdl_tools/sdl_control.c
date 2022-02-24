@@ -58,7 +58,11 @@ int handle_keyboard_events(const SDL_Event * event){
     #ifdef __cwcn_DEBUG_KEYBOARD_EVENTS__
     fprintf(stdout,"KEYBOARD-KEY : [%d] : %s \n",event->type,SDL_GetKeyName(event->key.keysym.sym));
     #endif
+    #ifdef NO_KEY_REPEAT
     if(!event->key.repeat){
+    #else
+    if(0xFF){
+    #endif
         switch (event->type){ // SDL_KEYDOWN,SDL_KEYUP;
         case SDL_KEYDOWN:
             switch (event->key.keysym.sym){
@@ -246,6 +250,56 @@ int is_sdl_mouse_event(const SDL_Event * event){
 // ---- ---- ---- ---- ---- 
 
 /**
+ * @brief miss_or_catch_sdl_event
+ */
+int miss_or_catch_sdl_event(sdl_screen_object_t *obj_sdl){
+	int keyCode=__cwcn_EVENT_CONTINUE;
+    while(SDL_PollEvent(&obj_sdl->event)){
+        // fprintf(stdout,"miss_or_catch_sdl_event waka...\n");
+        if(is_sdl_quit_event(&obj_sdl->event)){
+            sdl_abandon_ship();
+        } else if(is_sdl_keyboard_event(&obj_sdl->event)){
+            keyCode=handle_keyboard_events(&obj_sdl->event);
+        } else if(is_sdl_joystick_event(&obj_sdl->event)){
+            keyCode=handle_joystick_events(&obj_sdl->event);
+        } else if(is_sdl_window_event(&obj_sdl->event)){
+            keyCode=handle_window_events(&obj_sdl->event);
+        } else if(is_sdl_mouse_event(&obj_sdl->event)){
+            keyCode=handle_mouse_events(&obj_sdl->event);
+        }  // else: unrecognized event
+        if(keyCode!=__cwcn_EVENT_WAIT){
+            break;
+        }
+    }
+    return keyCode;
+}
+
+/**
+ * @brief handle_sdl_event
+ *      wait for an event
+ */
+int handle_sdl_event(sdl_screen_object_t *obj_sdl){
+	int keyCode=__cwcn_EVENT_WAIT;
+    while(is_sdl_event(&obj_sdl->event)){
+        // fprintf(stdout,"handle_sdl_event waka...\n");
+        if(is_sdl_quit_event(&obj_sdl->event)){
+            sdl_abandon_ship();
+        } else if(is_sdl_keyboard_event(&obj_sdl->event)){
+            keyCode=handle_keyboard_events(&obj_sdl->event);
+        } else if(is_sdl_joystick_event(&obj_sdl->event)){
+            keyCode=handle_joystick_events(&obj_sdl->event);
+        } else if(is_sdl_window_event(&obj_sdl->event)){
+            keyCode=handle_window_events(&obj_sdl->event);
+        } else if(is_sdl_mouse_event(&obj_sdl->event)){
+            keyCode=handle_mouse_events(&obj_sdl->event);
+        }  // else: unrecognized event
+        if(keyCode!=__cwcn_EVENT_WAIT){
+            break;
+        }
+    }
+    return keyCode;
+}
+/**
  * @brief wait_for_sdl_event
  *      wait for an event
  */
@@ -256,24 +310,12 @@ int wait_for_sdl_event(sdl_screen_object_t *obj_sdl){
 	int keyCode=__cwcn_EVENT_WAIT;
 	while (0xFF){
         #ifdef __cwcn_DEBUG_EVENTS__
-        fprintf(stdout,"[waka] [loop]\n");
+        fprintf(stdout,"[waka] [event!]\n");
         #endif
-        if(is_sdl_event(&obj_sdl->event)){
     #ifdef __cwcn_WAIT_NO_EVENT__
     break;
     #endif
-            if(is_sdl_quit_event(&obj_sdl->event)){
-                sdl_abandon_ship();
-            } else if(is_sdl_keyboard_event(&obj_sdl->event)){
-                keyCode=handle_keyboard_events(&obj_sdl->event);
-            } else if(is_sdl_joystick_event(&obj_sdl->event)){
-                keyCode=handle_joystick_events(&obj_sdl->event);
-            } else if(is_sdl_window_event(&obj_sdl->event)){
-                keyCode=handle_window_events(&obj_sdl->event);
-            } else if(is_sdl_mouse_event(&obj_sdl->event)){
-                keyCode=handle_mouse_events(&obj_sdl->event);
-            }  // else: unrecognized event
-        }
+        keyCode=handle_sdl_event(obj_sdl);
         if(keyCode!=__cwcn_EVENT_WAIT){
             break;
         }

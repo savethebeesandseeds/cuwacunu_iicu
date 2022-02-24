@@ -26,7 +26,7 @@
 	@author waajacu
 	@version 0.1
 */
-#include "cuwacunu_iicu.h"
+#include "../iicu_assets/threads/thread_launcher.h"
 int main(int argc, char* argv[]){
     launch_IICU();
 	return EXIT_SUCCESS;

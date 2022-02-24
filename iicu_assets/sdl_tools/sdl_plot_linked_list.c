@@ -43,7 +43,7 @@
  * @param list
  *      list of caption items
  */
-captionlist clear_caption(captionlist list){
+captionlist_t clear_caption(captionlist_t list){
 
 	if (list!=NULL)
 	{
@@ -72,7 +72,7 @@ captionlist clear_caption(captionlist list){
  * @param color
  *      caption color
  */
-captionlist push_back_caption(captionlist liste, char * valeur,int caption_id,int color)
+captionlist_t push_back_caption(captionlist_t liste, char * valeur,int caption_id,int color)
 {
 	caption_item* caption_new_item = malloc(sizeof(caption_item));
 	caption_new_item->caption_txt = valeur;
@@ -103,7 +103,7 @@ captionlist push_back_caption(captionlist liste, char * valeur,int caption_id,in
  * @param list
  *      list of caption items
  */
-void print_list_caption(captionlist list)
+void print_list_caption(captionlist_t list)
 {
 
 	caption_item *tmp = list;
@@ -126,7 +126,7 @@ void print_list_caption(captionlist list)
  * @param list
  *      list of coordinate items
  */
-coordlist clear_coord(coordlist list){
+coordlist_t clear_coord(coordlist_t list){
 
 	if (list!=NULL)
 	{
@@ -157,7 +157,7 @@ coordlist clear_coord(coordlist list){
  * @param y
  *      y coordinate
  */
-coordlist push_back_coord(coordlist list,int caption_id, float x,float y)
+coordlist_t push_back_coord(coordlist_t list,int caption_id, float x,float y)
 {
 	coordinate_item* coord_new_item = malloc(sizeof(coordinate_item));
 	coord_new_item->x = x;
@@ -187,7 +187,7 @@ coordlist push_back_coord(coordlist list,int caption_id, float x,float y)
  * @param list
  *      list of coordinate items
  */
-void print_list_coord(coordlist list)
+void print_list_coord(coordlist_t list)
 {
 
 	coordinate_item *tmp = list;

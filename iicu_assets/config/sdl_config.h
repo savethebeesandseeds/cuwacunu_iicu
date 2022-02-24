@@ -2,7 +2,7 @@
 #define __SDL_CONFIG__
 
 #define SCREEN_TITLE "IICU (cuwacunu:waajacu)"
-#define SCREEN_WIDTH 1000
+#define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 640
 #define STATE_PANEL_w_ZERO 20
 #define STATE_PANEL_h_ZERO 20
@@ -16,11 +16,12 @@
 #define MARK_FONT "./iicu_resources/NanumBrushScript-Regular.ttf"
 #define MARK_FONT_SIZE 36
 
-#define HOME_STATE_ID (int) 0xFE000
-#define LOADING_STATE_ID (int) 0xFE001
-#define LOGIN_STATE_ID (int) 0xFE002
-#define CONFIG_PANEL_STATE_ID (int) 0xFE003
-#define CENTRAL_SCREEN_PANEL_STATE_ID (int) 0xFE004
+#define HOME_STATE_ID (int) 0xFE00
+#define LOADING_STATE_ID (int) 0xFE01
+#define LOGIN_STATE_ID (int) 0xFE02
+#define CONFIG_PANEL_STATE_ID (int) 0xFE03
+#define IICU_SCREEN_PANEL_STATE_ID (int) 0xFE04
+
 
 #define STATE_PANEL_WIFI "./iicu_resources/wifi-solid_white.png"
 #define STATE_PANEL_BROKER "./iicu_resources/Binance-coin-bnb-logo.png"
@@ -30,7 +31,7 @@
 #define SDL_RENDERER_METHOD 0 // SDL_RENDERER_SOFTWARE // SDL_RENDERER_ACCELERATED // SDL_RENDERER_PRESENTVSYNC // SDL_RENDERER_TARGETTEXTURE
 // #define SCREEN_MAXIMIZED SDL_WINDOW_FULLSCREEN_DESKTOP // SDL_WINDOW_FULLSCREEN // 0
 
-#define DOT_RADIUS 4
+#define DOT_PLOT_RADIUS 3
 #define CAPTION_OFFSET_CIRCLE_TO_TEXT 10
 #define CAPTION_OFFSET_DELIMITER 40
 #define GRADUATION_HEIGTH 10
@@ -50,14 +51,15 @@
 #define __cwcn_WAIT_KEY_EVENT__
 // #define __cwcn_WAIT_POLL_EVENT__
 
+// #define NO_KEY_REPEAT
 
 #define __cwcn_EVENT_WAIT 0xF0F1FF0
 #define __cwcn_EVENT_BREAK 0xF1F11F1
 #define __cwcn_EVENT_CONTINUE 0xF5F1FF5
 
-#include "../sdl_tools/sdl_screen.h"
+#include "../sdl_tools/sdl_object.h"
 
-void central_plot_config(plot_params *c_plot_params);
+void central_plot_config(splot_params_t *c_plot_params);
 
 #if !defined(__cwcn_WAIT_KEY_EVENT__) && !defined(__cwcn_WAIT_POLL_EVENT__) && !defined(__cwcn_WAIT_NO_EVENT__)
 #error (sdl_config.h) Please define the __cwcn_WAIT_(*)_EVENT__ : __cwcn_WAIT_NO_EVENT__ or __cwcn_WAIT_KEY_EVENT__ or __cwcn_WAIT_POLL_EVENT__

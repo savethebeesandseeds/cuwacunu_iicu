@@ -9,6 +9,8 @@
 #   include "SDL2/SDL.h"
 #   include "SDL2/SDL_ttf.h"
 #endif
-#include "../sdl_tools/sdl_screen.h"
+#include "queue_utils.h"
+#include "../sdl_tools/sdl_object.h"
+void test_populate_alliu(__mewaajacune_t *_mewaajacune);
 void populate_central_plot_coordinate_list(sdl_screen_object_t *obj_sdl);
 #endif

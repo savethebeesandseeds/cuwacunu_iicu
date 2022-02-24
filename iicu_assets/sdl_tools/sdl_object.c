@@ -1,9 +1,9 @@
-#include "sdl_screen.h"
+#include "sdl_object.h"
 
 /**
- * @brief initialize_screen
+ * @brief initialize_sdl_object
  */
-void initialize_screen(sdl_screen_object_t *obj_sdl){
+void initialize_sdl_object(sdl_screen_object_t *obj_sdl){
 	// --- --- --- --- · --- --- --- --- OS
 	setvbuf(stdout, NULL, _IONBF, 0);
 	SDL_Init(SDL_INIT_EVERYTHING); // SDL_Init(SDL_INIT_EVENTS);
@@ -63,16 +63,14 @@ void initialize_screen(sdl_screen_object_t *obj_sdl){
 		fprintf(stderr, "Error cant allocate memory for renderer : %s\n", SDL_GetError());
 		exit(-1);
 	}
-	// --- --- --- --- · --- --- --- --- PLOT
-	central_plot_config(&obj_sdl->central_plot_params);
-	make_plot(&obj_sdl->central_plot, &obj_sdl->central_plot_params);
-    
+
+	// --- --- --- --- · --- --- --- --- IICU
 }
 
 /**
- * @brief clean_screen
+ * @brief kill_sdl_object
  */
-void clean_screen(sdl_screen_object_t *obj_sdl){
+void kill_sdl_object(sdl_screen_object_t *obj_sdl){
 	SDL_DestroyRenderer(obj_sdl->renderer);
 	SDL_DestroyWindow(obj_sdl->screen);
 
@@ -83,22 +81,18 @@ void clean_screen(sdl_screen_object_t *obj_sdl){
 }
 
 /**
- * @brief step_screen
+ * @brief step_sdl_object
  */
-int step_screen(sdl_screen_object_t *obj_sdl){
-	SDL_SetRenderDrawColor(obj_sdl->renderer,
-		obj_sdl->central_plot_params.plot_backgrownd_color.r,
-		obj_sdl->central_plot_params.plot_backgrownd_color.g,
-		obj_sdl->central_plot_params.plot_backgrownd_color.b,
-		obj_sdl->central_plot_params.plot_backgrownd_color.a);
+int step_sdl_object(sdl_screen_object_t *obj_sdl){
+	SDL_SetRenderDrawColor(obj_sdl->renderer,0,0,0,255);
 	SDL_RenderClear(obj_sdl->renderer);
 	return EXIT_SUCCESS;
 }
 
 /**
- * @brief draw_screen
+ * @brief draw_sdl_object
  */
-int draw_screen(sdl_screen_object_t *obj_sdl){
+int draw_sdl_object(sdl_screen_object_t *obj_sdl){
 	SDL_RenderPresent(obj_sdl->renderer);
 	return EXIT_SUCCESS;
 }

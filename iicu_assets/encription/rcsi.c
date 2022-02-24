@@ -1,7 +1,7 @@
 
 /*
     robin verton, dec 2015
-    implementation of the RCsi algo
+    implementation of the RC四 algo
 */
 
 #include "rcsi.h"
