@@ -1,8 +1,7 @@
 #include "home.h"
 
-void render_home(sdl_screen_object_t *obj_sdl){
-    // --- 
-    // --- DRAW CENTRAL TEXT
+void render_home(__sdl_screen_object_t *obj_sdl){
+    // --- DRAW central TEXT
     char *caption="CUWACUNU : IICU";
     int captionX=100;
     int captionY=100;

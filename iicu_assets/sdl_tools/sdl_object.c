@@ -3,7 +3,7 @@
 /**
  * @brief initialize_sdl_object
  */
-void initialize_sdl_object(sdl_screen_object_t *obj_sdl){
+void initialize_sdl_object(__sdl_screen_object_t *obj_sdl){
 	// --- --- --- --- · --- --- --- --- OS
 	setvbuf(stdout, NULL, _IONBF, 0);
 	SDL_Init(SDL_INIT_EVERYTHING); // SDL_Init(SDL_INIT_EVENTS);
@@ -43,11 +43,11 @@ void initialize_sdl_object(sdl_screen_object_t *obj_sdl){
 
 	// --- --- --- --- · --- --- --- --- WINDOW
 	obj_sdl->screen = SDL_CreateWindow(
-		SCREEN_TITLE,
+		SDL_SCREEN_TITLE,
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-		SCREEN_WIDTH, 
-		SCREEN_HEIGHT,
+		SDL_SCREEN_WIDTH, 
+		SDL_SCREEN_HEIGHT,
 		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if(obj_sdl->screen==NULL){
 		fprintf(stderr, "Error cant allocate memory for screen : %s\n", SDL_GetError());
@@ -70,7 +70,7 @@ void initialize_sdl_object(sdl_screen_object_t *obj_sdl){
 /**
  * @brief kill_sdl_object
  */
-void kill_sdl_object(sdl_screen_object_t *obj_sdl){
+void kill_sdl_object(__sdl_screen_object_t *obj_sdl){
 	SDL_DestroyRenderer(obj_sdl->renderer);
 	SDL_DestroyWindow(obj_sdl->screen);
 
@@ -83,7 +83,7 @@ void kill_sdl_object(sdl_screen_object_t *obj_sdl){
 /**
  * @brief step_sdl_object
  */
-int step_sdl_object(sdl_screen_object_t *obj_sdl){
+int step_sdl_object(__sdl_screen_object_t *obj_sdl){
 	SDL_SetRenderDrawColor(obj_sdl->renderer,0,0,0,255);
 	SDL_RenderClear(obj_sdl->renderer);
 	return EXIT_SUCCESS;
@@ -92,7 +92,7 @@ int step_sdl_object(sdl_screen_object_t *obj_sdl){
 /**
  * @brief draw_sdl_object
  */
-int draw_sdl_object(sdl_screen_object_t *obj_sdl){
+int draw_sdl_object(__sdl_screen_object_t *obj_sdl){
 	SDL_RenderPresent(obj_sdl->renderer);
 	return EXIT_SUCCESS;
 }

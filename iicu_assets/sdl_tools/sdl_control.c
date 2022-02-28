@@ -19,8 +19,9 @@ int test_controller(){
     return return_state;
 }
 // ---- ---- ---- ---- ---- 
-int handle_joystick_events(const SDL_Event * event){
+int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
+    SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
     switch (event->type){ // SDL_JOYAXISMOTION,SDL_JOYBALLMOTION,SDL_JOYHATMOTION,SDL_JOYBUTTONDOWN,SDL_JOYBUTTONUP,SDL_JOYDEVICEADDED,SDL_JOYDEVICEREMOVED
     case SDL_JOYDEVICEADDED:
         #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
@@ -37,7 +38,12 @@ int handle_joystick_events(const SDL_Event * event){
         fprintf(stdout,"[waka] Joystick-KEY : jbutton.button: %d\n",
             event->jbutton.button);
         #endif
+        switch (event->jbutton.button){
+        case 9:
+            keyCode=__cwcn_EVENT_CONTINUE;
+            break;
         break;
+        }
     case SDL_JOYAXISMOTION:
         // event->jaxis.value == -129 means the jaxis action return to steady position
         #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
@@ -46,6 +52,29 @@ int handle_joystick_events(const SDL_Event * event){
             event->jaxis.axis,
             event->jaxis.value);
         #endif
+        switch (event->jbutton.button){
+        case 1: // UP/DOWN/LEFT/RIGHT
+            if(event->jaxis.value!=-129 && abs(event->jaxis.value)>100){
+                switch (event->jaxis.axis){
+                case 1: // UP/DOWN
+                    switch (event->jaxis.value<0){
+                        case 0x01: // UP
+                        printf("UP \n");
+                        iicu_scene_go_up(_iicu_wikimyei);
+                        break;
+                        case 0x00: // DOWN
+                        printf("DOWN \n");
+                        iicu_scene_go_down(_iicu_wikimyei);
+                        break;
+                    }
+                    break;
+                default:
+                    break;
+                }
+            }
+        default:
+            break;
+        }
         break;
     default:
         break;
@@ -53,8 +82,9 @@ int handle_joystick_events(const SDL_Event * event){
     return keyCode;
 }
 
-int handle_keyboard_events(const SDL_Event * event){
+int handle_keyboard_events(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
+    SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
     #ifdef __cwcn_DEBUG_KEYBOARD_EVENTS__
     fprintf(stdout,"KEYBOARD-KEY : [%d] : %s \n",event->type,SDL_GetKeyName(event->key.keysym.sym));
     #endif
@@ -82,8 +112,9 @@ int handle_keyboard_events(const SDL_Event * event){
     return keyCode;
 }
 
-int handle_mouse_events(const SDL_Event * event){
+int handle_mouse_events(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
+    // SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
     #ifdef __cwcn_DEBUG_MOUSE_EVENTS__
     fprintf(stdout,"Mouse-KEY : %d \n",event->jbutton.button);
     #endif
@@ -107,8 +138,9 @@ int handle_mouse_events(const SDL_Event * event){
     return keyCode;
 }
 
-int handle_window_events(const SDL_Event * event){
+int handle_window_events(__iicu_wikimyei_t *_iicu_wikimyei){
     int keyCode=__cwcn_EVENT_WAIT;
+    SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
     switch (event->window.event) {
     case SDL_WINDOWEVENT_SHOWN:
         #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
@@ -252,20 +284,20 @@ int is_sdl_mouse_event(const SDL_Event * event){
 /**
  * @brief miss_or_catch_sdl_event
  */
-int miss_or_catch_sdl_event(sdl_screen_object_t *obj_sdl){
+int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_CONTINUE;
-    while(SDL_PollEvent(&obj_sdl->event)){
+    while(SDL_PollEvent(&_iicu_wikimyei->obj_sdl->event)){
         // fprintf(stdout,"miss_or_catch_sdl_event waka...\n");
-        if(is_sdl_quit_event(&obj_sdl->event)){
+        if(is_sdl_quit_event(&_iicu_wikimyei->obj_sdl->event)){
             sdl_abandon_ship();
-        } else if(is_sdl_keyboard_event(&obj_sdl->event)){
-            keyCode=handle_keyboard_events(&obj_sdl->event);
-        } else if(is_sdl_joystick_event(&obj_sdl->event)){
-            keyCode=handle_joystick_events(&obj_sdl->event);
-        } else if(is_sdl_window_event(&obj_sdl->event)){
-            keyCode=handle_window_events(&obj_sdl->event);
-        } else if(is_sdl_mouse_event(&obj_sdl->event)){
-            keyCode=handle_mouse_events(&obj_sdl->event);
+        } else if(is_sdl_keyboard_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_keyboard_events(_iicu_wikimyei);
+        } else if(is_sdl_joystick_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_joystick_events(_iicu_wikimyei);
+        } else if(is_sdl_window_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_window_events(_iicu_wikimyei);
+        } else if(is_sdl_mouse_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_mouse_events(_iicu_wikimyei);
         }  // else: unrecognized event
         if(keyCode!=__cwcn_EVENT_WAIT){
             break;
@@ -278,20 +310,20 @@ int miss_or_catch_sdl_event(sdl_screen_object_t *obj_sdl){
  * @brief handle_sdl_event
  *      wait for an event
  */
-int handle_sdl_event(sdl_screen_object_t *obj_sdl){
+int handle_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
-    while(is_sdl_event(&obj_sdl->event)){
+    while(is_sdl_event(&_iicu_wikimyei->obj_sdl->event)){
         // fprintf(stdout,"handle_sdl_event waka...\n");
-        if(is_sdl_quit_event(&obj_sdl->event)){
+        if(is_sdl_quit_event(&_iicu_wikimyei->obj_sdl->event)){
             sdl_abandon_ship();
-        } else if(is_sdl_keyboard_event(&obj_sdl->event)){
-            keyCode=handle_keyboard_events(&obj_sdl->event);
-        } else if(is_sdl_joystick_event(&obj_sdl->event)){
-            keyCode=handle_joystick_events(&obj_sdl->event);
-        } else if(is_sdl_window_event(&obj_sdl->event)){
-            keyCode=handle_window_events(&obj_sdl->event);
-        } else if(is_sdl_mouse_event(&obj_sdl->event)){
-            keyCode=handle_mouse_events(&obj_sdl->event);
+        } else if(is_sdl_keyboard_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_keyboard_events(_iicu_wikimyei);
+        } else if(is_sdl_joystick_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_joystick_events(_iicu_wikimyei);
+        } else if(is_sdl_window_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_window_events(_iicu_wikimyei);
+        } else if(is_sdl_mouse_event(&_iicu_wikimyei->obj_sdl->event)){
+            keyCode=handle_mouse_events(_iicu_wikimyei);
         }  // else: unrecognized event
         if(keyCode!=__cwcn_EVENT_WAIT){
             break;
@@ -303,7 +335,7 @@ int handle_sdl_event(sdl_screen_object_t *obj_sdl){
  * @brief wait_for_sdl_event
  *      wait for an event
  */
-int wait_for_sdl_event(sdl_screen_object_t *obj_sdl){
+int wait_for_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
     #ifdef __cwcn_DEBUG_EVENTS__
     fprintf(stdout,"[waka] [start] wait_for_sdl_event...\n");
     #endif
@@ -315,7 +347,7 @@ int wait_for_sdl_event(sdl_screen_object_t *obj_sdl){
     #ifdef __cwcn_WAIT_NO_EVENT__
     break;
     #endif
-        keyCode=handle_sdl_event(obj_sdl);
+        keyCode=handle_sdl_event(_iicu_wikimyei);
         if(keyCode!=__cwcn_EVENT_WAIT){
             break;
         }

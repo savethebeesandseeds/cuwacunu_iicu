@@ -1,3 +1,3 @@
-#ifndef __HOME_LOGIN__
-#define __HOME_LOGIN__
+#ifndef __LOGIN_INTERFACE__
+#define __LOGIN_INTERFACE__
 #endif

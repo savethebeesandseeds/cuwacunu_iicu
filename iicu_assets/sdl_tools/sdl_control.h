@@ -1,23 +1,18 @@
-#ifndef __SDL_UTILS__
-#define __SDL_UTILS__
-#ifdef __ANDROID__
-#   include "SDL.h"
-#   include "SDL_ttf.h"
-#   include "android/log.h"
-#else
-#   include "SDL2/SDL.h"
-#   include "SDL2/SDL_ttf.h"
-#endif
-#include "sdl_object.h"
+#ifndef __SDL_CONTROL__
+#define __SDL_CONTROL__
+#include "../config/general_config.h"
+#include "../config/sdl_config.h"
+#include "../sdl_tools/sdl_object.h"
+#include "../iicu/iicu_wikimyei.h"
 //-------------------------------------------
 void sdl_abandon_ship();
-int miss_or_catch_sdl_event(sdl_screen_object_t *obj_sdl);
-int handle_sdl_event(sdl_screen_object_t *obj_sdl);
-int wait_for_sdl_event(sdl_screen_object_t *obj_sdl);
-int handle_joystick_events(const SDL_Event * event);
-int handle_keyboard_events(const SDL_Event * event);
-int handle_mouse_events(const SDL_Event * event);
-int handle_window_events(const SDL_Event * event);
+int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);
+int handle_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);
+int wait_for_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);
+int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei);
+int handle_keyboard_events(__iicu_wikimyei_t *_iicu_wikimyei);
+int handle_mouse_events(__iicu_wikimyei_t *_iicu_wikimyei);
+int handle_window_events(__iicu_wikimyei_t *_iicu_wikimyei);
 int is_sdl_event(SDL_Event * event);
 int is_sdl_quit_event(const SDL_Event * event);
 int is_sdl_keyboard_event(const SDL_Event * event);

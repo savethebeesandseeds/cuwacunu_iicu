@@ -17,11 +17,11 @@ int KSA(char *key, unsigned char *S) {
     int len = strlen(key);
     int j = 0;
 
-    for(int i = 0; i < N; i++)
+    for(int i = 0; i < ENCRYPTION_BASE; i++)
         S[i] = i;
 
-    for(int i = 0; i < N; i++) {
-        j = (j + S[i] + key[i % len]) % N;
+    for(int i = 0; i < ENCRYPTION_BASE; i++) {
+        j = (j + S[i] + key[i % len]) % ENCRYPTION_BASE;
 
         swap(&S[i], &S[j]);
     }
@@ -35,11 +35,11 @@ int PRGA(unsigned char *S, char *plaintext, unsigned char *ciphertext) {
     int j = 0;
 
     for(size_t n = 0, len = strlen(plaintext); n < len; n++) {
-        i = (i + 1) % N;
-        j = (j + S[i]) % N;
+        i = (i + 1) % ENCRYPTION_BASE;
+        j = (j + S[i]) % ENCRYPTION_BASE;
 
         swap(&S[i], &S[j]);
-        int rnd = S[(S[i] + S[j]) % N];
+        int rnd = S[(S[i] + S[j]) % ENCRYPTION_BASE];
 
         ciphertext[n] = rnd ^ plaintext[n];
 
@@ -50,7 +50,7 @@ int PRGA(unsigned char *S, char *plaintext, unsigned char *ciphertext) {
 
 int RCsi(char *key, char *plaintext, unsigned char *ciphertext) {
 
-    unsigned char S[N];
+    unsigned char S[ENCRYPTION_BASE];
     KSA(key, S);
 
     PRGA(S, plaintext, ciphertext);

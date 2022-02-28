@@ -1,11 +1,11 @@
-#include "queue_utils.h"
+#include "mewaajacune_utils.h"
 /*
     MEWAAJACUNE AND TRAYECTORY
 */
-__trayectory_t *trayectory_fabric(__mewaajacune_t *_mewaajacune){
+__trayectory_t *trayectory_fabric(__iicu_mewaajacune_t *_mewaajacune){
     __trayectory_t *new_trayectory=malloc(sizeof(__trayectory_t));
     #if defined(MEWAAJACUNE_DEBUG)
-    fprintf(stdout,">> > ... request trayectory_fabric, alocated address: %p\n",new_trayectory);
+    fprintf(stdout,">> > request trayectory_fabric, alocated address: %p\n",new_trayectory);
     #endif
     if(!new_trayectory){
         fprintf(stderr,"ERROR, program seems unable to allocate memory for requested new trayectory\n");
@@ -19,13 +19,13 @@ __trayectory_t *trayectory_fabric(__mewaajacune_t *_mewaajacune){
     #endif
     return new_trayectory;
 }
-__load_queue_t *queue_item_fabric(__mewaajacune_t *_mewaajacune,__trayectory_t *_trayectory){
+__load_queue_t *queue_item_fabric(__iicu_mewaajacune_t *_mewaajacune,__trayectory_t *_trayectory){
     __load_queue_t *new_queue_item=malloc(sizeof(__load_queue_t));
     new_queue_item->__trayectory_item=NULL; // #FIXME, queue_fabric seems unstable by allowing ty_item null
     new_queue_item->__up=malloc(sizeof(__load_queue_t*));
     new_queue_item->__down=malloc(sizeof(__load_queue_t*));
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
-    fprintf(stdout,">> > ... request to queue_item_fabric\n");
+    fprintf(stdout,">> > request to queue_item_fabric\n");
     #endif
     new_queue_item->__trayectory_item=_trayectory;
     #if defined(ALOCATION_DEBUG)
@@ -36,10 +36,10 @@ __load_queue_t *queue_item_fabric(__mewaajacune_t *_mewaajacune,__trayectory_t *
     assert(new_queue_item->__down!=NULL);
     return new_queue_item;
 }
-__load_queue_t *load_fabric(__mewaajacune_t *_mewaajacune){
+__load_queue_t *load_fabric(__iicu_mewaajacune_t *_mewaajacune){
     assert(load_is_empty(_mewaajacune));
     #if defined(MEWAAJACUNE_DEBUG) || defined(MEWAAJACUNE_DEBUG_LOAD)
-    fprintf(stdout,">> > ... request to [load_fabric], at load_index: %d\n",_mewaajacune->__load_index);
+    fprintf(stdout,">> > request to [load_fabric], at load_index: %d\n",_mewaajacune->__load_index);
     #endif
     __load_queue_t *new_head=queue_item_fabric(_mewaajacune,trayectory_fabric(_mewaajacune));
     #if defined(ALOCATION_DEBUG)
@@ -49,11 +49,11 @@ __load_queue_t *load_fabric(__mewaajacune_t *_mewaajacune){
     _mewaajacune->__load_size=0x01;
     return new_head;
 }
-__mewaajacune_t *mewaajacune_fabric(){
+__iicu_mewaajacune_t *mewaajacune_fabric(){
     #if defined(MEWAAJACUNE_DEBUG)
-    fprintf(stdout,">> > ... mewaajacune_fabric\n");
+    fprintf(stdout,">> > mewaajacune_fabric\n");
     #endif
-    __mewaajacune_t *new_mewaajacune=malloc(sizeof(__mewaajacune_t));
+    __iicu_mewaajacune_t *new_mewaajacune=malloc(sizeof(__iicu_mewaajacune_t));
     if(!new_mewaajacune){
         fprintf(stderr,"ERROR, unable to allocate new mewaajacune\n");
         assert(0x00);
@@ -67,11 +67,17 @@ __mewaajacune_t *mewaajacune_fabric(){
     return new_mewaajacune;
 }
 /*
+    UPDATE QUEUE
+*/
+void update_iicu_mewaajacune(__iicu_mewaajacune_t *_mewaajacune){
+	test_populate_alliu(_mewaajacune); // update mewaajacune
+}
+/*
     LOAD QUEUE
 */
-int load_go_up(__mewaajacune_t *_mewaajacune){
+int load_go_up(__iicu_mewaajacune_t *_mewaajacune){
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
-    fprintf(stdout,">> > ... request to go [up] on load index [%d]\n",_mewaajacune->__load_index);
+    fprintf(stdout,">> > request to go [up] on load index [%d]\n",_mewaajacune->__load_index);
     #endif
     if(load_is_empty(_mewaajacune)){
         #if defined(MEWAAJACUNE_DEBUG_LOAD)
@@ -90,9 +96,9 @@ int load_go_up(__mewaajacune_t *_mewaajacune){
     _mewaajacune->__load_head=*_mewaajacune->__load_head->__up;
     return 0x00;
 }
-int load_go_down(__mewaajacune_t *_mewaajacune){
+int load_go_down(__iicu_mewaajacune_t *_mewaajacune){
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
-    fprintf(stdout,">> > ... request to go [down] on load index [%d]\n",_mewaajacune->__load_index);
+    fprintf(stdout,">> > request to go [down] on load index [%d]\n",_mewaajacune->__load_index);
     #endif
     if(load_is_empty(_mewaajacune)){
         #if defined(MEWAAJACUNE_DEBUG_LOAD)
@@ -111,21 +117,21 @@ int load_go_down(__mewaajacune_t *_mewaajacune){
     _mewaajacune->__load_head=*_mewaajacune->__load_head->__down;
     return 0x00;
 }
-void load_to_start(__mewaajacune_t *_mewaajacune){
+void load_to_start(__iicu_mewaajacune_t *_mewaajacune){
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
-        fprintf(stdout,">> > ... load_to_start ; c_index: [%d]\n",_mewaajacune->__load_index);
+        fprintf(stdout,">> > load_to_start ; c_index: [%d]\n",_mewaajacune->__load_index);
     #endif
     while(load_go_down(_mewaajacune)!=-1){}
     assert(load_on_start(_mewaajacune));
 }
-void load_to_end(__mewaajacune_t *_mewaajacune){
+void load_to_end(__iicu_mewaajacune_t *_mewaajacune){
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
-        fprintf(stdout,">> > ... load_to_end ; c_index: [%d]\n",_mewaajacune->__load_index);
+        fprintf(stdout,">> > load_to_end ; c_index: [%d]\n",_mewaajacune->__load_index);
     #endif
     while(load_go_up(_mewaajacune)!=-1){}
     assert(load_on_end(_mewaajacune));
 }
-void load_to_index(__mewaajacune_t *_mewaajacune, int _index){
+void load_to_index(__iicu_mewaajacune_t *_mewaajacune, int _index){
     assert(_index<_mewaajacune->__load_size);
     if(!load_is_empty(_mewaajacune)){
         if(_mewaajacune->__load_size<_index){
@@ -145,17 +151,17 @@ void load_to_index(__mewaajacune_t *_mewaajacune, int _index){
             }
         }
         #if defined(MEWAAJACUNE_DEBUG_LOAD)
-        fprintf(stdout,">> > ... load_to_index ; commanded: [%d] ; c_index: [%d]\n",_index, _mewaajacune->__load_index);
+        fprintf(stdout,">> > load_to_index ; commanded: [%d] ; c_index: [%d]\n",_index, _mewaajacune->__load_index);
         #endif
     }
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
-    else{fprintf(stdout,">> > ... load_to_index avoided due to noob load, load_to_index ; commanded: [%d] ; c_index: [%d]\n",_index, _mewaajacune->__load_index);}
+    else{fprintf(stdout,">> > load_to_index avoided due to noob load, load_to_index ; commanded: [%d] ; c_index: [%d]\n",_index, _mewaajacune->__load_index);}
     #endif
 }
-int yield_next_trayectory(__mewaajacune_t *_mewaajacune){
+int yield_next_trayectory(__iicu_mewaajacune_t *_mewaajacune){
     // #FIXME do something when with int 
     #if defined(MEWAAJACUNE_DEBUG)
-    fprintf(stdout,">> > ... request to yield_next_trayectory\n");
+    fprintf(stdout,">> > request to yield_next_trayectory\n");
     #endif
     assert(load_is_healty(_mewaajacune));
     if(load_is_empty(_mewaajacune)){
@@ -181,21 +187,21 @@ int yield_next_trayectory(__mewaajacune_t *_mewaajacune){
     // load_print_up_trayectory_pointers(_mewaajacune);
     // #endif
     #if defined(MEWAAJACUNE_DEBUG_v2)
-    fprintf(stdout,">> > ... yield_next_trayectory, c_load_index:%d, c_load_size:%d\n", _mewaajacune->__load_index, _mewaajacune->__load_size);
+    fprintf(stdout,">> > yield_next_trayectory, c_load_index:%d, c_load_size:%d\n", _mewaajacune->__load_index, _mewaajacune->__load_size);
     #endif
     return 0x00;
 }
-__trayectory_t *get_load_trayectory_item(__mewaajacune_t *_mewaajacune){
+__trayectory_t *get_load_trayectory_item(__iicu_mewaajacune_t *_mewaajacune){
     return _mewaajacune->__load_head->__trayectory_item;
 }
-__trayectory_t *glti(__mewaajacune_t *_mewaajacune){
+__trayectory_t *glti(__iicu_mewaajacune_t *_mewaajacune){
     return get_load_trayectory_item(_mewaajacune);
 }
-__trayectory_t *get_load_trayectory_item_from_index(__mewaajacune_t *_mewaajacune, int _index, ___cwcn_bool_t _rneturn){
+__trayectory_t *get_load_trayectory_item_from_index(__iicu_mewaajacune_t *_mewaajacune, int _index, ___cwcn_bool_t _rneturn){
     // _rneturn holds the flag to rever the head index displacement
 
     #if defined(MEWAAJACUNE_DEBUG_v2)
-    fprintf(stdout,">> > ... get_load_trayectory_item_from_index\n");
+    fprintf(stdout,">> > get_load_trayectory_item_from_index\n");
     #endif
     __trayectory_t *rnetrival=NULL; // #FIXME, c noob knows not about this function
     if(load_is_empty(_mewaajacune)){return rnetrival;}
@@ -207,9 +213,9 @@ __trayectory_t *get_load_trayectory_item_from_index(__mewaajacune_t *_mewaajacun
     }
     return rnetrival;
 }
-void load_print_up_trayectory_pointers(__mewaajacune_t *_mewaajacune){
-    fprintf(stdout,">> > ... request to load_print_up_trayectory_pointers: \n");
-    if(load_is_empty(_mewaajacune)){fprintf(stdout,">> > ... \t [no load found]\n");}
+void load_print_up_trayectory_pointers(__iicu_mewaajacune_t *_mewaajacune){
+    fprintf(stdout,">> > request to load_print_up_trayectory_pointers: \n");
+    if(load_is_empty(_mewaajacune)){fprintf(stdout,">> > \t [no load found]\n");}
     else{
         int c_index=_mewaajacune->__load_index;
         load_to_start(_mewaajacune);
@@ -220,9 +226,9 @@ void load_print_up_trayectory_pointers(__mewaajacune_t *_mewaajacune){
         load_to_index(_mewaajacune, c_index);
     }
 }
-void load_print_up_trayectory_queue(__mewaajacune_t *_mewaajacune){
-    fprintf(stdout,">> > ... request to load_print_up_trayectory_queue: \n");
-    if(load_is_empty(_mewaajacune)){fprintf(stdout,">> > ... \t [no load found]\n");}
+void load_print_up_trayectory_queue(__iicu_mewaajacune_t *_mewaajacune){
+    fprintf(stdout,">> > request to load_print_up_trayectory_queue: \n");
+    if(load_is_empty(_mewaajacune)){fprintf(stdout,">> > \t [no load found]\n");}
     else{
         int c_index=_mewaajacune->__load_index;
         load_to_start(_mewaajacune);
@@ -232,9 +238,9 @@ void load_print_up_trayectory_queue(__mewaajacune_t *_mewaajacune){
         load_to_index(_mewaajacune, c_index);
     }
 }
-void load_print_down_trayectory_queue(__mewaajacune_t *_mewaajacune){
-    printf(">> > ... request to load_print_down_trayectory_queue: \n");
-    if(load_is_empty(_mewaajacune)){fprintf(stdout,">> > ... \t [no load found]\n");}
+void load_print_down_trayectory_queue(__iicu_mewaajacune_t *_mewaajacune){
+    printf(">> > request to load_print_down_trayectory_queue: \n");
+    if(load_is_empty(_mewaajacune)){fprintf(stdout,">> > \t [no load found]\n");}
     else{
         int c_index=_mewaajacune->__load_index;
         load_to_end(_mewaajacune);
@@ -246,16 +252,16 @@ void load_print_down_trayectory_queue(__mewaajacune_t *_mewaajacune){
 }
 /*
 */
-___cwcn_bool_t load_on_end(__mewaajacune_t *_mewaajacune){
+___cwcn_bool_t load_on_end(__iicu_mewaajacune_t *_mewaajacune){
     return _mewaajacune->__load_index-_mewaajacune->__load_size==-1;
 }
-___cwcn_bool_t load_on_start(__mewaajacune_t *_mewaajacune){
+___cwcn_bool_t load_on_start(__iicu_mewaajacune_t *_mewaajacune){
     return _mewaajacune->__load_index==0;
 }
-___cwcn_bool_t load_on_noob(__mewaajacune_t *_mewaajacune){
+___cwcn_bool_t load_on_noob(__iicu_mewaajacune_t *_mewaajacune){
     return load_on_start(_mewaajacune) && load_on_end(_mewaajacune);
 }
-___cwcn_bool_t load_is_healty(__mewaajacune_t *_mewaajacune){
+___cwcn_bool_t load_is_healty(__iicu_mewaajacune_t *_mewaajacune){
     if(load_is_empty(_mewaajacune)){
         #if defined(MEWAAJACUNE_DEBUG_HEALT)
         fprintf(stdout,"%s\t [empty load]: \tH E A L T\
@@ -365,7 +371,7 @@ ___cwcn_bool_t load_is_healty(__mewaajacune_t *_mewaajacune){
         }
     }
 }
-___cwcn_bool_t load_is_empty(__mewaajacune_t *_mewaajacune){
+___cwcn_bool_t load_is_empty(__iicu_mewaajacune_t *_mewaajacune){
     assert(_mewaajacune->__load_index<_mewaajacune->__load_size);
     if(_mewaajacune->__load_head==NULL){ // #FIXME, add checks for ** pointer chain
         assert(_mewaajacune->__load_head==NULL);
@@ -383,7 +389,7 @@ ___cwcn_bool_t load_is_empty(__mewaajacune_t *_mewaajacune){
 */
 void kill_trayectory(__trayectory_t *_trayectory){
     #if defined(MEWAAJACUNE_DEBUG)
-    fprintf(stdout,">> > ... request to kill_trayectory: %p\n",_trayectory);
+    fprintf(stdout,">> > request to kill_trayectory: %p\n",_trayectory);
     #endif
     free(_trayectory->__alliu_state);                       _trayectory->__alliu_state=NULL;
 }
@@ -400,7 +406,7 @@ void kill_queue(__load_queue_t *_queue){
     free(_queue->__down);               _queue->__down=NULL;
     free(_queue->__up);                 _queue->__up=NULL;
 }
-void empty_queue_on_last(__mewaajacune_t *_mewaajacune){
+void empty_queue_on_last(__iicu_mewaajacune_t *_mewaajacune){
     assert(load_is_healty(_mewaajacune));
     load_to_end(_mewaajacune);
     if(_mewaajacune->__load_size>=0x02){
@@ -443,9 +449,9 @@ void empty_queue_on_last(__mewaajacune_t *_mewaajacune){
     else{fprintf(stdout,">> > /// [skippin up queue] \t(item found to be NULL)\t at load index: [%d]\t with address: %p\n",_mewaajacune->__load_index,_mewaajacune->__load_head->__up);}
     #endif
 }
-void kill_load(__mewaajacune_t *_mewaajacune){
+void kill_load(__iicu_mewaajacune_t *_mewaajacune){
     #if defined(MEWAAJACUNE_DEBUG) || defined(ALOCATION_DEBUG)
-    fprintf(stdout,">> > ... request to kill_load\n");
+    fprintf(stdout,">> > request to kill_load\n");
     #endif
     if(load_is_empty(_mewaajacune)){
         #if defined(MEWAAJACUNE_DEBUG)  || defined(ALOCATION_DEBUG)
@@ -465,9 +471,9 @@ void kill_load(__mewaajacune_t *_mewaajacune){
 /*
     MAIN OBJECT DESTRUCTION 
 */
-void destroy_mewaajacune(__mewaajacune_t *_mewaajacune){
+void destroy_mewaajacune(__iicu_mewaajacune_t *_mewaajacune){
     #if defined(MEWAAJACUNE_DEBUG) || defined(ALOCATION_DEBUG)
-    fprintf(stdout,">> > ... destroy_mewaajacune [#FIXME alocation cleaning]\n");
+    fprintf(stdout,">> > destroy_mewaajacune [#FIXME alocation cleaning]\n");
     #endif
     kill_load(_mewaajacune);
     free(_mewaajacune); // #FIXME assert if needed outside
@@ -475,7 +481,7 @@ void destroy_mewaajacune(__mewaajacune_t *_mewaajacune){
 /*
     MAIN OBJECT STATISTICS
 */
-__cwcn_type_t *alliu_index_to_list(__mewaajacune_t *_mewaajacune,int _alliu_index){ // don't forget to free the vector
+__cwcn_type_t *alliu_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // don't forget to free the vector
     if(load_is_empty(_mewaajacune)){return NULL;}
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     __cwcn_type_t *rnetrival=malloc(load_n*sizeof(__cwcn_type_t));
@@ -490,7 +496,7 @@ __cwcn_type_t *alliu_index_to_list(__mewaajacune_t *_mewaajacune,int _alliu_inde
     load_to_index(_mewaajacune,start_index);
     return rnetrival;
 }
-__cwcn_type_t max_alliu_in_load(__mewaajacune_t *_mewaajacune,int _alliu_index){
+__cwcn_type_t max_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){
     // fprintf(stdout,"%d\n",_mewaajacune->__load_size);
     __cwcn_type_t *max_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
     __cwcn_type_t load_n =_mewaajacune->__load_size;
@@ -501,7 +507,7 @@ __cwcn_type_t max_alliu_in_load(__mewaajacune_t *_mewaajacune,int _alliu_index){
     free(max_alliu_list);
     return max_alliu;
 }
-__cwcn_type_t min_alliu_in_load(__mewaajacune_t *_mewaajacune,int _alliu_index){
+__cwcn_type_t min_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){
     __cwcn_type_t *min_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     __cwcn_type_t min_alliu=__cwcn_infinite;
@@ -512,7 +518,7 @@ __cwcn_type_t min_alliu_in_load(__mewaajacune_t *_mewaajacune,int _alliu_index){
     return min_alliu;
 
 }
-__cwcn_type_t mean_alliu_in_load(__mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_index_to_list can be avoided, implement if critical velocity is required
+__cwcn_type_t mean_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_index_to_list can be avoided, implement if critical velocity is required
     if(load_is_empty(_mewaajacune)){return 0;}
     __cwcn_type_t *mean_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
     __cwcn_type_t alliu_mean=0;
@@ -523,12 +529,12 @@ __cwcn_type_t mean_alliu_in_load(__mewaajacune_t *_mewaajacune,int _alliu_index)
     free(mean_alliu_list);
     return alliu_mean/load_n;
 }
-__cwcn_type_t std_alliu_in_load(__mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_index_to_list can be avoided, implement if critical velocity is required
+__cwcn_type_t std_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_index_to_list can be avoided, implement if critical velocity is required
     fprintf(stdout,"waka : : %d\n",_mewaajacune->__load_size);
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     if(load_n<2){return 0;}
     __cwcn_type_t *std_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
-    __cwcn_type_t alliu_mean=mean_alliu_in_load(_mewaajacune,_alliu_index); // #FIXME is just too much calling of lists...
+    __cwcn_type_t alliu_mean=mean_alliu_in_load(_mewaajacune,_alliu_index); // #FIXME is just too much calling of list
     __cwcn_type_t alliu_sdt=0;
     for(int idx=0;idx<load_n;idx++){
         alliu_sdt+=pow(std_alliu_list[idx]-alliu_mean,2);

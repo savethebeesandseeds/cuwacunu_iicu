@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define N 256   // 2^8
+#define ENCRYPTION_BASE 256   // 2^8
 
 void printAsciiTable();
 void hext_to_ascii(char *str_ret,unsigned char hexText);

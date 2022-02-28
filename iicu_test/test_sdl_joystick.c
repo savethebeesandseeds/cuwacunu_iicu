@@ -1,12 +1,4 @@
-#ifdef __ANDROID__
-#   include "SDL.h"
-#   include "SDL_ttf.h"
-#   include "android/log.h"
-#else
-#   include "SDL2/SDL.h"
-#   include "SDL2/SDL_ttf.h"
-#endif
-
+#include "../config/sdl_config.h"
 int main(){
 SDL_Init(SDL_INIT_JOYSTICK);
 atexit(SDL_Quit);

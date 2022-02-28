@@ -21,7 +21,6 @@ clean:
 	rm -f *.o
 	rm -f test_*
 
-
 interfaces: \
 		sdl_utils.o \
 		sdl_object.o \
@@ -29,43 +28,41 @@ interfaces: \
 		./iicu_assets/sdl_interfaces/loading.c \
 		./iicu_assets/sdl_interfaces/home.c \
 		./iicu_assets/sdl_interfaces/state_panel.c \
-		./iicu_assets/sdl_interfaces/iicu_scene.c \
+		./iicu_assets/sdl_interfaces/scene_panel.c \
 		./iicu_assets/sdl_interfaces/login.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/loading.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/home.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/login.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/state_panel.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/iicu_scene.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/scene_panel.c
 
 encription: \
 		./iicu_assets/encription/rcsi.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/encription/rcsi.c
 
 data: \
-		./iicu_assets/data/queue_utils.c \
+		./iicu_assets/data/mewaajacune_utils.c \
 		./iicu_assets/data/data_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/data_utils.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/queue_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/mewaajacune_utils.c
 
 sdl: \
 		./data_utils.o \
-		./iicu_assets/sdl_tools/sdl_plot_linked_list.c \
 		./iicu_assets/sdl_tools/sdl_plot_queue.c \
-		./iicu_assets/sdl_tools/sdl_plot.c \
-		./iicu_assets/sdl_tools/sdl_orbital.c \
+		./iicu_assets/sdl_tools/sdl_plot_orbital.c \
 		./iicu_assets/sdl_tools/sdl_utils.c \
 		./iicu_assets/sdl_tools/sdl_object.c \
+		./iicu_assets/sdl_tools/sdl_noise_box.c \
 		./iicu_assets/sdl_interfaces/home.c \
 		./iicu_assets/sdl_tools/sdl_control.c \
 		./iicu_assets/sdl_interfaces/state_panel.c \
 		./iicu_assets/sdl_interfaces/loading.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_plot_linked_list.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_object.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_control.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_plot.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_plot_queue.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_utils.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_orbital.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_noise_box.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_plot_orbital.c
 
 communications: \
 		./iicu_assets/communications/broker_api.c \
@@ -81,44 +78,27 @@ threads: \
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/clock_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/main_thread.c
 
-loops: \
+config: \
+		./iicu_assets/config/nijcyota_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/config/nijcyota_utils.c
+
+iicu: \
 		curl_utils.o \
 		broker_api.o \
-		./iicu_assets/iicu/iicu_loops.c \
-		./iicu_assets/iicu/state_utils.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/state_utils.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_loops.c
-
-test_queue: \
-		iicu_loops.o \
-		clock_thread.o \
-		thread_launcher.o \
-		main_thread.o \
-		state_utils.o \
-		sdl_plot_linked_list.o \
-		sdl_object.o \
-		state_panel.o \
+		broker_api.o \
+		nijcyota_utils.o \
+		sdl_utils.o \
+		nijcyota_utils.o \
 		sdl_control.o \
-		loading.o \
-		home.o \
-		login.o \
-		iicu_scene.o \
-		sdl_plot.o \
-		sdl_orbital.o \
-		sdl_utils.o \
-		data_utils.o \
-		rcsi.o \
-		curl_utils.o \
-		broker_api.o \
-		queue_utils.o \
-		sdl_plot_queue.o \
-		iicu_loops.o \
-		sdl_utils.o \
-		sdl_object.o \
-		./iicu_test/test_queue.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_queue.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
-
+		sdl_noise_box.o \
+		./iicu_assets/iicu/iicu_loops.c \
+		./iicu_assets/iicu/iicu_wikimyei.c \
+		./iicu_assets/iicu/iicu_scene_utils.c \
+		./iicu_assets/iicu/iicu_state_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_wikimyei.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_scene_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_state_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_loops.c
 	
 test_joystick: \
 		./iicu_test/test_sdl_joystick_events.c
@@ -141,51 +121,76 @@ test_encription: \
 		rcsi.o
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
 
-test_sdl_plot: \
-		sdl_plot_linked_list.o \
-		sdl_plot.o \
-		./iicu_test/test_plot.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_plot.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
-
 test_iicu: \
-		iicu_loops.o \
 		clock_thread.o \
 		thread_launcher.o \
 		main_thread.o \
-		state_utils.o \
-		sdl_plot_linked_list.o \
+		iicu_state_utils.o \
+		iicu_scene_utils.o \
 		sdl_object.o \
 		state_panel.o \
 		sdl_control.o \
 		loading.o \
 		home.o \
 		login.o \
-		iicu_scene.o \
-		sdl_plot.o \
-		sdl_orbital.o \
+		sdl_noise_box.o \
+		sdl_plot_orbital.o \
 		sdl_utils.o \
 		data_utils.o \
 		rcsi.o \
 		curl_utils.o \
 		broker_api.o \
-		queue_utils.o \
+		nijcyota_utils.o \
+		mewaajacune_utils.o \
 		sdl_plot_queue.o \
 		iicu_loops.o \
 		sdl_utils.o \
 		sdl_object.o \
+		scene_panel.o \
+		iicu_wikimyei.o \
 		./iicu_test/test_iicu.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_iicu.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
 
+test_queue: \
+		clock_thread.o \
+		thread_launcher.o \
+		main_thread.o \
+		iicu_state_utils.o \
+		iicu_scene_utils.o \
+		sdl_object.o \
+		state_panel.o \
+		sdl_control.o \
+		loading.o \
+		home.o \
+		login.o \
+		sdl_noise_box.o \
+		sdl_plot_orbital.o \
+		sdl_utils.o \
+		data_utils.o \
+		rcsi.o \
+		curl_utils.o \
+		broker_api.o \
+		nijcyota_utils.o \
+		mewaajacune_utils.o \
+		sdl_plot_queue.o \
+		iicu_loops.o \
+		sdl_utils.o \
+		sdl_object.o \
+		scene_panel.o \
+		iicu_wikimyei.o \
+		./iicu_test/test_queue.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_queue.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 all:
 	make clean
 	make encription
 	make communications
+	make config
 	make data
 	make sdl
-	make loops
+	make iicu
 	make threads
 	make interfaces
 	make test_iicu
@@ -195,9 +200,10 @@ test:
 	make clean
 	make encription
 	make communications
+	make config
 	make data
 	make sdl
-	make loops
+	make iicu
 	make threads
 	make interfaces
 	make test_queue

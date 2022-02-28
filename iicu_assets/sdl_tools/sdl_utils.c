@@ -13,8 +13,21 @@ void sdl_draw_line(
     int y2){
     SDL_RenderDrawLine(renderer, x1, y1, x2, y2); //#FIXME assert free surface
 }
-void sdl_draw_text( //#FIXME correct order
-    char *caption,
+void sdl_draw_box(
+    SDL_Renderer *renderer,
+    int box_x,
+    int box_y,
+    int box_w,
+    int box_h,
+    SDL_Color box_color){
+    SDL_SetRenderDrawColor(renderer,box_color.r,box_color.g,box_color.b,box_color.a);
+    sdl_draw_line(renderer, box_x, box_y, box_x+box_w, box_y);
+    sdl_draw_line(renderer, box_x, box_y, box_x, box_y+box_h);
+    sdl_draw_line(renderer, box_x+box_w, box_y, box_x+box_w, box_y+box_h);
+    sdl_draw_line(renderer, box_x, box_y+box_h, box_x+box_w, box_y+box_h);//... use fill rectangle and assert memory alocation
+}
+void sdl_draw_text( //#FIXME correct arguments order
+    const char *caption,
     int captionX,
     int captionY,
     SDL_Color font_color,
@@ -27,12 +40,103 @@ void sdl_draw_text( //#FIXME correct order
 	text_rect.x=captionX;
 	text_rect.y=captionY;
 	SDL_RenderCopy(renderer, caption_texture, NULL, &text_rect);
-    // ...//#FIXME free surface
+    // ...//#FIXME assert if free surface
+    SDL_FreeSurface(text_caption);
+    SDL_DestroyTexture(caption_texture);
 }
-void sdl_draw_png(
+
+// void clear_string(char *string_to_clear){
+//     memset(string_to_clear,0,strlen(string_to_clear));
+//     string_to_clear[0]='\0';
+// }
+// void print_text_color_format(text_color_format_t *_tcf){
+//     fprintf(stdout,"_tcf->text_splace: %d\n",_tcf->text_splace);
+//     fprintf(stdout,"_tcf->text_fplace: %d\n",_tcf->text_fplace);
+//     fprintf(stdout,"_tcf->text_remaining: %s\n",_tcf->text_remaining);
+//     fprintf(stdout,"_tcf->text_to_draw: %s\n",_tcf->text_to_draw);
+//     fprintf(stdout,"_tcf->gcf->color_text: %s\n",_tcf->gcf->color_text);
+// }
+// int capture_text_color(char *remaining_caption, text_color_format_t *_tcf, gcolor_format_t *_gcf){
+//     if(strlen(remaining_caption)!=0 && strstr(remaining_caption,_gcf->color_text)!=NULL){
+//         int aux_fplace =(int)(strlen(remaining_caption)-strlen(strstr(remaining_caption,_gcf->color_text)));
+//         if((text_fplace-strlen(_gcf->color_text)) <= 0x00){
+//             _tcf->text_fplace=aux_fplace;
+//             _tcf->text_splace=__cwcn_max((int) (_tcf->text_fplace-strlen(_gcf->color_text)), (int) 0x00);
+//             _tcf->gcf->color_text=_gcf->color_text;
+//             _tcf->gcf->text_color.r=_gcf->text_color.r;
+//             _tcf->gcf->text_color.g=_gcf->text_color.g;
+//             _tcf->gcf->text_color.b=_gcf->text_color.b;
+//             memcpy(_tcf->text_to_draw,&remaining_caption[_tcf->text_splace],_tcf->text_fplace-_tcf->text_splace);
+//             strcpy(_tcf->text_remaining,&remaining_caption[_tcf->text_fplace]);
+//             return 1; // a text change was detected
+//         } else {
+//             return 0;
+//         }
+//     }
+//     return 0;
+// }
+// int determine_text_color_format(char *remaining_caption, text_color_format_t *_tcf){
+//     gcolor_format_t *test_gcolor_format=malloc(sizeof(gcolor_format_t));
+//     test_gcolor_format->color_text=COLOR_L_GOOD;test_gcolor_format->text_color.r=COLOR_R_L_GOOD;test_gcolor_format->text_color.g=COLOR_G_L_GOOD;test_gcolor_format->text_color.b=COLOR_B_L_GOOD;
+//     if(capture_text_color(remaining_caption, _tcf, test_gcolor_format)){free(test_gcolor_format);return 1;}
+//     test_gcolor_format->color_text=COLOR_GOOD;test_gcolor_format->text_color.r=COLOR_R_GOOD;test_gcolor_format->text_color.g=COLOR_G_GOOD;test_gcolor_format->text_color.b=COLOR_B_GOOD;
+//     if(capture_text_color(remaining_caption, _tcf, test_gcolor_format)){free(test_gcolor_format);return 1;}
+//     test_gcolor_format->color_text=COLOR_L_DANGER;test_gcolor_format->text_color.r=COLOR_R_L_DANGER;test_gcolor_format->text_color.g=COLOR_G_L_DANGER;test_gcolor_format->text_color.b=COLOR_B_L_DANGER;
+//     if(capture_text_color(remaining_caption, _tcf, test_gcolor_format)){free(test_gcolor_format);return 1;}
+//     test_gcolor_format->color_text=COLOR_DANGER;test_gcolor_format->text_color.r=COLOR_R_DANGER;test_gcolor_format->text_color.g=COLOR_G_DANGER;test_gcolor_format->text_color.b=COLOR_B_DANGER;
+//     if(capture_text_color(remaining_caption, _tcf, test_gcolor_format)){free(test_gcolor_format);return 1;}
+//     test_gcolor_format->color_text=COLOR_L_WARNING;test_gcolor_format->text_color.r=COLOR_R_L_WARNING;test_gcolor_format->text_color.g=COLOR_G_L_WARNING;test_gcolor_format->text_color.b=COLOR_B_L_WARNING;
+//     if(capture_text_color(remaining_caption, _tcf, test_gcolor_format)){free(test_gcolor_format);return 1;}
+//     test_gcolor_format->color_text=COLOR_WARNING;test_gcolor_format->text_color.r=COLOR_R_WARNING;test_gcolor_format->text_color.g=COLOR_G_WARNING;test_gcolor_format->text_color.b=COLOR_B_WARNING;
+//     if(capture_text_color(remaining_caption, _tcf, test_gcolor_format)){free(test_gcolor_format);return 1;}
+//     free(test_gcolor_format);
+//     return 0;
+// }
+// void sdl_draw_standar_color_text(
+//     const char *caption,
+//     int captionX,
+//     int captionY,
+//     int captionDX,
+//     TTF_Font *font,
+//     SDL_Renderer *renderer){
+//     text_color_format_t *c_tcf=malloc(sizeof(text_color_format_t));
+//     c_tcf->gcf=malloc(sizeof(gcolor_format_t));
+//     c_tcf->text_splace=-1;
+//     c_tcf->text_fplace=-1;
+//     c_tcf->gcf->color_text=COLOR_REGULAR;
+//     c_tcf->gcf->text_color.r=COLOR_R_REGULAR;
+//     c_tcf->gcf->text_color.g=COLOR_G_REGULAR;
+//     c_tcf->gcf->text_color.b=COLOR_B_REGULAR;
+//     strcpy(c_tcf->text_remaining,caption);
+//     while(strlen(c_tcf->text_remaining)!=0){
+//         fprintf(stdout,"waka SdTART: %s\n",c_tcf->text_remaining);
+//         if(!determine_text_color_format(c_tcf->text_remaining, c_tcf)){
+//             sdl_draw_text(c_tcf->text_to_draw,captionX,captionY,c_tcf->gcf->text_color,font,renderer);
+//         }
+//         printf("remaining_caption -> %s \n",remaining_caption);
+//         print_text_color_format(_tcf);
+//         if(){
+            
+//         }
+//         getchar();
+//     }
+//     fprintf(stdout,"waka END: %s\n",c_tcf->text_remaining);
+//     free(c_tcf->gcf);
+//     free(c_tcf);
+// }
+void sdl_draw_loaded_texture(SDL_Renderer * renderer,SDL_Texture *texture,int x,int y,int w,int h){
+    SDL_Rect destination;
+    destination.x = x;
+    destination.y = y;
+    destination.w = w;
+    destination.h = h;
+    SDL_RenderCopy(renderer,texture,NULL,&destination);
+}
+void sdl_draw_png( // very SLOW
     char *img_path,
     int x,int y,int w,int h,
     SDL_Renderer *renderer){
+    printf("[WARNING:] sdl_draw_png is very slow of a method, use sdl_draw_loaded_texture instead.\n");
     SDL_Surface *surface = IMG_Load(img_path);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer,surface);
     SDL_FreeSurface(surface);
@@ -43,7 +147,6 @@ void sdl_draw_png(
     destination.h = h;
     SDL_RenderCopy(renderer,texture,NULL,&destination);
     SDL_DestroyTexture(texture);
-    // ...//#FIXME free surface
 }
 void sdl_draw_circle(SDL_Renderer * renderer, int32_t centreX, int32_t centreY, int32_t radius){
     const int32_t diameter = (radius * 2);

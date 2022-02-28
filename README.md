@@ -1,3 +1,4 @@
+MIT licensed.
 # Joystick support is enabled
 
 Make sure your computer recognizes the device: 
