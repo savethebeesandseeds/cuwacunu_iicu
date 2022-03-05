@@ -4,6 +4,14 @@
     ---------- STATE --- --- --- --- --- --- ---
 */
 void initialize_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
+    // --- initialize the inuse states
+    
+    for(int bsi_idx=0x00;bsi_idx<MAX_IICU_SCENES;bsi_idx++){
+        for(int bki_idx=0x00;bki_idx<BROKER_CANDLE_N_INTERVALS;bki_idx++){
+            _iicu_wikimyei->iicu_state.mewaajacune_in_use[bsi_idx][bki_idx]=0x00;
+        }
+    }
+    // _iicu_wikimyei->iicu_state.kline_id[scene_idx]; // initialized in fabric_all_iicu_scenes()
     // --- initialize the network state
     _iicu_wikimyei->iicu_state.network_last_update=0x00;
     _iicu_wikimyei->iicu_state.network_is_up=0x00;
@@ -32,7 +40,7 @@ void initialize_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     _iicu_wikimyei->iicu_state.controller_texture = SDL_CreateTextureFromSurface(_iicu_wikimyei->obj_sdl->renderer,controller_surface);
     SDL_FreeSurface(network_surface);
     SDL_FreeSurface(broker_surface);
-    SDL_FreeSurface(broker_surface);
+    SDL_FreeSurface(keyboard_surface);
     SDL_FreeSurface(controller_surface);
 }
 void destroy_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
@@ -88,4 +96,17 @@ void update_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
         }
         _iicu_wikimyei->iicu_state.controller_last_update=(double)time(NULL);
     }
+}
+
+int get_current_scene_id(__iicu_wikimyei_t *_iicu_wikimyei){
+    return _iicu_wikimyei->iicu_state.scene_id;
+}
+int gcsid(__iicu_wikimyei_t *_iicu_wikimyei){
+    return get_current_scene_id(_iicu_wikimyei);
+}
+int get_current_kline_id(__iicu_wikimyei_t *_iicu_wikimyei){
+    return _iicu_wikimyei->iicu_state.kline_id[gcsid(_iicu_wikimyei)];
+}
+int gckid(__iicu_wikimyei_t *_iicu_wikimyei){
+    return get_current_kline_id(_iicu_wikimyei);
 }

@@ -10,9 +10,15 @@ typedef struct __iicu_nijcyota{
     int noise_box_y;
     int noise_box_w;
     int noise_box_h;
+    int main_box_x;
+    int main_box_y;
+    int main_box_w;
+    int main_box_h;
     int data_box_x;
     int data_box_y;
+	SDL_Color alliu_color;
 	SDL_Color line_color;
+	SDL_Color timestamp_color;
     ___cwcn_bool_t draw_perpendicular;
     ___cwcn_bool_t draw_line;
     ___cwcn_bool_t draw_dot;
@@ -20,10 +26,10 @@ typedef struct __iicu_nijcyota{
     int orbital_centreX;
     int orbital_centreY;
     int orbital_radius;
-    float orbital_angle;
 }__iicu_nijcyota_t;
 /* NIJCYOTA FUNKS */
 __iicu_nijcyota_t *nijcyota_fabric();
 void destroy_nijcyota(__iicu_nijcyota_t *_nijcyota);
 void update_iicu_nicjyota(__iicu_nijcyota_t *_nijcyota);
+void print_nijcyota(__iicu_nijcyota_t *_nijcyota);
 #endif

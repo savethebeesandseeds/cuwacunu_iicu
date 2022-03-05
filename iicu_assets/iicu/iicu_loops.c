@@ -4,7 +4,6 @@ void iicu_scene_loop(__iicu_wikimyei_t *_iicu_wikimyei){
     // fprintf(stdout,"[cuwacunu:] : start : iicu_scene_loop()\n");
 _iicu_wikimyei->iicu_state.interface_id=IICU_SCREEN_PANEL_STATE_ID;
     // // --- --- --- --- · --- --- --- --- UPDATE 
-        update_iicu_state(_iicu_wikimyei);
         update_current_iicu_scene(_iicu_wikimyei);
     step_sdl_object(_iicu_wikimyei->obj_sdl);
     refresh_current_iicu_scene(_iicu_wikimyei);
@@ -32,7 +31,6 @@ _iicu_wikimyei->iicu_state.interface_id=LOADING_STATE_ID;
 void home_loop(__iicu_wikimyei_t *_iicu_wikimyei){
     // fprintf(stdout,"[cuwacunu:] : start : home_loop()\n");
 _iicu_wikimyei->iicu_state.interface_id=HOME_STATE_ID;
-        update_iicu_state(_iicu_wikimyei);
     step_sdl_object(_iicu_wikimyei->obj_sdl);
         // render_state_panel(_iicu_wikimyei);
         render_home(_iicu_wikimyei->obj_sdl);

@@ -6,6 +6,7 @@
 #include "../iicu/iicu_wikimyei.h"
 //-------------------------------------------
 void sdl_abandon_ship();
+int event_soup(__iicu_wikimyei_t *_iicu_wikimyei, int _keyCode);
 int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);
 int handle_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);
 int wait_for_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);

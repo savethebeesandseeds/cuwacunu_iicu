@@ -40,7 +40,24 @@ void sdl_draw_text( //#FIXME correct arguments order
 	text_rect.x=captionX;
 	text_rect.y=captionY;
 	SDL_RenderCopy(renderer, caption_texture, NULL, &text_rect);
-    // ...//#FIXME assert if free surface
+    SDL_FreeSurface(text_caption);
+    SDL_DestroyTexture(caption_texture);
+}
+void sdl_draw_rot_text( //#FIXME correct arguments order
+    const char *caption,
+    int captionX,
+    int captionY,
+    SDL_Color font_color,
+    TTF_Font *font,
+    SDL_Renderer *renderer,
+    double rot_angle){
+    SDL_Surface *text_caption = TTF_RenderText_Blended(font, caption, font_color);
+	SDL_Rect text_rect;
+	SDL_Texture *caption_texture = SDL_CreateTextureFromSurface(renderer, text_caption);
+	SDL_QueryTexture(caption_texture, NULL, NULL, &text_rect.w, &text_rect.h);
+	text_rect.x=captionX;
+	text_rect.y=captionY;
+	SDL_RenderCopyEx(renderer, caption_texture, NULL, &text_rect, rot_angle, NULL, SDL_FLIP_NONE);
     SDL_FreeSurface(text_caption);
     SDL_DestroyTexture(caption_texture);
 }

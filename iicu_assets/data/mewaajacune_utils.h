@@ -5,11 +5,11 @@
 #include <assert.h>
 #include <math.h>
 #include "../config/general_config.h"
-
 /* MEWAAJACUNE DEFINITIONS */
 typedef enum {_cwcn_FLAT, _cwcn_BEAR, _cwcn_BULL} __ujcamei_state_t;
 //------------- TRAYECTORY ------------ -------
 typedef struct __trayectory { // #FIXME too many fields
+    time_t __alliu_timestamp;
     __cwcn_type_t *__alliu_state;
     __ujcamei_state_t __ujcamei_state;
 }__trayectory_t;
@@ -30,6 +30,10 @@ typedef struct __mewaajacune {
 __iicu_mewaajacune_t *mewaajacune_fabric();
 void destroy_mewaajacune(__iicu_mewaajacune_t *_mewaajacune);
 void update_iicu_mewaajacune(__iicu_mewaajacune_t *_mewaajacune);
+
+void trayectory_memcpy(__iicu_mewaajacune_t *_mewaajacune,__trayectory_t *trayectory_dest,__trayectory_t *trayectory_src);
+__iicu_mewaajacune_t *mewaajacune_clone_fabric(__iicu_mewaajacune_t *src_mewaajacune);
+void rebase_mewaajacune(__iicu_mewaajacune_t *dest_mewaajacune,__iicu_mewaajacune_t *src_mewaajacune);
 
 __load_queue_t *queue_item_fabric(__iicu_mewaajacune_t *_mewaajacune,__trayectory_t *_trayectory);
 __trayectory_t *trayectory_fabric(__iicu_mewaajacune_t *_mewaajacune);
@@ -60,6 +64,7 @@ __cwcn_type_t *alliu_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int alliu_
 __cwcn_type_t max_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int alliu_index);
 __cwcn_type_t min_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int alliu_index);
 __cwcn_type_t mean_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int alliu_index);
+__cwcn_type_t variance_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index);
 __cwcn_type_t std_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int alliu_index);
 
 #include "../data/data_utils.h"

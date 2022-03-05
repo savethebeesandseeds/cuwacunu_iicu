@@ -18,41 +18,42 @@ typedef void (*__void_function_pointer_t)(void*);
 
 // #define DEBUG_QUEUE
 // #define ALOCATION_DEBUG
-#define MAX_IICU_SCENES (int) 10 // if augmented augment also IICU_SCENES_SYMBOLS
-#define IICU_SCENES_SYMBOLS (const char[MAX_IICU_SCENES][12])  {"BTCUTC0","BTCUTC1","BTCUTC2","BTCUTC3","BTCUTC4","BTCUTC5","BTCUTC6","BTCUTC7","BTCUTC8","BTCUTC9"}
+#define MAX_IICU_SCENES (int) 4 // if augmented augment also IICU_SCENES_SYMBOLS
+#define IICU_SCENES_SYMBOLS (char[MAX_IICU_SCENES][12])  {"BTCUSDT","ETHUSDT","BTTCUSDT","ADAUSDT"}
 
-// #define COLOR_L_GOOD "\033[0;32m"
-#define COLOR_L_GOOD "1"
+// FIXME fix colors
+#define COLOR_L_GOOD "\033[0;32m"
+// #define COLOR_L_GOOD "1"
 #define COLOR_R_L_GOOD 71
 #define COLOR_G_L_GOOD 255
 #define COLOR_B_L_GOOD 0
-// #define COLOR_GOOD "\033[1;32m"
-#define COLOR_GOOD "CdOLOR_GOOD"
+#define COLOR_GOOD "\033[1;32m"
+// #define COLOR_GOOD "CdOLOR_GOOD"
 #define COLOR_R_GOOD 71
 #define COLOR_G_GOOD 255
 #define COLOR_B_GOOD 0
-// #define COLOR_L_DANGER "\033[0;31m"
-#define COLOR_L_DANGER "3"
+#define COLOR_L_DANGER "\033[0;31m"
+// #define COLOR_L_DANGER "3"
 #define COLOR_R_L_DANGER 255
 #define COLOR_G_L_DANGER 71
 #define COLOR_B_L_DANGER 0
-// #define COLOR_DANGER "\033[1;31m"
-#define COLOR_DANGER "CdOLOR_DANGER"
+#define COLOR_DANGER "\033[1;31m"
+// #define COLOR_DANGER "CdOLOR_DANGER"
 #define COLOR_R_DANGER 255
 #define COLOR_G_DANGER 71
 #define COLOR_B_DANGER 0
-// #define COLOR_L_WARNING "\033[0;31m"
-#define COLOR_L_WARNING "5"
+#define COLOR_L_WARNING "\033[0;42m"
+// #define COLOR_L_WARNING "5"
 #define COLOR_R_L_WARNING 71
 #define COLOR_G_L_WARNING 255
 #define COLOR_B_L_WARNING 255
-// #define COLOR_WARNING "\033[1;31m"
-#define COLOR_WARNING "6"
+#define COLOR_WARNING "\033[1;31m"
+// #define COLOR_WARNING "6"
 #define COLOR_R_WARNING 71
 #define COLOR_G_WARNING 255
 #define COLOR_B_WARNING 255
-// #define COLOR_REGULAR "\033[0m"
-#define COLOR_REGULAR "CdOLOR_REGULAR"
+#define COLOR_REGULAR "\033[0m"
+// #define COLOR_REGULAR "CdOLOR_REGULAR"
 #define COLOR_R_REGULAR 171
 #define COLOR_G_REGULAR 171
 #define COLOR_B_REGULAR 171

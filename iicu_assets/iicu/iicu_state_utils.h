@@ -11,4 +11,9 @@
 void initialize_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei);
 void destroy_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei);
 void update_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei);
+
+int get_current_scene_id(__iicu_wikimyei_t *_iicu_wikimyei);
+int gcsid(__iicu_wikimyei_t *_iicu_wikimyei);
+int get_current_kline_id(__iicu_wikimyei_t *_iicu_wikimyei);
+int gckid(__iicu_wikimyei_t *_iicu_wikimyei);
 #endif

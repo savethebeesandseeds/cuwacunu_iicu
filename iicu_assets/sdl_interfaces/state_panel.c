@@ -5,7 +5,6 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     int y_zero = STATE_PANEL_y_ZERO;
     int dx = STATE_PANEL_w_ZERO + 15;
     int dy = 0;
-    char *icon_path="";
     int icon_x;
     int icon_y;
     int icon_w=STATE_PANEL_w_ZERO;
@@ -51,34 +50,58 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
         _iicu_wikimyei->obj_sdl->screen_font,
         _iicu_wikimyei->obj_sdl->renderer);
     #endif
-    // --- scene
+    // --- scene boxes
     SDL_Color box_color={.r=71,.g=71,.b=71};
     SDL_Color box_selected_color={.r=171,.g=255,.b=171};
-    int box_caption_x=0;
-    int box_caption_y=((int)STATE_PANEL_SCENE_BOX_H)*((int)MAX_IICU_SCENES-1);
+    int box_caption_x=(int)NIJCYOTA_MAIN_BOX_X-(int)STATE_PANEL_SCENE_BOX_W-0x02;
+    int box_caption_y=(int)NIJCYOTA_MAIN_BOX_Y+(int)NIJCYOTA_MAIN_BOX_H;
+    int selected_box_caption_y=0;
     for(int sidx=0;sidx<MAX_IICU_SCENES;sidx++){
+        box_caption_y-=STATE_PANEL_SCENE_BOX_H;
         sprintf(text_caption,"%s",IICU_SCENES_SYMBOLS[sidx]);
         sdl_draw_box(
             _iicu_wikimyei->obj_sdl->renderer,
             box_caption_x,box_caption_y,
-            STATE_PANEL_SCENE_BOX_W,
-            STATE_PANEL_SCENE_BOX_H,
-            sidx==_iicu_wikimyei->iicu_state.scene_id?box_selected_color:box_color);
+            STATE_PANEL_SCENE_BOX_W,STATE_PANEL_SCENE_BOX_H,
+            sidx==gcsid(_iicu_wikimyei)?box_selected_color:box_color);
+        sdl_draw_text(
+            text_caption,
+            box_caption_x+0x05,box_caption_y,
+            sidx==gcsid(_iicu_wikimyei)?box_selected_color:box_color,
+            _iicu_wikimyei->obj_sdl->screen_font,
+            _iicu_wikimyei->obj_sdl->renderer);
+        selected_box_caption_y=sidx==gcsid(_iicu_wikimyei)?box_caption_y:selected_box_caption_y;
+    }
+    sdl_draw_box( //redraw selected scene box
+        _iicu_wikimyei->obj_sdl->renderer,
+        box_caption_x,selected_box_caption_y,
+        STATE_PANEL_SCENE_BOX_W,STATE_PANEL_SCENE_BOX_H,
+        box_selected_color);
+    // --- klines boxes
+    box_caption_x=NIJCYOTA_MAIN_BOX_X+((int)STATE_PANEL_KLINES_BOX_W*((int)BROKER_CANDLE_N_INTERVALS-(int)0x01));
+    box_caption_y=(int)NIJCYOTA_MAIN_BOX_Y-(int)2*(int)STATE_PANEL_KLINES_BOX_H;
+    for(int kidx=0;kidx<BROKER_CANDLE_N_INTERVALS;kidx++){
+        sprintf(text_caption,"%s",BROKER_CANDLE_INTERVALS[kidx]);
+        sdl_draw_box(
+            _iicu_wikimyei->obj_sdl->renderer,
+            box_caption_x,box_caption_y,
+            STATE_PANEL_KLINES_BOX_W,STATE_PANEL_KLINES_BOX_H,
+            kidx==gckid(_iicu_wikimyei)?box_selected_color:box_color);
         sdl_draw_text(
             text_caption,
             box_caption_x+5,box_caption_y,
-            sidx==_iicu_wikimyei->iicu_state.scene_id?box_selected_color:box_color,
+            kidx==gckid(_iicu_wikimyei)?box_selected_color:box_color,
             _iicu_wikimyei->obj_sdl->screen_font,
             _iicu_wikimyei->obj_sdl->renderer);
-        box_caption_y-=STATE_PANEL_SCENE_BOX_H;
+        box_caption_x-=STATE_PANEL_KLINES_BOX_W;
     }
-    box_caption_y=((int)STATE_PANEL_SCENE_BOX_H)*((int)MAX_IICU_SCENES-(int)0x01-(int)_iicu_wikimyei->iicu_state.scene_id);
-    sdl_draw_box( //redraw selected box
+    box_caption_x=NIJCYOTA_MAIN_BOX_X+((int)STATE_PANEL_KLINES_BOX_W*((int)BROKER_CANDLE_N_INTERVALS-(int)0x01-(int)gckid(_iicu_wikimyei)));
+    sdl_draw_box( //redraw selected kline box
         _iicu_wikimyei->obj_sdl->renderer,
         box_caption_x,box_caption_y,
-        STATE_PANEL_SCENE_BOX_W,
-        STATE_PANEL_SCENE_BOX_H,
+        STATE_PANEL_KLINES_BOX_W,STATE_PANEL_KLINES_BOX_H,
         box_selected_color);
+    
 }
 void negate_icon(SDL_Renderer *renderer,int x, int y, int w, int h){
     SDL_SetRenderDrawColor(renderer,255,0,0,255);

@@ -53,18 +53,33 @@ int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
             event->jaxis.value);
         #endif
         switch (event->jbutton.button){
-        case 1: // UP/DOWN/LEFT/RIGHT
+        case 0: // LEFT/RIGHT
+            if(event->jaxis.value!=-129 && abs(event->jaxis.value)>100){
+                switch (event->jaxis.axis){
+                case 0: // LEFT/RIGHT
+                    switch (event->jaxis.value<0){
+                        case 0x01: // LEFT
+                        iicu_klines_increse(_iicu_wikimyei); // fprintf(stdout,"LEFT \n");
+                        break;
+                        case 0x00: // RIGHT
+                        iicu_klines_decrese(_iicu_wikimyei); // fprintf(stdout,"RIGHT \n");
+                        break;
+                    }
+                    break;
+                default:
+                    break;
+                }
+            }
+        case 1: // UP/DOWN
             if(event->jaxis.value!=-129 && abs(event->jaxis.value)>100){
                 switch (event->jaxis.axis){
                 case 1: // UP/DOWN
                     switch (event->jaxis.value<0){
                         case 0x01: // UP
-                        printf("UP \n");
-                        iicu_scene_go_up(_iicu_wikimyei);
+                        iicu_scene_go_up(_iicu_wikimyei); // fprintf(stdout,"UP \n");
                         break;
                         case 0x00: // DOWN
-                        printf("DOWN \n");
-                        iicu_scene_go_down(_iicu_wikimyei);
+                        iicu_scene_go_down(_iicu_wikimyei); // fprintf(stdout,"DOWN \n");
                         break;
                     }
                     break;
@@ -280,28 +295,30 @@ int is_sdl_mouse_event(const SDL_Event * event){
     event->type==SDL_MOUSEWHEEL;
 }
 // ---- ---- ---- ---- ---- 
-
+int event_soup(__iicu_wikimyei_t *_iicu_wikimyei, int _keyCode){
+    // fprintf(stdout,"miss_or_catch_sdl_event waka...\n");
+    int keyCode=_keyCode;
+    if(is_sdl_quit_event(&_iicu_wikimyei->obj_sdl->event)){
+        sdl_abandon_ship();
+    } else if(is_sdl_keyboard_event(&_iicu_wikimyei->obj_sdl->event)){
+        keyCode=handle_keyboard_events(_iicu_wikimyei);
+    } else if(is_sdl_joystick_event(&_iicu_wikimyei->obj_sdl->event)){
+        keyCode=handle_joystick_events(_iicu_wikimyei);
+    } else if(is_sdl_window_event(&_iicu_wikimyei->obj_sdl->event)){
+        keyCode=handle_window_events(_iicu_wikimyei);
+    } else if(is_sdl_mouse_event(&_iicu_wikimyei->obj_sdl->event)){
+        keyCode=handle_mouse_events(_iicu_wikimyei);
+    }  // else: unrecognized event
+	return keyCode;
+}
 /**
  * @brief miss_or_catch_sdl_event
  */
 int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_CONTINUE;
     while(SDL_PollEvent(&_iicu_wikimyei->obj_sdl->event)){
-        // fprintf(stdout,"miss_or_catch_sdl_event waka...\n");
-        if(is_sdl_quit_event(&_iicu_wikimyei->obj_sdl->event)){
-            sdl_abandon_ship();
-        } else if(is_sdl_keyboard_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_keyboard_events(_iicu_wikimyei);
-        } else if(is_sdl_joystick_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_joystick_events(_iicu_wikimyei);
-        } else if(is_sdl_window_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_window_events(_iicu_wikimyei);
-        } else if(is_sdl_mouse_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_mouse_events(_iicu_wikimyei);
-        }  // else: unrecognized event
-        if(keyCode!=__cwcn_EVENT_WAIT){
-            break;
-        }
+        keyCode=event_soup(_iicu_wikimyei, keyCode);
+        if(keyCode!=__cwcn_EVENT_WAIT){break;}
     }
     return keyCode;
 }
@@ -313,21 +330,8 @@ int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
 int handle_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
     while(is_sdl_event(&_iicu_wikimyei->obj_sdl->event)){
-        // fprintf(stdout,"handle_sdl_event waka...\n");
-        if(is_sdl_quit_event(&_iicu_wikimyei->obj_sdl->event)){
-            sdl_abandon_ship();
-        } else if(is_sdl_keyboard_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_keyboard_events(_iicu_wikimyei);
-        } else if(is_sdl_joystick_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_joystick_events(_iicu_wikimyei);
-        } else if(is_sdl_window_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_window_events(_iicu_wikimyei);
-        } else if(is_sdl_mouse_event(&_iicu_wikimyei->obj_sdl->event)){
-            keyCode=handle_mouse_events(_iicu_wikimyei);
-        }  // else: unrecognized event
-        if(keyCode!=__cwcn_EVENT_WAIT){
-            break;
-        }
+        keyCode=event_soup(_iicu_wikimyei, keyCode);
+        if(keyCode!=__cwcn_EVENT_WAIT){break;}
     }
     return keyCode;
 }

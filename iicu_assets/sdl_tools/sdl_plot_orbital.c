@@ -1,12 +1,13 @@
 #include "sdl_plot_orbital.h"
 void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl, 
     __iicu_mewaajacune_t *_mewaajacune, 
-    __iicu_nijcyota_t *_nijcyota){
+    __iicu_nijcyota_t *_nijcyota,
+    __iicu_kemu_t *_kemu){
     // char *caption=_nijcyota->orbital_caption;
+    __cwcn_type_t angle=_kemu->alliu_std;
     int centreX=_nijcyota->orbital_centreX;
     int centreY=_nijcyota->orbital_centreY;
     int radius=_nijcyota->orbital_radius;
-    __cwcn_type_t angle=_nijcyota->orbital_angle;
     SDL_Color color=_nijcyota->line_color;
 
     int x1=centreX;
@@ -47,6 +48,13 @@ void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl,
 
     // --- DRAW TEXT
     // sprintf(caption," :: %f",angle);
+    // sdl_draw_text(caption,
+    //     centreX+(1+ORBITAL_EXCENTRICITY)*radius*1.05,
+    //     centreY-SCREEN_FONT_SIZE-15,
+    //     color,
+    //     obj_sdl->screen_font,
+    //     obj_sdl->renderer);
+}
     // char d_caption[2]="";
     // for(int caption_idx=0;caption_idx<strlen(caption);caption_idx++){
     //     SDL_Color d_color={.r=(int)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)256),.g=(int)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)256),.b=(int)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)256)};
@@ -59,10 +67,3 @@ void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl,
     //         obj_sdl->screen_font,
     //         obj_sdl->renderer);
     // }
-    // sdl_draw_text(caption,
-    //     centreX+(1+ORBITAL_EXCENTRICITY)*radius*1.05,
-    //     centreY-SCREEN_FONT_SIZE-15,
-    //     color,
-    //     obj_sdl->screen_font,
-    //     obj_sdl->renderer);
-}

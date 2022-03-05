@@ -39,6 +39,14 @@ void sdl_draw_text(
     SDL_Color font_color,
     TTF_Font *font,
     SDL_Renderer *renderer);
+void sdl_draw_rot_text(
+    const char *caption,
+    int captionX,
+    int captionY,
+    SDL_Color font_color,
+    TTF_Font *font,
+    SDL_Renderer *renderer,
+    double rot_angle);
 void sdl_draw_box(
     SDL_Renderer *renderer,
     int box_x,
