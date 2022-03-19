@@ -21,7 +21,7 @@ int test_controller(){
 // ---- ---- ---- ---- ---- 
 int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
-    SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
+    SDL_Event *event=&_iicu_wikimyei->__obj_sdl->event;
     switch (event->type){ // SDL_JOYAXISMOTION,SDL_JOYBALLMOTION,SDL_JOYHATMOTION,SDL_JOYBUTTONDOWN,SDL_JOYBUTTONUP,SDL_JOYDEVICEADDED,SDL_JOYDEVICEREMOVED
     case SDL_JOYDEVICEADDED:
         #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
@@ -99,7 +99,7 @@ int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
 
 int handle_keyboard_events(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
-    SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
+    SDL_Event *event=&_iicu_wikimyei->__obj_sdl->event;
     #ifdef __cwcn_DEBUG_KEYBOARD_EVENTS__
     fprintf(stdout,"KEYBOARD-KEY : [%d] : %s \n",event->type,SDL_GetKeyName(event->key.keysym.sym));
     #endif
@@ -129,7 +129,7 @@ int handle_keyboard_events(__iicu_wikimyei_t *_iicu_wikimyei){
 
 int handle_mouse_events(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
-    // SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
+    // SDL_Event *event=&_iicu_wikimyei->__obj_sdl->event;
     #ifdef __cwcn_DEBUG_MOUSE_EVENTS__
     fprintf(stdout,"Mouse-KEY : %d \n",event->jbutton.button);
     #endif
@@ -155,7 +155,7 @@ int handle_mouse_events(__iicu_wikimyei_t *_iicu_wikimyei){
 
 int handle_window_events(__iicu_wikimyei_t *_iicu_wikimyei){
     int keyCode=__cwcn_EVENT_WAIT;
-    SDL_Event *event=&_iicu_wikimyei->obj_sdl->event;
+    SDL_Event *event=&_iicu_wikimyei->__obj_sdl->event;
     switch (event->window.event) {
     case SDL_WINDOWEVENT_SHOWN:
         #ifdef __cwcn_DEBUG_WINDOW_EVENTS__
@@ -298,15 +298,15 @@ int is_sdl_mouse_event(const SDL_Event * event){
 int event_soup(__iicu_wikimyei_t *_iicu_wikimyei, int _keyCode){
     // fprintf(stdout,"miss_or_catch_sdl_event waka...\n");
     int keyCode=_keyCode;
-    if(is_sdl_quit_event(&_iicu_wikimyei->obj_sdl->event)){
+    if(is_sdl_quit_event(&_iicu_wikimyei->__obj_sdl->event)){
         sdl_abandon_ship();
-    } else if(is_sdl_keyboard_event(&_iicu_wikimyei->obj_sdl->event)){
+    } else if(is_sdl_keyboard_event(&_iicu_wikimyei->__obj_sdl->event)){
         keyCode=handle_keyboard_events(_iicu_wikimyei);
-    } else if(is_sdl_joystick_event(&_iicu_wikimyei->obj_sdl->event)){
+    } else if(is_sdl_joystick_event(&_iicu_wikimyei->__obj_sdl->event)){
         keyCode=handle_joystick_events(_iicu_wikimyei);
-    } else if(is_sdl_window_event(&_iicu_wikimyei->obj_sdl->event)){
+    } else if(is_sdl_window_event(&_iicu_wikimyei->__obj_sdl->event)){
         keyCode=handle_window_events(_iicu_wikimyei);
-    } else if(is_sdl_mouse_event(&_iicu_wikimyei->obj_sdl->event)){
+    } else if(is_sdl_mouse_event(&_iicu_wikimyei->__obj_sdl->event)){
         keyCode=handle_mouse_events(_iicu_wikimyei);
     }  // else: unrecognized event
 	return keyCode;
@@ -316,7 +316,7 @@ int event_soup(__iicu_wikimyei_t *_iicu_wikimyei, int _keyCode){
  */
 int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_CONTINUE;
-    while(SDL_PollEvent(&_iicu_wikimyei->obj_sdl->event)){
+    while(SDL_PollEvent(&_iicu_wikimyei->__obj_sdl->event)){
         keyCode=event_soup(_iicu_wikimyei, keyCode);
         if(keyCode!=__cwcn_EVENT_WAIT){break;}
     }
@@ -329,7 +329,7 @@ int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
  */
 int handle_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
-    while(is_sdl_event(&_iicu_wikimyei->obj_sdl->event)){
+    while(is_sdl_event(&_iicu_wikimyei->__obj_sdl->event)){
         keyCode=event_soup(_iicu_wikimyei, keyCode);
         if(keyCode!=__cwcn_EVENT_WAIT){break;}
     }

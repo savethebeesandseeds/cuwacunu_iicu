@@ -43,26 +43,24 @@ encription: \
 data: \
 		./iicu_assets/data/kemu_utils.c \
 		./iicu_assets/data/mewaajacune_utils.c \
-		./iicu_assets/data/data_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/kemu_utils.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/data_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/mewaajacune_utils.c
 
 sdl: \
-		./data_utils.o \
 		./iicu_assets/sdl_tools/sdl_plot_queue.c \
 		./iicu_assets/sdl_tools/sdl_plot_orbital.c \
+		./iicu_assets/sdl_tools/sdl_jkimyei.c \
 		./iicu_assets/sdl_tools/sdl_utils.c \
 		./iicu_assets/sdl_tools/sdl_object.c \
 		./iicu_assets/sdl_tools/sdl_noise_box.c \
 		./iicu_assets/sdl_tools/sdl_main_plot.c \
 		./iicu_assets/sdl_interfaces/home.c \
 		./iicu_assets/sdl_tools/sdl_control.c \
-		./iicu_assets/sdl_interfaces/state_panel.c \
 		./iicu_assets/sdl_interfaces/loading.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_object.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_control.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_plot_queue.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_jkimyei.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_main_plot.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_noise_box.c
@@ -76,11 +74,13 @@ communications: \
 
 threads: \
 		./iicu_assets/threads/broker_thread.c \
+		./iicu_assets/threads/jkimyei_thread.c \
 		./iicu_assets/threads/state_thread.c \
 		./iicu_assets/threads/clock_thread.c \
 		./iicu_assets/threads/thread_launcher.c \
 		./iicu_assets/threads/main_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/broker_thread.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/jkimyei_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/state_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/clock_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/thread_launcher.c
@@ -101,8 +101,10 @@ iicu: \
 		sdl_noise_box.o \
 		./iicu_assets/iicu/iicu_loops.c \
 		./iicu_assets/iicu/iicu_wikimyei.c \
+		./iicu_assets/iicu/iicu_jkimyei.c \
 		./iicu_assets/iicu/iicu_scene_utils.c \
 		./iicu_assets/iicu/iicu_state_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_jkimyei.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_wikimyei.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_scene_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_state_utils.c
@@ -133,6 +135,7 @@ test_iicu: \
 		clock_thread.o \
 		broker_thread.o \
 		state_thread.o \
+		jkimyei_thread.o \
 		thread_launcher.o \
 		main_thread.o \
 		iicu_state_utils.o \
@@ -146,8 +149,8 @@ test_iicu: \
 		sdl_main_plot.o \
 		sdl_noise_box.o \
 		sdl_plot_orbital.o \
+		sdl_jkimyei.o \
 		sdl_utils.o \
-		data_utils.o \
 		rcsi.o \
 		curl_utils.o \
 		broker_api.o \
@@ -159,6 +162,7 @@ test_iicu: \
 		sdl_utils.o \
 		sdl_object.o \
 		scene_panel.o \
+		iicu_jkimyei.o \
 		iicu_wikimyei.o \
 		./iicu_test/test_iicu.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_iicu.c
@@ -168,6 +172,7 @@ test_queue: \
 		clock_thread.o \
 		broker_thread.o \
 		state_thread.o \
+		jkimyei_thread.o \
 		thread_launcher.o \
 		main_thread.o \
 		iicu_state_utils.o \
@@ -179,10 +184,10 @@ test_queue: \
 		home.o \
 		login.o \
 		sdl_main_plot.o \
+		sdl_jkimyei.o \
 		sdl_noise_box.o \
 		sdl_plot_orbital.o \
 		sdl_utils.o \
-		data_utils.o \
 		rcsi.o \
 		curl_utils.o \
 		broker_api.o \
@@ -194,9 +199,56 @@ test_queue: \
 		sdl_utils.o \
 		sdl_object.o \
 		scene_panel.o \
+		iicu_jkimyei.o \
 		iicu_wikimyei.o \
 		./iicu_test/test_queue.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_queue.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
+
+test_linalg: \
+	curl_utils.o \
+	broker_api.o \
+	mewaajacune_utils.o \
+	kemu_utils.o \
+	./iicu_test/test_linalg.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_linalg.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
+
+test_jkimyei: \
+		clock_thread.o \
+		broker_thread.o \
+		state_thread.o \
+		jkimyei_thread.o \
+		thread_launcher.o \
+		main_thread.o \
+		iicu_state_utils.o \
+		iicu_scene_utils.o \
+		sdl_object.o \
+		state_panel.o \
+		sdl_control.o \
+		loading.o \
+		home.o \
+		login.o \
+		sdl_main_plot.o \
+		sdl_jkimyei.o \
+		sdl_noise_box.o \
+		sdl_plot_orbital.o \
+		sdl_utils.o \
+		rcsi.o \
+		curl_utils.o \
+		broker_api.o \
+		nijcyota_utils.o \
+		kemu_utils.o \
+		mewaajacune_utils.o \
+		sdl_plot_queue.o \
+		iicu_loops.o \
+		sdl_utils.o \
+		sdl_object.o \
+		scene_panel.o \
+		iicu_jkimyei.o \
+		iicu_wikimyei.o \
+	./iicu_test/test_jkimyei.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_jkimyei.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 all:
@@ -222,5 +274,5 @@ test:
 	make iicu
 	make threads
 	make interfaces
-	make test_queue
-	time ./test_queue
+	make test_jkimyei
+	time ./test_jkimyei

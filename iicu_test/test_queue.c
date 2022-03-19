@@ -1,12 +1,3 @@
-#ifdef __ANDROID__
-#	include "SDL.h"
-#	include "SDL_ttf.h"
-#	include "android/log.h"
-#	define APP_NAME "plot_sdl_impl"
-#else
-#	include "SDL2/SDL.h"
-#	include "SDL2/SDL_ttf.h"
-#endif
 // #include "../iicu_assets/data/mewaajacune_utils.c"
 // #include "../iicu_assets/config/general_config.h"
 // #include "../iicu_assets/sdl_tools/sdl_object.h"

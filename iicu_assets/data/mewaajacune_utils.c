@@ -59,7 +59,7 @@ __iicu_mewaajacune_t *mewaajacune_fabric(){
         fprintf(stderr,"ERROR, unable to allocate new mewaajacune\n");
         assert(0x00);
     } // declaration MEWAAJACUNE FABRIC order is set, do not shuffle.
-    new_mewaajacune->__alliu_size=0x01; // #FIXME forced alliu size
+    new_mewaajacune->__alliu_size=0x04; // #FIXME forced alliu size
     new_mewaajacune->__load_index=-1; // redundant (due to fabric load)
     new_mewaajacune->__load_size=0x00; // redundant (due to fabric load)
     new_mewaajacune->__load_head=NULL;//load_fabric(new_mewaajacune);
@@ -85,7 +85,7 @@ __iicu_mewaajacune_t *mewaajacune_clone_fabric(__iicu_mewaajacune_t *src_mewaaja
     return dest_mewaajacune;
 }
 
-void rebase_mewaajacune(__iicu_mewaajacune_t *dest_mewaajacune,__iicu_mewaajacune_t *src_mewaajacune){
+void rebase_mewaajacune(__iicu_mewaajacune_t *dest_mewaajacune,__iicu_mewaajacune_t *src_mewaajacune){ // copies src to dest, but kills none of them.
     kill_load(dest_mewaajacune);
     int src_start_index=src_mewaajacune->__load_index;
     load_to_start(src_mewaajacune);
@@ -513,12 +513,12 @@ void destroy_mewaajacune(__iicu_mewaajacune_t *_mewaajacune){
 /*
     MAIN OBJECT STATISTICS
 */
-__cwcn_type_t *alliu_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // don't forget to free the vector
+__cwcn_type_t *alliu_state_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // don't forget to free the vector
     if(load_is_empty(_mewaajacune)){return NULL;}
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     __cwcn_type_t *rnetrival=malloc(load_n*sizeof(__cwcn_type_t));
     for(int idx=0;idx<load_n;idx++){rnetrival[idx]=0;}
-    if(rnetrival==NULL){fprintf(stderr,"[ERROR:] unable to allocate memory in alliu_index_to_list \n");}
+    if(rnetrival==NULL){fprintf(stderr,"[ERROR:] unable to allocate memory in alliu_state_index_to_list \n");}
     int start_index=_mewaajacune->__load_index;
     int rnetrival_index=0;
     load_to_start(_mewaajacune);
@@ -529,53 +529,120 @@ __cwcn_type_t *alliu_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int _alliu
     load_to_index(_mewaajacune,start_index);
     return rnetrival;
 }
-__cwcn_type_t max_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){
-    // fprintf(stdout,"%d\n",_mewaajacune->__load_size);
-    __cwcn_type_t *max_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
+
+__cwcn_type_t fast_max_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     __cwcn_type_t max_alliu=-__cwcn_infinite;
     for(int idx=0;idx<load_n;idx++){
-        if(max_alliu_list[idx]>max_alliu){max_alliu=max_alliu_list[idx];}
+        if(_c_mewaajacune_list[idx]>max_alliu){max_alliu=_c_mewaajacune_list[idx];}
     }
+    return max_alliu;
+}
+__cwcn_type_t fast_min_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
+    __cwcn_type_t load_n =_mewaajacune->__load_size;
+    __cwcn_type_t min_alliu=__cwcn_infinite;
+    for(int idx=0;idx<load_n;idx++){
+        if(_c_mewaajacune_list[idx]<min_alliu){min_alliu=_c_mewaajacune_list[idx];}
+    }
+    return min_alliu;
+}
+__cwcn_type_t fast_mean_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
+    if(load_is_empty(_mewaajacune)){return 0;}
+    __cwcn_type_t alliu_mean=0;
+    __cwcn_type_t load_n =_mewaajacune->__load_size;
+    for(int idx=0;idx<load_n;idx++){
+        alliu_mean+=_c_mewaajacune_list[idx];
+    }
+    return alliu_mean/load_n;
+}
+__cwcn_type_t fast_variance_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
+    __cwcn_type_t load_n =_mewaajacune->__load_size;
+    if(load_n<2){return 0;}
+    __cwcn_type_t alliu_mean=fast_mean_alliu_in_load(_mewaajacune,_c_mewaajacune_list);
+    __cwcn_type_t alliu_sdt=0;
+    for(int idx=0;idx<load_n;idx++){
+        alliu_sdt+=pow(_c_mewaajacune_list[idx]-alliu_mean,2);
+    }
+    return alliu_sdt/(load_n-1);
+}
+__cwcn_type_t fast_std_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
+    return sqrt(fast_variance_alliu_in_load(_mewaajacune,_c_mewaajacune_list));
+}
+// --- --- --- --- 
+__cwcn_type_t max_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){
+    // fprintf(stdout,"%d\n",_mewaajacune->__load_size);
+    __cwcn_type_t *max_alliu_list=alliu_state_index_to_list(_mewaajacune,_alliu_index);
+    __cwcn_type_t max_alliu=fast_max_alliu_in_load(_mewaajacune,max_alliu_list);
     free(max_alliu_list);
     return max_alliu;
 }
 __cwcn_type_t min_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){
-    __cwcn_type_t *min_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
-    __cwcn_type_t load_n =_mewaajacune->__load_size;
-    __cwcn_type_t min_alliu=__cwcn_infinite;
-    for(int idx=0;idx<load_n;idx++){
-        if(min_alliu_list[idx]<min_alliu){min_alliu=min_alliu_list[idx];}
-    }
+    __cwcn_type_t *min_alliu_list=alliu_state_index_to_list(_mewaajacune,_alliu_index);
+    __cwcn_type_t min_alliu=fast_min_alliu_in_load(_mewaajacune,min_alliu_list);
     free(min_alliu_list);
     return min_alliu;
 
 }
-__cwcn_type_t mean_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_index_to_list can be avoided, implement if critical velocity is required
+__cwcn_type_t mean_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_state_index_to_list can be avoided, implement if critical velocity is required
     if(load_is_empty(_mewaajacune)){return 0;}
-    __cwcn_type_t *mean_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
-    __cwcn_type_t alliu_mean=0;
-    __cwcn_type_t load_n =_mewaajacune->__load_size;
-    for(int idx=0;idx<load_n;idx++){
-        alliu_mean+=mean_alliu_list[idx];
-    }
+    __cwcn_type_t *mean_alliu_list=alliu_state_index_to_list(_mewaajacune,_alliu_index);
+    __cwcn_type_t alliu_mean=fast_mean_alliu_in_load(_mewaajacune,mean_alliu_list);
     free(mean_alliu_list);
-    return alliu_mean/load_n;
+    return alliu_mean;
 }
-__cwcn_type_t variance_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_index_to_list can be avoided, implement if critical velocity is required
+__cwcn_type_t variance_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_state_index_to_list can be avoided, implement if critical velocity is required
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     if(load_n<2){return 0;}
-    __cwcn_type_t *std_alliu_list=alliu_index_to_list(_mewaajacune,_alliu_index);
-    __cwcn_type_t alliu_mean=mean_alliu_in_load(_mewaajacune,_alliu_index); // #FIXME is just too much calling of list
-    __cwcn_type_t alliu_sdt=0;
-    for(int idx=0;idx<load_n;idx++){
-        alliu_sdt+=pow(std_alliu_list[idx]-alliu_mean,2);
-    }
+    __cwcn_type_t *std_alliu_list=alliu_state_index_to_list(_mewaajacune,_alliu_index);
+    __cwcn_type_t alliu_sdt=fast_variance_alliu_in_load(_mewaajacune,std_alliu_list);
     free(std_alliu_list);
-    return alliu_sdt/(load_n-1);
+    return alliu_sdt;
 }
-
-__cwcn_type_t std_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_index_to_list can be avoided, implement if critical velocity is required
+__cwcn_type_t std_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int _alliu_index){ // #FIXME double for this and the calling of alliu_state_index_to_list can be avoided, implement if critical velocity is required
     return sqrt(variance_alliu_in_load(_mewaajacune,_alliu_index));
 }
 
+
+
+
+
+
+
+
+void test_populate_alliu(__iicu_mewaajacune_t *_mewaajacune){
+    __cwcn_type_t rand_float;
+    kill_load(_mewaajacune);
+    // --- --- --- --- · --- --- --- --- populate coordinate list
+    for(int x_position=0;x_position<64;x_position++){
+        rand_float=(__cwcn_type_t)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)64);
+        yield_next_trayectory(_mewaajacune);
+        glti(_mewaajacune)->__alliu_state[0]=rand_float;
+        // glti(_mewaajacune)->__alliu_state[0]=sin(2*2*3.141592/64*((__cwcn_type_t)x_position+1));
+        // glti(_mewaajacune)->__alliu_state[0]=(__cwcn_type_t)x_position;
+        // fprintf(stdout,"glti(_mewaajacune)->__alliu_state[0]:%f\n",glti(_mewaajacune)->__alliu_state[0]);
+    }
+    load_to_start(_mewaajacune);
+}
+void populate_alliu_with_klines(__iicu_mewaajacune_t *_mewaajacune, int _alliu_index, char *symbol, char *interval){
+    bnc_klines_t klines_payload={};    
+    get_klines(&klines_payload, symbol, interval);
+    kill_load(_mewaajacune);
+    // --- --- --- --- · --- --- --- --- populate coordinate list
+    for(int x_position=0;x_position<klines_payload.klines_count;x_position++){
+        yield_next_trayectory(_mewaajacune);
+        #if defined(MEWAAJACUNE_LOAD_CLOSE_KLINES_DATA)
+        glti(_mewaajacune)->__alliu_timestamp=(time_t)(((__cwcn_type_t)klines_payload.klines[x_position].close_time)/((__cwcn_type_t)1000.0));
+        glti(_mewaajacune)->__alliu_state[_alliu_index]=(__cwcn_type_t)klines_payload.klines[x_position].close;
+        #elif defined(MEWAAJACUNE_LOAD_OPEN_KLINES_DATA)
+        glti(_mewaajacune)->__alliu_timestamp=(time_t)(((__cwcn_type_t)klines_payload.klines[x_position].open_time)/((__cwcn_type_t)1000.0));
+        glti(_mewaajacune)->__alliu_state[_alliu_index]=(__cwcn_type_t)klines_payload.klines[x_position].open;
+        #endif
+    }
+    load_to_start(_mewaajacune);
+}
+__cwcn_type_t request_latest_alliu(char *symbol){
+    // --- --- --- --- · --- --- --- --- request_latest_alliu
+    bnc_price_tick_t price_payload={};
+    get_price_ticker(&price_payload,symbol);
+    return (__cwcn_type_t)price_payload.price;
+}

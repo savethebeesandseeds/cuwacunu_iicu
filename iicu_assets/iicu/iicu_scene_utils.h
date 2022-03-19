@@ -8,7 +8,7 @@
 #include "../data/mewaajacune_utils.h"
 #include "../iicu/iicu_wikimyei.h"
 /* SCENE FUNKS */
-void fabric_iicu_scene(__iicu_scene_struct_t *_iicu_scene);
+__iicu_scene_struct_t *iicu_scene_fabric();
 void fabric_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei);
 void destroy_iicu_scene(__iicu_scene_struct_t *_iicu_scene);
 void destroy_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei);

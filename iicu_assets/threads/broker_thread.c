@@ -51,8 +51,8 @@ void update_mewaajacune_broker_symbol_interval(__iicu_wikimyei_t *_iicu_wikimyei
         #ifdef __UPDATE_ONLY_ACTIVE_BROKER_SYMBOL_INTERVAL__
         if(idx_scene!=gcsid(_iicu_wikimyei)){return;}
         #endif
-        d_time = c_time-_iicu_wikimyei->iicu_state.kline_last_update[idx_scene][idx_kline];
-        if(_iicu_wikimyei->iicu_state.kline_last_update[idx_scene][idx_kline]==0x00 || d_time > BROKER_CANDLE_PERIODS[idx_kline]){
+        d_time = c_time-get_state(_iicu_wikimyei)->kline_last_update[idx_scene][idx_kline];
+        if(get_state(_iicu_wikimyei)->kline_last_update[idx_scene][idx_kline]==0x00 || d_time > BROKER_CANDLE_PERIODS[idx_kline]){
             // --- temporal mewaajacune
             __iicu_mewaajacune_t *tmp_mewaajacune=mewaajacune_fabric();
             __cwcn_type_t tmp_mean=0x00;
@@ -61,7 +61,7 @@ void update_mewaajacune_broker_symbol_interval(__iicu_wikimyei_t *_iicu_wikimyei
             populate_alliu_with_klines(tmp_mewaajacune, _alliu_index, symbol, interval);
             tmp_mean=mean_alliu_in_load(tmp_mewaajacune, _alliu_index);
             tmp_std=std_alliu_in_load(tmp_mewaajacune, _alliu_index);
-            _iicu_wikimyei->iicu_state.kline_last_update[idx_scene][idx_kline]=(double) time(NULL);
+            get_state(_iicu_wikimyei)->kline_last_update[idx_scene][idx_kline]=(double) time(NULL);
             // --- safely update desired mewaajacune
             beseech_mewaajacune(_iicu_wikimyei,idx_scene,idx_kline);
             rebase_mewaajacune(get_mewaajacune(_iicu_wikimyei, idx_scene, idx_kline),tmp_mewaajacune);

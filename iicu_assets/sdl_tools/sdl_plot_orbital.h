@@ -9,5 +9,5 @@
 void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl, 
     __iicu_mewaajacune_t *_mewaajacune, 
     __iicu_nijcyota_t *_nijcyota,
-    __iicu_kemu_t *_kemu);
+    __iicu_staticques_t *_staticques);
 #endif

@@ -1,34 +1,38 @@
 #include "iicu_scene_utils.h"
 // ---------- SCENE --- --- --- --- --- --- --- 
-void fabric_iicu_scene(__iicu_scene_struct_t *_iicu_scene){
+__iicu_scene_struct_t *iicu_scene_fabric(){
+	__iicu_scene_struct_t *new_scene=malloc(sizeof(__iicu_scene_struct_t));
 	// --- --- --- NIJCYOTA
-	_iicu_scene->nijcyota=nijcyota_fabric();
+	new_scene->nijcyota=nijcyota_fabric();
 	// --- --- --- MEWAAJACUNE
 	for(int m_idx=0;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
-		_iicu_scene->mewaajacune[m_idx]=mewaajacune_fabric();
-		_iicu_scene->kemu[m_idx]=kemu_fabric();
+		new_scene->mewaajacune[m_idx]=mewaajacune_fabric();
+		new_scene->__iicu_regressive[m_idx]=regressive_fabric();
+		new_scene->__iicu_polinomial[m_idx]=polinomial_fabric();
+		new_scene->__iicu_staticques[m_idx]=staticques_fabric();
 	}
+	return new_scene;
 }
 void fabric_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei){
-	if(_iicu_wikimyei->iicu_state.scene_count!=0 || gcsid(_iicu_wikimyei)!=0){
-		fprintf(stderr,"ERROR :: fabric_all_iicu_scenes :: request failed\n");
+	if(get_state(_iicu_wikimyei)->scene_count!=0 || gcsid(_iicu_wikimyei)!=0){
+		fprintf(stderr,"ERROR :: fabric_all_iicu_scenes :: fabric request failed\n");
 		assert(0x00);
 	}
-	while(_iicu_wikimyei->iicu_state.scene_count<MAX_IICU_SCENES){
+	while(get_state(_iicu_wikimyei)->scene_count<MAX_IICU_SCENES){
 		// --- --- --- 
-		_iicu_wikimyei->iicu_state.scene_id=_iicu_wikimyei->iicu_state.scene_count;
+		get_state(_iicu_wikimyei)->scene_id=get_state(_iicu_wikimyei)->scene_count;
 		// --- --- --- 
-		fabric_iicu_scene(giics(_iicu_wikimyei));
+		_iicu_wikimyei->__iicu_scene[get_state(_iicu_wikimyei)->scene_count]=iicu_scene_fabric();
 		// --- --- --- 
 		for(int idx_interval=0;idx_interval<BROKER_CANDLE_N_INTERVALS;idx_interval++){
-			_iicu_wikimyei->iicu_state.kline_last_update[_iicu_wikimyei->iicu_state.scene_count][idx_interval]=0x00;
+			get_state(_iicu_wikimyei)->kline_last_update[get_state(_iicu_wikimyei)->scene_count][idx_interval]=0x00;
 		}
-		_iicu_wikimyei->iicu_state.kline_id[_iicu_wikimyei->iicu_state.scene_count]=0x00;
+		get_state(_iicu_wikimyei)->kline_id[get_state(_iicu_wikimyei)->scene_count]=0x00;
 		// --- --- ---
-		_iicu_wikimyei->iicu_state.scene_count++;
+		get_state(_iicu_wikimyei)->scene_count++;
 	}
-	_iicu_wikimyei->iicu_state.scene_id=0x00;
-	strcpy(_iicu_wikimyei->iicu_state.scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
+	get_state(_iicu_wikimyei)->scene_id=0x00;
+	strcpy(get_state(_iicu_wikimyei)->scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
 }
 void update_current_iicu_scene(__iicu_wikimyei_t *_iicu_wikimyei){
 	beseech_current_mewaajacune(_iicu_wikimyei);
@@ -37,9 +41,17 @@ void update_current_iicu_scene(__iicu_wikimyei_t *_iicu_wikimyei){
 
     update_iicu_nicjyota(giicn(_iicu_wikimyei)); // #FIXME add beseech nijcyota
 	
-	beseech_current_kemu(_iicu_wikimyei);
-    update_iicu_kemu(giick(_iicu_wikimyei));
-	release_current_kemu(_iicu_wikimyei);
+	beseech_current_staticques(_iicu_wikimyei);...not here
+    update_iicu_staticques(giicsq(_iicu_wikimyei));
+	release_current_staticques(_iicu_wikimyei);
+
+	beseech_current_polinomial(_iicu_wikimyei);...not here
+    update_iicu_polinomial(giicsq(_iicu_wikimyei));
+	release_current_polinomial(_iicu_wikimyei);
+
+	beseech_current_regressive(_iicu_wikimyei);...not here
+    update_iicu_regressive(giicsq(_iicu_wikimyei));
+	release_current_regressive(_iicu_wikimyei);
 }
 void refresh_iicu_scene(__iicu_scene_struct_t *_iicu_scene){
 	// #FIXME add ...
@@ -49,63 +61,64 @@ void refresh_current_iicu_scene(__iicu_wikimyei_t *_iicu_wikimyei){
 	refresh_iicu_scene(giics(_iicu_wikimyei));
 }
 void destroy_iicu_scene(__iicu_scene_struct_t *_iicu_scene){ // #FIXME fix fixed size of scenes, rather allocate memory
-	refresh_iicu_scene(_iicu_scene);
+	refresh_iicu_scene(_iicu_scene); // #FIXME is refresh enough?
 	for(int m_idx=0;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
 		destroy_mewaajacune(_iicu_scene->mewaajacune[m_idx]);
-		destroy_kemu(_iicu_scene->kemu[m_idx]);
+		destroy_staticques(_iicu_scene->kemu[m_idx]);
 	}
-	free(_iicu_scene->nijcyota);
+	destroy_nijcyota(_iicu_scene->nijcyota);
+	free(_iicu_scene);
 }
 void destroy_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei){
-	_iicu_wikimyei->iicu_state.scene_id=_iicu_wikimyei->iicu_state.scene_count-0x01;
-	while(_iicu_wikimyei->iicu_state.scene_count!=0x00){
+	get_state(_iicu_wikimyei)->scene_id=get_state(_iicu_wikimyei)->scene_count-0x01;
+	while(get_state(_iicu_wikimyei)->scene_count!=0x00){
 		destroy_iicu_scene(giics(_iicu_wikimyei));
-		_iicu_wikimyei->iicu_state.scene_count-=0x01;
-		_iicu_wikimyei->iicu_state.scene_id-=0x01;
+		get_state(_iicu_wikimyei)->scene_count-=0x01;
+		get_state(_iicu_wikimyei)->scene_id-=0x01;
 	}
-	assert(_iicu_wikimyei->iicu_state.scene_count==0x00);
+	assert(get_state(_iicu_wikimyei)->scene_count==0x00);
 	assert(gcsid(_iicu_wikimyei)==0x00);
 }
 
 
 void iicu_scene_go_up(__iicu_wikimyei_t *_iicu_wikimyei){
-	if(gcsid(_iicu_wikimyei)<_iicu_wikimyei->iicu_state.scene_count-0x01){
-		_iicu_wikimyei->iicu_state.scene_id++;
+	if(gcsid(_iicu_wikimyei)<get_state(_iicu_wikimyei)->scene_count-0x01){
+		get_state(_iicu_wikimyei)->scene_id++;
 	} else {
-		_iicu_wikimyei->iicu_state.scene_id=0x00;
+		get_state(_iicu_wikimyei)->scene_id=0x00;
 	}
-	strcpy(_iicu_wikimyei->iicu_state.scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
+	strcpy(get_state(_iicu_wikimyei)->scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
 }
 void iicu_scene_go_down(__iicu_wikimyei_t *_iicu_wikimyei){
 	if(gcsid(_iicu_wikimyei)>0x00){
-		_iicu_wikimyei->iicu_state.scene_id--;
+		get_state(_iicu_wikimyei)->scene_id--;
 	} else {
-		_iicu_wikimyei->iicu_state.scene_id=_iicu_wikimyei->iicu_state.scene_count-0x01;
+		get_state(_iicu_wikimyei)->scene_id=get_state(_iicu_wikimyei)->scene_count-0x01;
 	}
-	strcpy(_iicu_wikimyei->iicu_state.scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
+	strcpy(get_state(_iicu_wikimyei)->scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
 }
 
 void iicu_klines_increse(__iicu_wikimyei_t *_iicu_wikimyei){
-	if(gckid(_iicu_wikimyei)<BROKER_CANDLE_N_INTERVALS-0x01){
-		_iicu_wikimyei->iicu_state.kline_id[gcsid(_iicu_wikimyei)]++;
+	if(gcklid(_iicu_wikimyei)<BROKER_CANDLE_N_INTERVALS-0x01){
+		get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)]++;
 	} else {
-		_iicu_wikimyei->iicu_state.kline_id[gcsid(_iicu_wikimyei)]=0x00;
+		get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)]=0x00;
 	}
 	#ifdef __COORDINATE_ALL_KLINES_IN_SCENES__
 	for(int scene_idx=0x00;scene_idx<MAX_IICU_SCENES;scene_idx++){
-		_iicu_wikimyei->iicu_state.kline_id[scene_idx]=_iicu_wikimyei->iicu_state.kline_id[gcsid(_iicu_wikimyei)];
+		get_state(_iicu_wikimyei)->kline_id[scene_idx]=get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)];
 	}
 	#endif
 }
 void iicu_klines_decrese(__iicu_wikimyei_t *_iicu_wikimyei){
-	if(gckid(_iicu_wikimyei)>0x00){
-		_iicu_wikimyei->iicu_state.kline_id[gcsid(_iicu_wikimyei)]--;
+	if(gcklid(_iicu_wikimyei)>0x00){
+		get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)]--;
 	} else {
-		_iicu_wikimyei->iicu_state.kline_id[gcsid(_iicu_wikimyei)]=BROKER_CANDLE_N_INTERVALS-0x01;
+		get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)]=BROKER_CANDLE_N_INTERVALS-0x01;
 	}
 	#ifdef __COORDINATE_ALL_KLINES_IN_SCENES__
 	for(int scene_idx=0x00;scene_idx<MAX_IICU_SCENES;scene_idx++){
-		_iicu_wikimyei->iicu_state.kline_id[scene_idx]=_iicu_wikimyei->iicu_state.kline_id[gcsid(_iicu_wikimyei)];
+		get_state(_iicu_wikimyei)->kline_id[scene_idx]=get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)];
 	}
 	#endif
 }

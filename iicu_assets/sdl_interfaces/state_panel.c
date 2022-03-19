@@ -12,43 +12,43 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     // // --- wifi state
     icon_x=x_zero;
     icon_y=y_zero;
-    sdl_draw_loaded_texture(_iicu_wikimyei->obj_sdl->renderer,_iicu_wikimyei->iicu_state.network_texture,icon_x,icon_y,icon_w,icon_h);
-    if(!_iicu_wikimyei->iicu_state.network_is_up){
-        negate_icon(_iicu_wikimyei->obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
+    sdl_draw_loaded_texture(_iicu_wikimyei->__obj_sdl->renderer,get_state(_iicu_wikimyei)->network_texture,icon_x,icon_y,icon_w,icon_h);
+    if(!get_state(_iicu_wikimyei)->network_is_up){
+        negate_icon(_iicu_wikimyei->__obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
     }
     // --- broker state
     icon_x+=-dx;
     icon_y+=-dy;
-    sdl_draw_loaded_texture(_iicu_wikimyei->obj_sdl->renderer,_iicu_wikimyei->iicu_state.broker_texture,icon_x,icon_y,icon_w,icon_h);
-    if(!_iicu_wikimyei->iicu_state.broker_is_up || !_iicu_wikimyei->iicu_state.network_is_up){
-        negate_icon(_iicu_wikimyei->obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
+    sdl_draw_loaded_texture(_iicu_wikimyei->__obj_sdl->renderer,get_state(_iicu_wikimyei)->broker_texture,icon_x,icon_y,icon_w,icon_h);
+    if(!get_state(_iicu_wikimyei)->broker_is_up || !get_state(_iicu_wikimyei)->network_is_up){
+        negate_icon(_iicu_wikimyei->__obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
     }
     // --- keyboard state
     icon_x+=-dx;
     icon_y+=-dy;
-    sdl_draw_loaded_texture(_iicu_wikimyei->obj_sdl->renderer,_iicu_wikimyei->iicu_state.keyboard_texture,icon_x,icon_y,icon_w,icon_h);
-    if(!_iicu_wikimyei->iicu_state.keyboard_is_up){
-        negate_icon(_iicu_wikimyei->obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
+    sdl_draw_loaded_texture(_iicu_wikimyei->__obj_sdl->renderer,get_state(_iicu_wikimyei)->keyboard_texture,icon_x,icon_y,icon_w,icon_h);
+    if(!get_state(_iicu_wikimyei)->keyboard_is_up){
+        negate_icon(_iicu_wikimyei->__obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
     }
     // --- controller state
     icon_x+=-dx;
     icon_y+=-dy;
-    sdl_draw_loaded_texture(_iicu_wikimyei->obj_sdl->renderer,_iicu_wikimyei->iicu_state.controller_texture,icon_x,icon_y,icon_w,icon_h);
-    if(!_iicu_wikimyei->iicu_state.controller_is_up){
-        negate_icon(_iicu_wikimyei->obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
+    sdl_draw_loaded_texture(_iicu_wikimyei->__obj_sdl->renderer,get_state(_iicu_wikimyei)->controller_texture,icon_x,icon_y,icon_w,icon_h);
+    if(!get_state(_iicu_wikimyei)->controller_is_up){
+        negate_icon(_iicu_wikimyei->__obj_sdl->renderer, icon_x, icon_y, icon_w, icon_h);
     }
     // --- fps
     #ifndef __cwcn_CLOCK_THREAD__
     char text_caption[64];
     SDL_Color fps_color={.r=171,.g=255,.b=171};
-    sprintf(text_caption,"%d : fps",_iicu_wikimyei->iicu_state.fps);
+    sprintf(text_caption,"%d : fps",get_state(_iicu_wikimyei)->fps);
     sdl_draw_text(
         text_caption,
         STATE_PANEL_x_ZERO - 35,
         STATE_PANEL_h_ZERO + 15,
         fps_color,
-        _iicu_wikimyei->obj_sdl->screen_font,
-        _iicu_wikimyei->obj_sdl->renderer);
+        _iicu_wikimyei->__obj_sdl->screen_font,
+        _iicu_wikimyei->__obj_sdl->renderer);
     #endif
     // --- scene boxes
     SDL_Color box_color={.r=71,.g=71,.b=71};
@@ -60,7 +60,7 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
         box_caption_y-=STATE_PANEL_SCENE_BOX_H;
         sprintf(text_caption,"%s",IICU_SCENES_SYMBOLS[sidx]);
         sdl_draw_box(
-            _iicu_wikimyei->obj_sdl->renderer,
+            _iicu_wikimyei->__obj_sdl->renderer,
             box_caption_x,box_caption_y,
             STATE_PANEL_SCENE_BOX_W,STATE_PANEL_SCENE_BOX_H,
             sidx==gcsid(_iicu_wikimyei)?box_selected_color:box_color);
@@ -68,12 +68,12 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
             text_caption,
             box_caption_x+0x05,box_caption_y,
             sidx==gcsid(_iicu_wikimyei)?box_selected_color:box_color,
-            _iicu_wikimyei->obj_sdl->screen_font,
-            _iicu_wikimyei->obj_sdl->renderer);
+            _iicu_wikimyei->__obj_sdl->screen_font,
+            _iicu_wikimyei->__obj_sdl->renderer);
         selected_box_caption_y=sidx==gcsid(_iicu_wikimyei)?box_caption_y:selected_box_caption_y;
     }
     sdl_draw_box( //redraw selected scene box
-        _iicu_wikimyei->obj_sdl->renderer,
+        _iicu_wikimyei->__obj_sdl->renderer,
         box_caption_x,selected_box_caption_y,
         STATE_PANEL_SCENE_BOX_W,STATE_PANEL_SCENE_BOX_H,
         box_selected_color);
@@ -83,21 +83,21 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     for(int kidx=0;kidx<BROKER_CANDLE_N_INTERVALS;kidx++){
         sprintf(text_caption,"%s",BROKER_CANDLE_INTERVALS[kidx]);
         sdl_draw_box(
-            _iicu_wikimyei->obj_sdl->renderer,
+            _iicu_wikimyei->__obj_sdl->renderer,
             box_caption_x,box_caption_y,
             STATE_PANEL_KLINES_BOX_W,STATE_PANEL_KLINES_BOX_H,
-            kidx==gckid(_iicu_wikimyei)?box_selected_color:box_color);
+            kidx==gcklid(_iicu_wikimyei)?box_selected_color:box_color);
         sdl_draw_text(
             text_caption,
             box_caption_x+5,box_caption_y,
-            kidx==gckid(_iicu_wikimyei)?box_selected_color:box_color,
-            _iicu_wikimyei->obj_sdl->screen_font,
-            _iicu_wikimyei->obj_sdl->renderer);
+            kidx==gcklid(_iicu_wikimyei)?box_selected_color:box_color,
+            _iicu_wikimyei->__obj_sdl->screen_font,
+            _iicu_wikimyei->__obj_sdl->renderer);
         box_caption_x-=STATE_PANEL_KLINES_BOX_W;
     }
-    box_caption_x=NIJCYOTA_MAIN_BOX_X+((int)STATE_PANEL_KLINES_BOX_W*((int)BROKER_CANDLE_N_INTERVALS-(int)0x01-(int)gckid(_iicu_wikimyei)));
+    box_caption_x=NIJCYOTA_MAIN_BOX_X+((int)STATE_PANEL_KLINES_BOX_W*((int)BROKER_CANDLE_N_INTERVALS-(int)0x01-(int)gcklid(_iicu_wikimyei)));
     sdl_draw_box( //redraw selected kline box
-        _iicu_wikimyei->obj_sdl->renderer,
+        _iicu_wikimyei->__obj_sdl->renderer,
         box_caption_x,box_caption_y,
         STATE_PANEL_KLINES_BOX_W,STATE_PANEL_KLINES_BOX_H,
         box_selected_color);

@@ -1,7 +1,7 @@
 #ifndef __NIJCYOTA_CONFIG__
 #define __NIJCYOTA_CONFIG__
-#include "sdl_config.h"
-#include "general_config.h"
+#include "sdl_config.h" // nicjyota is the inside config.
+#include "general_config.h" 
 //------------- NIJCYOTA ------------ ---------
 typedef struct __iicu_nijcyota{
     int nijcyota_index;
@@ -16,6 +16,8 @@ typedef struct __iicu_nijcyota{
     int main_box_h;
     int data_box_x;
     int data_box_y;
+	SDL_Color positive_color;
+	SDL_Color negative_color;
 	SDL_Color alliu_color;
 	SDL_Color line_color;
 	SDL_Color timestamp_color;
@@ -26,6 +28,8 @@ typedef struct __iicu_nijcyota{
     int orbital_centreX;
     int orbital_centreY;
     int orbital_radius;
+
+    ___cwcn_bool_t tactical_draw_jk_policy; // #FIXME change name
 }__iicu_nijcyota_t;
 /* NIJCYOTA FUNKS */
 __iicu_nijcyota_t *nijcyota_fabric();

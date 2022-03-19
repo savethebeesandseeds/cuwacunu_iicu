@@ -8,12 +8,12 @@
 #include "../sdl_tools/sdl_object.h"
 #include "../iicu/iicu_wikimyei.h"
 /* STATE FUNKS */
-void initialize_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei);
-void destroy_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei);
+__iicu_state_struct_t *fabric_iicu_state();
+void destroy_iicu_state(__iicu_state_struct_t *_iicu_state);
+void kill_iicu_state(__iicu_state_struct_t *_iicu_state);
+void initialize_iicu_state(__iicu_state_struct_t *_iicu_state,__iicu_wikimyei_t *__iicu_wikimyei);
+
 void update_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei);
 
-int get_current_scene_id(__iicu_wikimyei_t *_iicu_wikimyei);
-int gcsid(__iicu_wikimyei_t *_iicu_wikimyei);
-int get_current_kline_id(__iicu_wikimyei_t *_iicu_wikimyei);
-int gckid(__iicu_wikimyei_t *_iicu_wikimyei);
 #endif
+

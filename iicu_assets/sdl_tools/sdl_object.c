@@ -1,5 +1,14 @@
 #include "sdl_object.h"
 
+__sdl_screen_object_t *fabric_obj_sdl(){
+	__sdl_screen_object_t *new_obj_sdl=malloc(sizeof(__sdl_screen_object_t));
+	initialize_sdl_object(new_obj_sdl);
+	return new_obj_sdl;
+}
+void destroy_obj_sdl(__sdl_screen_object_t *obj_sdl){
+	kill_sdl_object(obj_sdl);
+	free(obj_sdl);
+}
 /**
  * @brief initialize_sdl_object
  */

@@ -2,7 +2,7 @@
 
 __iicu_nijcyota_t *nijcyota_fabric(){
     __iicu_nijcyota_t *new_nijcyota=malloc(sizeof(__iicu_nijcyota_t));
-    new_nijcyota->nijcyota_index=0x00;
+    new_nijcyota->nijcyota_index=NIJCYOTA_ALLIU_INDEX;
     SDL_Color line_color={
         .r=NIJCYOTA_LINE_COLOR_R,
         .g=NIJCYOTA_LINE_COLOR_G,
@@ -18,6 +18,19 @@ __iicu_nijcyota_t *nijcyota_fabric(){
         .g=NIJCYOTA_TIMESTAMP_COLOR_G,
         .b=NIJCYOTA_TIMESTAMP_COLOR_B
     };
+    SDL_Color positive_color={
+        .r=NIJCYOTA_POSITIVE_COLOR_R,
+        .g=NIJCYOTA_POSITIVE_COLOR_G,
+        .b=NIJCYOTA_POSITIVE_COLOR_B
+    };
+    SDL_Color negative_color={
+        .r=NIJCYOTA_NEGATIVE_COLOR_R,
+        .g=NIJCYOTA_NEGATIVE_COLOR_G,
+        .b=NIJCYOTA_NEGATIVE_COLOR_B
+    };
+
+    new_nijcyota->positive_color=positive_color;
+    new_nijcyota->negative_color=negative_color;
     
     new_nijcyota->alliu_index=NIJCYOTA_ALLIU_INDEX;
     new_nijcyota->line_color=line_color;
@@ -47,7 +60,13 @@ __iicu_nijcyota_t *nijcyota_fabric(){
 
     new_nijcyota->alliu_color=alliu_color;
 
+    new_nijcyota->tactical_draw_jk_policy=NIJCYOTA_DRAW_TACTICAL_JK_POLICY;
+
     return new_nijcyota;
+}
+
+void destroy_nijcyota(__iicu_nijcyota_t *_nijcyota){
+    free(_nijcyota);
 }
 
 void print_nijcyota(__iicu_nijcyota_t *_nijcyota){
@@ -79,9 +98,6 @@ void print_nijcyota(__iicu_nijcyota_t *_nijcyota){
     fprintf(stdout," : : : _nijcyota->main_box_y : %d \n",_nijcyota->main_box_y);
     fprintf(stdout," : : : _nijcyota->main_box_w : %d \n",_nijcyota->main_box_w);
     fprintf(stdout," : : : _nijcyota->main_box_h : %d \n",_nijcyota->main_box_h);
-}
-void destroy_nijcyota(__iicu_nijcyota_t *_nijcyota){
-    free(_nijcyota);
 }
 
 void update_iicu_nicjyota(__iicu_nijcyota_t *_nijcyota){

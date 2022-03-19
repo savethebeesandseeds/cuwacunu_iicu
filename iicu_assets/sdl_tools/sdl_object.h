@@ -21,6 +21,8 @@ typedef struct sdl_struct{
 
 #include "../config/sdl_config.h"
 
+__sdl_screen_object_t *fabric_obj_sdl();
+void destroy_obj_sdl(__sdl_screen_object_t *obj_sdl);
 /**
  * @brief initialize_sdl_object
  */

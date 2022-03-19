@@ -15,7 +15,8 @@ typedef __cwcn_type_t (*__function_pointer_t)(__cwcn_type_t);
 #define __cwcn_max(a,b)({__typeof__(a) _a=(a);__typeof__(b) _b=(b);_a > _b ? _a : _b;})
 #define __cwcn_min(a,b)({__typeof__(a) _a=(a);__typeof__(b) _b=(b);_a < _b ? _a : _b;})
 typedef void (*__void_function_pointer_t)(void*);
-
+#define LU_DECOMPOSITION_TOLERANCE (__cwcn_type_t) 0.00000001
+// #define MEWAAJACUNE_DEBUG_LOAD
 // #define DEBUG_QUEUE
 // #define ALOCATION_DEBUG
 #define MAX_IICU_SCENES (int) 4 // if augmented augment also IICU_SCENES_SYMBOLS
@@ -47,7 +48,7 @@ typedef void (*__void_function_pointer_t)(void*);
 #define COLOR_R_L_WARNING 71
 #define COLOR_G_L_WARNING 255
 #define COLOR_B_L_WARNING 255
-#define COLOR_WARNING "\033[1;31m"
+#define COLOR_WARNING "\033[0;33m"
 // #define COLOR_WARNING "6"
 #define COLOR_R_WARNING 71
 #define COLOR_G_WARNING 255
