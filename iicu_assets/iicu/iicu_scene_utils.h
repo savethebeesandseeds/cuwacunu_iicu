@@ -4,8 +4,12 @@
 #include "../config/general_config.h"
 #include "../config/sdl_config.h"
 #include "../data/kemu_utils.h"
-#include "../data/nijcyota_utils.h"
+#include "../config/nijcyota_utils.h"
 #include "../data/mewaajacune_utils.h"
+#include "../iicu/iicu_jkimyei.h"
+#include "../data/regressive_kemu.h"
+#include "../data/polinomial_kemu.h"
+#include "../data/staticques_kemu.h"
 #include "../iicu/iicu_wikimyei.h"
 /* SCENE FUNKS */
 __iicu_scene_struct_t *iicu_scene_fabric();

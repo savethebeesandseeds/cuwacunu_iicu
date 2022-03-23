@@ -10,7 +10,7 @@ __iicu_wikimyei_t *iicu_wikimyei_fabric(){
     for(int scene_idx; scene_idx<MAX_IICU_SCENES;scene_idx++){ // four initialize the jkimyeis
         new_iicu_wikimyei->__iicu_jkimyei[scene_idx]=jkimyei_fabric();
     }
-    fprintf(stdout,"[cuwacunu:] : start : iicu_wikimyei_fabric()\n");
+    fprintf(stdout,"[cuwacunu:] : end : iicu_wikimyei_fabric()\n");
     return new_iicu_wikimyei;
 }
 void destroy_iicu_wikimyei(__iicu_wikimyei_t *_iicu_wikimyei){
@@ -211,7 +211,7 @@ __iicu_nijcyota_t *giicn(__iicu_wikimyei_t *_iicu_wikimyei){
 
 
 __iicu_mewaajacune_t *get_mewaajacune(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id,int _kline_id){
-    return _iicu_wikimyei->__iicu_scene[_scene_id]->mewaajacune[_kline_id];
+    return _iicu_wikimyei->__iicu_scene[_scene_id]->__mewaajacune[_kline_id];
 }
 __iicu_mewaajacune_t *get_current_mewaajacune(__iicu_wikimyei_t *_iicu_wikimyei){
     return get_mewaajacune(_iicu_wikimyei, 
@@ -243,7 +243,7 @@ __iicu_regressive_t *get_current_regressive(__iicu_wikimyei_t *_iicu_wikimyei){
         gcklid(_iicu_wikimyei));
 }
 __iicu_regressive_t *giicrg(__iicu_wikimyei_t *_iicu_wikimyei){
-    return get_current_staticques(_iicu_wikimyei);
+    return get_current_regressive(_iicu_wikimyei);
 }
 
 
@@ -256,7 +256,7 @@ __iicu_polinomial_t *get_current_polinomial(__iicu_wikimyei_t *_iicu_wikimyei){
         gcklid(_iicu_wikimyei));
 }
 __iicu_polinomial_t *giicpl(__iicu_wikimyei_t *_iicu_wikimyei){
-    return get_current_staticques(_iicu_wikimyei);
+    return get_current_polinomial(_iicu_wikimyei);
 }
 
 
@@ -280,12 +280,15 @@ __jkimyei_thread_order_t *get_jk_thread_order(__iicu_wikimyei_t *_iicu_wikimyei,
     return ((__jkimyei_thread_order_t*)get_state(_iicu_wikimyei)->__jk_thread_order[_jk_id]);
 }
 
-__iicu_regressive_thread_order_t *get_rg_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _rg_id){
-    return ((__iicu_regressive_thread_order_t*)get_state(_iicu_wikimyei)->__rg_thread_order[_rg_id]);
+__regressive_thread_order_t *get_rg_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _rg_id){
+    return ((__regressive_thread_order_t*)get_state(_iicu_wikimyei)->__rg_thread_order[_rg_id]);
 }
 
-__iicu_polinomial_thread_order_t *get_pl_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _pl_id){
-    return ((__iicu_polinomial_thread_order_t*)get_state(_iicu_wikimyei)->__pl_thread_order[_pl_id]);
+__polinomial_thread_order_t *get_pl_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _pl_id){
+    return ((__polinomial_thread_order_t*)get_state(_iicu_wikimyei)->__pl_thread_order[_pl_id]);
+}
+__staticques_thread_order_t *get_sq_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _sq_id){
+    return ((__staticques_thread_order_t*)get_state(_iicu_wikimyei)->__sq_thread_order[_sq_id]);
 }
 
 int get_current_scene_id(__iicu_wikimyei_t *_iicu_wikimyei){
@@ -299,4 +302,16 @@ int get_current_kline_id(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 int gcklid(__iicu_wikimyei_t *_iicu_wikimyei){
     return get_current_kline_id(_iicu_wikimyei);
+}
+
+void wait_scene_kline_load(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id, int _kline_id){
+    int wait_ctx=0x00;
+    while(get_state(_iicu_wikimyei)->kline_last_update[_scene_id][_kline_id]==0x00){
+        SDL_Delay(1500);
+        wait_ctx++;
+        if(wait_ctx>1000){
+            fprintf(stderr,"%s [ERROR] wait_scene_kline_load index scene:[%d]: kline:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_id,_kline_id,COLOR_REGULAR);
+            break;
+        }
+    }
 }

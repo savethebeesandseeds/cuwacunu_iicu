@@ -5,7 +5,7 @@
 #include "../config/states_config.h"
 #include "../config/broker_config.h"
 #include "../data/mewaajacune_utils.h"
-#include "../data/nijcyota_utils.h"
+#include "../config/nijcyota_utils.h"
 #include "../data/kemu_utils.h"
 #define POLICY_BASE_INVESTMENT (__cwcn_type_t) 1.0 // #FIXME put in nijcyota
 typedef struct __inteligent_order_policy{

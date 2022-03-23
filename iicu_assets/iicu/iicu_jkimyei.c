@@ -95,13 +95,17 @@ void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME chan
     //     load_to_index(_iicu_jkimyei->__jk_mewaajacune,index_a);
     // }while(load_go_up(_iicu_jkimyei->__jk_mewaajacune)!=-0x01);
     // load_to_index(_iicu_jkimyei->__jk_mewaajacune,start_index);
+    
+    
     __cwcn_type_t *c_mewaajcune_list=alliu_state_index_to_list(_iicu_jkimyei->__jk_mewaajacune,NIJCYOTA_ALLIU_INDEX);
     __inteligent_order_policy_t *c_policy=_iicu_jkimyei->__jk_inteligent_order_policy;
-    int index_a,index_b,_a_,_b_;
+    int index_a=0x00,index_b,_a_,_b_;
+    int l_size=_iicu_jkimyei->__jk_mewaajacune->__load_size;
     __cwcn_type_t alliu_a,alliu_b,alliu_delta;
-    for(_a_=0x00;_a_<_iicu_jkimyei->__jk_mewaajacune->__load_size;_a_++){
+    for(_a_=0x00;_a_<l_size && index_a<l_size;_a_++){
         alliu_a=c_mewaajcune_list[index_a];
-        for(__b__=index_a;__b__<_iicu_jkimyei->__jk_mewaajacune->__load_size;__b__++){
+        for(_b_=index_a;_b_<l_size && index_b<l_size;_b_++){
+            index_b=_b_;
             alliu_b=c_mewaajcune_list[index_b];
             if(alliu_b>=(0x01+c_policy->__order_margin_up)*alliu_a){
                 alliu_delta=alliu_b-alliu_a;
@@ -112,8 +116,8 @@ void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME chan
                 c_policy->__policy_total_reward-=alliu_delta*c_policy->__base_margin_investment;
                 break;
             }
-        index_a+=index_b+1;
         }
+        index_a+=index_b+1;
     }
     free(c_mewaajcune_list);
 }
@@ -159,11 +163,14 @@ void monte_carlo_random_search(__iicu_jkimyei_t *_iicu_jkimyei){
 
 
 void *jkimyei_launcher(void *_jk_thread_order){
-    fprintf(stdout,"[cuwacunu:jkimyei] %sstart jkimyei_launcher%s\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[cuwacunu:jkimyei] %sstart jkimyei_launcher for type order [scene:%d, kline:%d]%s\n",COLOR_WARNING,((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id,COLOR_REGULAR);
     // it finds for _iicu_jkimyei the best policy
     ((__jkimyei_thread_order_t*)_jk_thread_order)->__jk_thead_is_bussy=0x01;
     __iicu_wikimyei_t *temp_iicu_wikimyei=((__jkimyei_thread_order_t*)_jk_thread_order)->__ref_iicu_wikimyei;
-    // --- --- --- 
+    // --- --- --- wait for scene kline to be loaded
+    wait_scene_kline_load(temp_iicu_wikimyei, 
+        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,
+        ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id);
     // --- --- --- #FIXME make bessech as a wrapper for optm methods
     beseech_mewaajacune(temp_iicu_wikimyei, 
         ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id, 
@@ -214,6 +221,6 @@ void *jkimyei_launcher(void *_jk_thread_order){
     destroy_jkimyei(temp_iicu_jkimyei);
     // --- --- --- 
     ((__jkimyei_thread_order_t*)_jk_thread_order)->__jk_thead_is_bussy=0x00;
-    fprintf(stdout,"[cuwacunu:jkimyei] %send jkimyei_launcher%s\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[cuwacunu:jkimyei] %s end jkimyei_launcher : for type order : [scene:%d, kline:%d] %s\n",COLOR_WARNING,((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id,COLOR_REGULAR);
     pthread_exit(NULL);
 }

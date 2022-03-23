@@ -66,7 +66,7 @@ int get_next_aviable_regressive_thread(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 int get_next_aviable_polinomial_thread(__iicu_wikimyei_t *_iicu_wikimyei){
     int v_ret=-0x01;
-    for(int _idx_th=0x00;_idx_th<REGRESSIVE_NUM_THREADS;_idx_th++){
+    for(int _idx_th=0x00;_idx_th<INTERNAL_NUM_THREADS;_idx_th++){
         if(!get_pl_thread_order(_iicu_wikimyei,_idx_th)->__pl_thead_is_bussy){
             v_ret=_idx_th;
             break;
@@ -75,7 +75,7 @@ int get_next_aviable_polinomial_thread(__iicu_wikimyei_t *_iicu_wikimyei){
     return v_ret;
 }
 int get_next_aviable_staticques_thread(__iicu_wikimyei_t *_iicu_wikimyei){
-    int v_ret=-0x01;...
+    int v_ret=-0x01;
     for(int _idx_th=0x00;_idx_th<INTERNAL_NUM_THREADS;_idx_th++){
         if(!get_sq_thread_order(_iicu_wikimyei,_idx_th)->__sq_thead_is_bussy){
             v_ret=_idx_th;
@@ -86,30 +86,26 @@ int get_next_aviable_staticques_thread(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 void jkimyei_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing current mewaajacune
     // --- --- --- TRYING TO SET THE JK ORDER TO FIX        ^
-    fprintf(stdout,"[cuwacunu:] %s jkimyei_loop%s--- ... ---\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[cuwacunu:] %s jkimyei_loop%s--- --- ---\n",COLOR_WARNING,COLOR_REGULAR);
     // --- --- --- 
     int rc;
     int th_idx;
-    int c_scene_id=0x00; // #FIXME
-    int c_kline_id=0x00; // #FIXME
+    int c_kline_id=0x00;
     // --- --- --- 
     #ifdef DO_JKIMYEI_RANDOM_MONTECARLO_SEARCH
-    th_idx=get_next_aviable_jkimyei_thread(_iicu_wikimyei);
-    fprintf(stdout,"[launching:jkimyei_thread] %d for JK_MONTECARLO\n",th_idx);
-    if(th_idx!=-0x01){
-        get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_thead_is_bussy=0x01;
+    for(int forech_scene=0x00;forech_scene<MAX_IICU_SCENES;forech_scene++){
+        th_idx=get_next_aviable_jkimyei_thread(_iicu_wikimyei);
         get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_type=JK_MONTECARLO;
-        get_jk_thread_order(_iicu_wikimyei,th_idx)->__scene_id=c_scene_id;
-        get_jk_thread_order(_iicu_wikimyei,th_idx)->__kline_id=c_kline_id;
-        rc=pthread_create(&get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_thread_launcher
-            ,NULL,jkimyei_launcher,(void*)get_jk_thread_order(_iicu_wikimyei,th_idx));
-        if(rc){
-            fprintf(stderr,"ERROR; return code from pthread_create(jk_thread_launcher) is %d\n",rc);
-            exit(-1);
-        }
-    } else {
-        fprintf(stderr,"%s[ERROR:] unable to launch jkimyei_thread JK_MONTECARLO%s\n",COLOR_DANGER,COLOR_REGULAR);
-    }
+        get_jk_thread_order(_iicu_wikimyei,th_idx)->__kline_id=c_kline_id; // #FIXME
+        get_jk_thread_order(_iicu_wikimyei,th_idx)->__scene_id=forech_scene;
+        if(th_idx!=-0x01){
+            fprintf(stdout,"[launching:jkimyei_thread] thead sucess in id: %d for JK_MONTECARLO\n",th_idx);
+            get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_thead_is_bussy=0x01;
+            rc=pthread_create(&get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_thread_launcher
+                ,NULL,jkimyei_launcher,(void*)get_jk_thread_order(_iicu_wikimyei,th_idx));
+            if(rc){fprintf(stderr,"ERROR; return code from pthread_create(jk_thread_launcher) is %d\n",rc);exit(-1);}
+        } else {fprintf(stderr,"%s[ERROR:] unable to launch jkimyei_thread JK_MONTECARLO : unable to alocate required thread : %d %s\n",COLOR_DANGER,forech_scene,COLOR_REGULAR);}
+    } 
     #endif
     // --- --- --- 
     // SDL_Delay(100000);
@@ -118,7 +114,7 @@ void jkimyei_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing cu
 
 void regressive_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing current mewaajacune
     // --- --- --- TRYING TO SET THE JK ORDER TO FIX        ^
-    fprintf(stdout,"[cuwacunu:] %s regressive_loop%s--- ... ---\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[cuwacunu:] %s regressive_loop%s--- --- ---\n",COLOR_WARNING,COLOR_REGULAR);
     // --- --- --- 
     int rc;
     int th_idx;
@@ -150,19 +146,19 @@ void regressive_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing
 
 void polinomial_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing current mewaajacune
     // --- --- --- TRYING TO SET THE JK ORDER TO FIX        ^
-    fprintf(stdout,"[cuwacunu:] %s polinomial_loop (#FIXME)%s--- ... ---\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[cuwacunu:] %s polinomial_loop (#FIXME empty)%s--- --- ---\n",COLOR_WARNING,COLOR_REGULAR);
     // --- --- --- 
     // int rc;
     // int th_idx;
     // int c_scene_id=0x00; // #FIXME
     // int c_kline_id=0x00; // #FIXME
     // // --- --- --- 
-    // #ifdef DO_REGRESSIVE_BISHOP_LINEAR_REGRESSION
+    // #ifdef DO_POLINOMIAL_PL_KIKE_METHOD
     // th_idx=get_next_aviable_polinomial_thread(_iicu_wikimyei);
-    // fprintf(stdout,"[launching:polinomial_thread] %d for RG_BISHOP_LINEAR_REGRESSION\n",th_idx);
+    // fprintf(stdout,"[launching:polinomial_thread] %d for PL_KIKE_METHOD\n",th_idx);
     // if(th_idx!=-0x01){
     //     get_pl_thread_order(_iicu_wikimyei,th_idx)->__pl_thead_is_bussy=0x01;
-    //     get_pl_thread_order(_iicu_wikimyei,th_idx)->__pl_type=RG_BISHOP_LINEAR_REGRESSION;
+    //     get_pl_thread_order(_iicu_wikimyei,th_idx)->__pl_type=PL_KIKE_METHOD;
     //     get_pl_thread_order(_iicu_wikimyei,th_idx)->__scene_id=c_scene_id;
     //     get_pl_thread_order(_iicu_wikimyei,th_idx)->__kline_id=c_kline_id;
     //     rc=pthread_create(&get_pl_thread_order(_iicu_wikimyei,th_idx)->__pl_thread_launcher
@@ -172,42 +168,60 @@ void polinomial_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing
     //         exit(-1);
     //     }
     // } else {
-    //     fprintf(stderr,"%s[ERROR:] unable to launch polinomial_thread RG_BISHOP_LINEAR_REGRESSION%s\n",COLOR_DANGER,COLOR_REGULAR);
+    //     fprintf(stderr,"%s[ERROR:] unable to launch polinomial_thread PL_KIKE_METHOD%s\n",COLOR_DANGER,COLOR_REGULAR);
     // }
     // #endif
     // --- --- --- 
-    // SDL_Delay(100000);
-    // pthread_exit(NULL);
+    // // SDL_Delay(100000);
+    // // pthread_exit(NULL);
 }
 
 
 void staticques_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing current mewaajacune
     // --- --- --- TRYING TO SET THE JK ORDER TO FIX        ^
-    fprintf(stdout,"[cuwacunu:] %s staticques_loop (#FIXME)%s--- ... ---\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[cuwacunu:] %s staticques_loop (empty)%s--- --- ---\n",COLOR_WARNING,COLOR_REGULAR);
     // --- --- --- 
-    // int rc;
-    // int th_idx;
-    // int c_scene_id=0x00; // #FIXME
-    // int c_kline_id=0x00; // #FIXME
+    int rc;
+    int th_idx;
+    int c_scene_id=0x00; // #FIXME
+    int c_kline_id=0x00; // #FIXME
     // --- --- --- 
-    // #ifdef DO_REGRESSIVE_BISHOP_LINEAR_REGRESSION
-    // th_idx=get_next_aviable_staticques_thread(_iicu_wikimyei);
-    // fprintf(stdout,"[launching:staticques_thread] %d for RG_BISHOP_LINEAR_REGRESSION\n",th_idx);
-    // if(th_idx!=-0x01){
-    //     get_rg_thread_order(_iicu_wikimyei,th_idx)->__rg_thead_is_bussy=0x01;
-    //     get_rg_thread_order(_iicu_wikimyei,th_idx)->__rg_type=RG_BISHOP_LINEAR_REGRESSION;
-    //     get_rg_thread_order(_iicu_wikimyei,th_idx)->__scene_id=c_scene_id;
-    //     get_rg_thread_order(_iicu_wikimyei,th_idx)->__kline_id=c_kline_id;
-    //     rc=pthread_create(&get_rg_thread_order(_iicu_wikimyei,th_idx)->__rg_thread_launcher
-    //         ,NULL,staticques_launcher,(void*)get_rg_thread_order(_iicu_wikimyei,th_idx));
-    //     if(rc){
-    //         fprintf(stderr,"ERROR; return code from pthread_create(rg_thread_launcher) is %d\n",rc);
-    //         exit(-1);
-    //     }
-    // } else {
-    //     fprintf(stderr,"%s[ERROR:] unable to launch staticques_thread RG_BISHOP_LINEAR_REGRESSION%s\n",COLOR_DANGER,COLOR_REGULAR);
-    // }
-    // #endif
+    #ifdef DO_STATICQUES_FIRST_ORDER_STATISTICS
+    th_idx=get_next_aviable_staticques_thread(_iicu_wikimyei);
+    fprintf(stdout,"[launching:staticques_thread] %d for FIRST_ORDER_STATISTICS\n",th_idx);
+    if(th_idx!=-0x01){
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__sq_thead_is_bussy=0x01;
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__sq_type=FIRST_ORDER_STATISTICS;
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__scene_id=c_scene_id;
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__kline_id=c_kline_id;
+        rc=pthread_create(&get_sq_thread_order(_iicu_wikimyei,th_idx)->__sq_thread_launcher
+            ,NULL,staticques_launcher,(void*)get_sq_thread_order(_iicu_wikimyei,th_idx));
+        if(rc){
+            fprintf(stderr,"ERROR; return code from pthread_create(sq_thread_launcher) is %d\n",rc);
+            exit(-1);
+        }
+    } else {
+        fprintf(stderr,"%s[ERROR:] unable to launch staticques_thread FIRST_ORDER_STATISTICS%s\n",COLOR_DANGER,COLOR_REGULAR);
+    }
+    #endif
+    #ifdef DO_STATICQUES_FIRST_ORDER_AUTOREGRESSION
+    th_idx=get_next_aviable_staticques_thread(_iicu_wikimyei);
+    fprintf(stdout,"[launching:staticques_thread] %d for FIRST_ORDER_AUTOREGRESSION\n",th_idx);
+    if(th_idx!=-0x01){
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__sq_thead_is_bussy=0x01;
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__sq_type=FIRST_ORDER_AUTOREGRESSION;
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__scene_id=c_scene_id;
+        get_sq_thread_order(_iicu_wikimyei,th_idx)->__kline_id=c_kline_id;
+        rc=pthread_create(&get_sq_thread_order(_iicu_wikimyei,th_idx)->__sq_thread_launcher
+            ,NULL,staticques_launcher,(void*)get_sq_thread_order(_iicu_wikimyei,th_idx));
+        if(rc){
+            fprintf(stderr,"ERROR; return code from pthread_create(sq_thread_launcher) is %d\n",rc);
+            exit(-1);
+        }
+    } else {
+        fprintf(stderr,"%s[ERROR:] unable to launch staticques_thread FIRST_ORDER_AUTOREGRESSION%s\n",COLOR_DANGER,COLOR_REGULAR);
+    }
+    #endif
     // --- --- --- 
     // SDL_Delay(100000);
     // pthread_exit(NULL);

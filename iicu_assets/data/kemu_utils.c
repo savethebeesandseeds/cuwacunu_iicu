@@ -11,7 +11,6 @@ __cwcn_type_t kemu_tanh(__cwcn_type_t x){
 }
 
 
-
 void print_matrix(__cwcn_matrix_t *_A){
     fprintf(stdout,"--- --- --- MATRIX\n");
     for(int _i=0x00;_i<_A->n_rows;_i++){
@@ -42,7 +41,23 @@ __cwcn_matrix_t *fabric_cwcn_matrix(int n_rows, int n_cols){
     }
     return new_cwcn_matrix;
 }
-
+__cwcn_matrix_t *clone_fabric_cwcn_matrix(__cwcn_matrix_t *src_cwcn_matrix){
+    __cwcn_matrix_t *new_cwcn_matrix=NULL;
+    rebase_cwcn_matrix(new_cwcn_matrix,src_cwcn_matrix);
+    return new_cwcn_matrix;
+}
+void rebase_cwcn_matrix(__cwcn_matrix_t *dest_cwcn_matrix, __cwcn_matrix_t *src_cwcn_matrix){
+    if(dest_cwcn_matrix!=NULL){
+        destroy_cwcn_matrix(dest_cwcn_matrix);
+    }
+    dest_cwcn_matrix=fabric_cwcn_matrix(src_cwcn_matrix->n_rows, src_cwcn_matrix->n_cols);
+    memcpy(dest_cwcn_matrix->_matrx,src_cwcn_matrix->_matrx,src_cwcn_matrix->n_rows*sizeof(__cwcn_type_t *));
+    memcpy(dest_cwcn_matrix->_inv_matrx,src_cwcn_matrix->_inv_matrx,src_cwcn_matrix->n_rows*sizeof(__cwcn_type_t *));
+    for(int _i=0x00;_i<dest_cwcn_matrix->n_rows;_i++){
+        memcpy(dest_cwcn_matrix->_matrx[_i],src_cwcn_matrix->_matrx[_i],src_cwcn_matrix->n_cols*sizeof(__cwcn_type_t));
+        memcpy(dest_cwcn_matrix->_inv_matrx[_i],src_cwcn_matrix->_inv_matrx[_i],src_cwcn_matrix->n_cols*sizeof(__cwcn_type_t));
+    }
+}
 void destroy_cwcn_matrix(__cwcn_matrix_t *_matrix){
     for(int _i=0x00;_i<_matrix->n_rows;_i++){
         free(_matrix->_matrx[_i]);

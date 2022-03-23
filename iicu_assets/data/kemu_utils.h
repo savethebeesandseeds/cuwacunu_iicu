@@ -1,5 +1,6 @@
 #ifndef __KEMU_UTILS__
 #define __KEMU_UTILS__
+#include <string.h>
 #include "../config/general_config.h"
 #include "../config/states_config.h"
 #include "../config/broker_config.h"
@@ -17,7 +18,11 @@ __cwcn_type_t kemu_tanh(__cwcn_type_t x);
 __cwcn_type_t max_min_res_rand(__cwcn_type_t _max, __cwcn_type_t _min, int _res);
 //------------- KEMU LINALG ------------ -----
 __cwcn_matrix_t *fabric_cwcn_matrix(int n_rows, int n_cols);
+void rebase_cwcn_matrix(__cwcn_matrix_t *dest_matrix, __cwcn_matrix_t *src_matrix);
 void destroy_cwcn_matrix(__cwcn_matrix_t *_matrix);
+
+__cwcn_matrix_t *clone_fabric_cwcn_matrix(__cwcn_matrix_t *src_cwcn_matrix);
+void rebase_cwcn_matrix(__cwcn_matrix_t *dest_cwcn_matrix, __cwcn_matrix_t *src_cwcn_matrix);
 
 void multiply_cwcn_matrix(__cwcn_matrix_t *dest_matrix, __cwcn_matrix_t *a_matrix, __cwcn_matrix_t *b_matrix);
 void multiply_cwcn_inv_a_times_b(__cwcn_matrix_t *dest_matrix, __cwcn_matrix_t *a_matrix, __cwcn_matrix_t *b_matrix);

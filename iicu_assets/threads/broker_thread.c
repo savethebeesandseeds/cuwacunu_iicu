@@ -19,9 +19,9 @@ void update_kemu_broker(__iicu_wikimyei_t *_iicu_wikimyei){
     for(int idx_symb=0x00;idx_symb<MAX_IICU_SCENES;idx_symb++){ // all symbols
         symbol_latest_alliu=(__cwcn_type_t) request_latest_alliu(IICU_SCENES_SYMBOLS[idx_symb]);
         for(int idx_kline=0;idx_kline<BROKER_CANDLE_N_INTERVALS;idx_kline++){ // all intervals per symbol
-            beseech_kemu(_iicu_wikimyei,idx_symb,idx_kline);
-            get_kemu(_iicu_wikimyei,idx_symb,idx_kline)->alliu_latest=symbol_latest_alliu;
-            release_kemu(_iicu_wikimyei,idx_symb,idx_kline);
+            beseech_staticques(_iicu_wikimyei,idx_symb,idx_kline);
+            get_staticques(_iicu_wikimyei,idx_symb,idx_kline)->__alliu_latest=symbol_latest_alliu;
+            release_staticques(_iicu_wikimyei,idx_symb,idx_kline);
         }
     }
 }
@@ -67,11 +67,11 @@ void update_mewaajacune_broker_symbol_interval(__iicu_wikimyei_t *_iicu_wikimyei
             rebase_mewaajacune(get_mewaajacune(_iicu_wikimyei, idx_scene, idx_kline),tmp_mewaajacune);
             release_mewaajacune(_iicu_wikimyei,idx_scene,idx_kline);
             destroy_mewaajacune(tmp_mewaajacune);
-            // --- safely update desired kemu
-            beseech_kemu(_iicu_wikimyei,idx_scene,idx_kline);
-            get_kemu(_iicu_wikimyei, idx_scene, idx_kline)->alliu_mean=tmp_mean;
-            get_kemu(_iicu_wikimyei, idx_scene, idx_kline)->alliu_std=tmp_std;
-            release_kemu(_iicu_wikimyei,idx_scene,idx_kline);
+            // --- safely update desired staticques
+            beseech_staticques(_iicu_wikimyei,idx_scene,idx_kline);
+            get_staticques(_iicu_wikimyei, idx_scene, idx_kline)->__alliu_mean=tmp_mean;
+            get_staticques(_iicu_wikimyei, idx_scene, idx_kline)->__alliu_std=tmp_std;
+            release_staticques(_iicu_wikimyei,idx_scene,idx_kline);
         }
     } else {
         if(idx_kline==-1){fprintf(stderr,"[ERROR:] on function update_mewaajacune_broker_symbol_interval : cound't find CANDLE INTERVAL %s...\n",interval);}

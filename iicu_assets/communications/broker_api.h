@@ -2,6 +2,7 @@
 #define __BROKER_API__
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "curl_utils.h"
 #include "../config/broker_config.h"
 typedef struct bnc_price_tick {

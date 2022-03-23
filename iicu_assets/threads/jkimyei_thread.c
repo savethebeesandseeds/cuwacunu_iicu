@@ -1,4 +1,5 @@
 #include "jkimyei_thread.h"
+#include "../iicu/iicu_loops.h"
 void *IICU_jkimyei_thread(void *_iicu_wikimyei){
     fprintf(stdout,"[cuwacunu:] : start : IICU_jkimyei_thread()\n");
     while(0xFF){

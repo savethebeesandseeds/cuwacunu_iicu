@@ -8,7 +8,7 @@ __iicu_state_struct_t *fabric_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     new_iicu_state->__rg_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
     new_iicu_state->__pl_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
     new_iicu_state->__sq_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
-    for(int jk_idx=0x00;jk_idx<INTERNAL_NUM_THREADS;jk_idx++){
+    for(int jk_idx=0x00;jk_idx<INTERNAL_NUM_THREADS;jk_idx++){ // #OK multiple malloc seems ok
         new_iicu_state->__jk_thread_order[jk_idx]=malloc(sizeof(__jkimyei_thread_order_t));
         new_iicu_state->__rg_thread_order[jk_idx]=malloc(sizeof(__regressive_thread_order_t));
         new_iicu_state->__pl_thread_order[jk_idx]=malloc(sizeof(__polinomial_thread_order_t));

@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include "../sdl_tools/sdl_object.h"
 #include "../data/kemu_utils.h"
-#include "../data/nijcyota_utils.h"
 #include "../data/mewaajacune_utils.h"
+#include "../config/nijcyota_utils.h"
 #include "../config/broker_config.h"
 #include "../config/threads_config.h"
 #include "../iicu/iicu_jkimyei.h"
@@ -27,7 +27,7 @@ typedef struct _iicu_state_struct {
 	int controller_is_up;
 	double kline_last_update[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS]; // [List] seconds since Jan 1, 1970
 	
-	char scene_symbol[16]; // #FIXME change to MAX_IICU_SCENES
+	char scene_symbol[16]; // #FIXME somehow do something
 	int fps;
 	int scene_count;
 	int scene_id;
@@ -48,7 +48,7 @@ typedef struct _iicu_state_struct {
 //------------- SCENE ------------ ------------
 typedef struct _iicu_scene_struct {
 	__iicu_nijcyota_t *nijcyota;
-	__iicu_mewaajacune_t *mewaajacune[BROKER_CANDLE_N_INTERVALS];
+	__iicu_mewaajacune_t *__mewaajacune[BROKER_CANDLE_N_INTERVALS];
 	__iicu_polinomial_t *__iicu_polinomial[BROKER_CANDLE_N_INTERVALS];
 	__iicu_regressive_t *__iicu_regressive[BROKER_CANDLE_N_INTERVALS];
 	__iicu_staticques_t *__iicu_staticques[BROKER_CANDLE_N_INTERVALS];
@@ -81,7 +81,7 @@ typedef struct __regressive_thread_order{
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__regressive_thread_order_t;
 //------------- PL_THREAD ------------ --------
-typedef enum {PL_KIKE}__polinomial_types_t;
+typedef enum {PL_KIKE_METHOD}__polinomial_types_t;
 typedef struct __polinomial_thread_order{
 	int __scene_id;
 	int __kline_id;
@@ -91,7 +91,7 @@ typedef struct __polinomial_thread_order{
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__polinomial_thread_order_t;
 //------------- SQ_THREAD ------------ --------
-typedef enum {FIRST_ORDER_AUTOREGRESSION, FIRST_ORDER_STATISTICS, ...}__staticques_types_t;
+typedef enum {FIRST_ORDER_AUTOREGRESSION, FIRST_ORDER_STATISTICS}__staticques_types_t;
 typedef struct __staticques_thread_order{
 	int __scene_id;
 	int __kline_id;
@@ -100,7 +100,6 @@ typedef struct __staticques_thread_order{
     ___cwcn_bool_t __sq_thead_is_bussy;
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__staticques_thread_order_t;
-
 
 //------------- FUNKS ------------ ---------
 __iicu_wikimyei_t *iicu_wikimyei_fabric(); // #NOTE wikimyei has multiple scenes, and one v-state.
@@ -178,6 +177,7 @@ int gcsid(__iicu_wikimyei_t *_iicu_wikimyei);
 int get_current_kline_id(__iicu_wikimyei_t *_iicu_wikimyei);
 int gcklid(__iicu_wikimyei_t *_iicu_wikimyei);
 
+void wait_scene_kline_load(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id, int _kline_id);
 #include "../iicu/iicu_state_utils.h"
 #include "../iicu/iicu_scene_utils.h"
 #endif

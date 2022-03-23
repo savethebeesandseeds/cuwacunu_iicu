@@ -1,5 +1,9 @@
 #ifndef __REGRESSIVE_KEMU__
 #define __REGRESSIVE_KEMU__
+#include "../config/general_config.h"
+#include "../data/kemu_utils.h"
+#include "../data/mewaajacune_utils.h"
+#include "../config/regressive_config.h"
 typedef struct __cwcn_bishop_linear_regression_kemu {
     __cwcn_matrix_t *__moore_penrose_pseudo_inverse;
     __cwcn_matrix_t *__desing_matrix;
@@ -19,6 +23,8 @@ typedef struct __regressive{
 void *regressive_launcher(void *_regressive_thread_order);
 
 __bishop_linear_regression_t *blrk_fabric(__iicu_regressive_t *_regressive);
+__bishop_linear_regression_t *blrk_clone_fabric(__iicu_regressive_t *scr_iicu_regressive, __bishop_linear_regression_t *src_blrk);
+void rebase_blrk(__bishop_linear_regression_t *dest_blrk, __bishop_linear_regression_t *src_blrk);
 void destroy_blrk(__bishop_linear_regression_t *_blrk);
 
 __iicu_regressive_t *regressive_fabric();

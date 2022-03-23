@@ -1,6 +1,7 @@
 #ifndef __CURL_UTILS__
 #define __CURL_UTILS__
 #include <curl/curl.h>
+#include "../config/general_config.h"
 #include "../config/states_config.h"
 typedef struct curl_string {
     CURLcode res_code;

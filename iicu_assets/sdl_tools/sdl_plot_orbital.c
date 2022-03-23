@@ -4,7 +4,7 @@ void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl,
     __iicu_nijcyota_t *_nijcyota,
     __iicu_staticques_t *_staticques){
     // char *caption=_nijcyota->orbital_caption;
-    __cwcn_type_t angle=_staticques->alliu_std;
+    __cwcn_type_t angle=_staticques->__alliu_std;
     int centreX=_nijcyota->orbital_centreX;
     int centreY=_nijcyota->orbital_centreY;
     int radius=_nijcyota->orbital_radius;

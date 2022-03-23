@@ -150,6 +150,7 @@ int load_go_down(__iicu_mewaajacune_t *_mewaajacune){
     return 0x00;
 }
 void load_to_start(__iicu_mewaajacune_t *_mewaajacune){
+    assert(!load_on_noob(_mewaajacune));
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
         fprintf(stdout,">> > load_to_start ; c_index: [%d]\n",_mewaajacune->__load_index);
     #endif

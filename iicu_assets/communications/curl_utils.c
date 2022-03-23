@@ -58,7 +58,11 @@ curl_string_t get_request(char *target_url){
         /* always cleanup */
         curl_easy_cleanup(curl);
     }
-    fprintf(stdout,"WARNING: remember to free string variable in get_request!\n");
+    // fprintf(stdout,"WARNING: remember to free string variable in get_request!\n");
+    char *ch=strstr(s.ptr, "\"code\":-");
+    if(ch){
+        fprintf(stdout, "%s[ERROR:]%s found responce: %s\n",COLOR_DANGER,COLOR_REGULAR,s.ptr);
+    }
     return s;
 }
 

@@ -6,7 +6,7 @@ __iicu_scene_struct_t *iicu_scene_fabric(){
 	new_scene->nijcyota=nijcyota_fabric();
 	// --- --- --- MEWAAJACUNE
 	for(int m_idx=0;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
-		new_scene->mewaajacune[m_idx]=mewaajacune_fabric();
+		new_scene->__mewaajacune[m_idx]=mewaajacune_fabric();
 		new_scene->__iicu_regressive[m_idx]=regressive_fabric();
 		new_scene->__iicu_polinomial[m_idx]=polinomial_fabric();
 		new_scene->__iicu_staticques[m_idx]=staticques_fabric();
@@ -41,17 +41,6 @@ void update_current_iicu_scene(__iicu_wikimyei_t *_iicu_wikimyei){
 
     update_iicu_nicjyota(giicn(_iicu_wikimyei)); // #FIXME add beseech nijcyota
 	
-	beseech_current_staticques(_iicu_wikimyei);...not here
-    update_iicu_staticques(giicsq(_iicu_wikimyei));
-	release_current_staticques(_iicu_wikimyei);
-
-	beseech_current_polinomial(_iicu_wikimyei);...not here
-    update_iicu_polinomial(giicsq(_iicu_wikimyei));
-	release_current_polinomial(_iicu_wikimyei);
-
-	beseech_current_regressive(_iicu_wikimyei);...not here
-    update_iicu_regressive(giicsq(_iicu_wikimyei));
-	release_current_regressive(_iicu_wikimyei);
 }
 void refresh_iicu_scene(__iicu_scene_struct_t *_iicu_scene){
 	// #FIXME add ...
@@ -63,8 +52,10 @@ void refresh_current_iicu_scene(__iicu_wikimyei_t *_iicu_wikimyei){
 void destroy_iicu_scene(__iicu_scene_struct_t *_iicu_scene){ // #FIXME fix fixed size of scenes, rather allocate memory
 	refresh_iicu_scene(_iicu_scene); // #FIXME is refresh enough?
 	for(int m_idx=0;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
-		destroy_mewaajacune(_iicu_scene->mewaajacune[m_idx]);
-		destroy_staticques(_iicu_scene->kemu[m_idx]);
+		destroy_mewaajacune(_iicu_scene->__mewaajacune[m_idx]);
+		destroy_regressive(_iicu_scene->__iicu_regressive[m_idx]);
+		destroy_polinomial(_iicu_scene->__iicu_polinomial[m_idx]);
+		destroy_staticques(_iicu_scene->__iicu_staticques[m_idx]);
 	}
 	destroy_nijcyota(_iicu_scene->nijcyota);
 	free(_iicu_scene);

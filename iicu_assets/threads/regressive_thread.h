@@ -1,7 +1,6 @@
-#ifndef __JKIMYEI_THREAD__
-#define __JKIMYEI_THREAD__
+#ifndef __REGRESSIVE_THREAD__
+#define __REGRESSIVE_THREAD__
 #include "../config/sdl_config.h"
 #include "../config/threads_config.h"
-#include "../iicu/iicu_loops.h"
 void *IICU_regressive_thread(void *_iicu_wikimyei);
 #endif

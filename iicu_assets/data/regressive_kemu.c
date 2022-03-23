@@ -1,5 +1,5 @@
 #include "regressive_kemu.h"
-
+#include "../iicu/iicu_wikimyei.h"
 void *regressive_launcher(void *_rg_thread_order){
     fprintf(stdout,"[cuwacunu:regressive] %sstart regressive_launcher%s\n",COLOR_WARNING,COLOR_REGULAR);
     // it finds for _iicu_regressive the best policy
@@ -11,18 +11,21 @@ void *regressive_launcher(void *_rg_thread_order){
         ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id, 
         ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
     beseech_regressive(temp_iicu_wikimyei, 
-        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id);
+        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id,
+        ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
     // --- --- --- 
     __iicu_regressive_t *temp_iicu_regressive=regressive_clone_fabric(
         get_regressive(temp_iicu_wikimyei, 
-        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id)); // make a temporal copy
+        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id,
+        ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id)); // make a temporal copy
     temp_iicu_regressive->__rg_mewaajacune=mewaajacune_clone_fabric(
         get_mewaajacune(temp_iicu_wikimyei, 
         ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id, 
         ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id)); // load mewaajacune to temporal copy
     // --- --- --- 
     release_regressive(temp_iicu_wikimyei, 
-        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id);
+        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id,
+        ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
     release_mewaajacune(temp_iicu_wikimyei, 
         ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id, 
         ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
@@ -41,14 +44,17 @@ void *regressive_launcher(void *_rg_thread_order){
         ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id,
         ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
     beseech_regressive(temp_iicu_wikimyei, 
-        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id);
+        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id,
+        ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
     // --- --- --- 
     rebase_regressive(get_regressive(temp_iicu_wikimyei, 
-        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id), 
+        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id, 
+        ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id),
         temp_iicu_regressive);
     // --- --- --- 
     release_regressive(temp_iicu_wikimyei, 
-        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id);
+        ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id,
+        ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
     release_mewaajacune(temp_iicu_wikimyei, 
         ((__regressive_thread_order_t*)_rg_thread_order)->__scene_id,
         ((__regressive_thread_order_t*)_rg_thread_order)->__kline_id);
@@ -126,6 +132,22 @@ __bishop_linear_regression_t *blrk_fabric(__iicu_regressive_t *_iicu_regressive)
     // --- --- --- 
     return new_blrk;
 }
+__bishop_linear_regression_t *blrk_clone_fabric(__iicu_regressive_t *scr_iicu_regressive, __bishop_linear_regression_t *src_blrk){
+    __bishop_linear_regression_t *new_blrk=blrk_fabric(scr_iicu_regressive);
+    rebase_blrk(new_blrk,src_blrk);
+    return new_blrk;
+}
+void rebase_blrk(__bishop_linear_regression_t *dest_blrk, __bishop_linear_regression_t *src_blrk){
+    rebase_cwcn_matrix(dest_blrk->__desing_matrix,src_blrk->__desing_matrix);
+    rebase_cwcn_matrix(dest_blrk->__moore_penrose_pseudo_inverse,src_blrk->__moore_penrose_pseudo_inverse);
+    rebase_cwcn_matrix(dest_blrk->__w_coefs,src_blrk->__w_coefs);
+    dest_blrk->__h_basis=src_blrk->__h_basis;
+    dest_blrk->__mewaajacune=src_blrk->__mewaajacune;
+    rebase_cwcn_matrix(dest_blrk->__mwjcn_matrx,src_blrk->__mwjcn_matrx);
+    // --- --- --- 
+    dest_blrk->__mwjcn_mean=src_blrk->__mwjcn_mean;
+    dest_blrk->__mwjcn_std=src_blrk->__mwjcn_std;
+}
 void destroy_blrk(__bishop_linear_regression_t *_blrk){
     destroy_cwcn_matrix(_blrk->__desing_matrix);
     destroy_cwcn_matrix(_blrk->__moore_penrose_pseudo_inverse);
@@ -197,7 +219,7 @@ void bishop_linear_regression(__iicu_regressive_t *_iicu_regressive){
 __iicu_regressive_t *regressive_fabric(){
     __iicu_regressive_t *new_iicu_regressive=malloc(sizeof(__iicu_regressive_t));
     new_iicu_regressive->__rg_mewaajacune=NULL;
-    new_iicu_regressive->__rg_blrk=blrk_fabric(new_iicu_regressive)
+    new_iicu_regressive->__rg_blrk=NULL;
     new_iicu_regressive->__rg_blrk_has_computed=0x00;
     return new_iicu_regressive;
 }
@@ -216,7 +238,7 @@ void rebase_regressive(__iicu_regressive_t *dest_iicu_regressive, __iicu_regress
         dest_iicu_regressive->__rg_mewaajacune=NULL;
     }
     if(src_iicu_regressive->__rg_blrk != NULL){
-        dest_iicu_regressive->__rg_blrk=blrk_clone_fabric(src_iicu_regressive->__rg_blrk);
+        dest_iicu_regressive->__rg_blrk=blrk_clone_fabric(src_iicu_regressive,src_iicu_regressive->__rg_blrk);
     }
     if(src_iicu_regressive->__rg_mewaajacune != NULL){
         if(dest_iicu_regressive->__rg_mewaajacune!=NULL){

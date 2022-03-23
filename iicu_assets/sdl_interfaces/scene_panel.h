@@ -2,7 +2,7 @@
 #define __SCENE_PANEL__
 #include "../config/general_config.h"
 #include "../config/sdl_config.h"
-#include "../data/data_utils.h"
+#include "../data/kemu_utils.h"
 #include "../sdl_tools/sdl_object.h"
 #include "../sdl_tools/sdl_noise_box.h"
 #include "../sdl_tools/sdl_main_plot.h"

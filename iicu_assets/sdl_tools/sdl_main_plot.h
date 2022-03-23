@@ -4,7 +4,7 @@
 #include "../config/sdl_config.h"
 #include "../sdl_tools/sdl_utils.h"
 #include "../sdl_tools/sdl_object.h"
-#include "../data/nijcyota_utils.h"
+#include "../config/nijcyota_utils.h"
 #include "../data/mewaajacune_utils.h"
 #include "../sdl_tools/sdl_plot_queue.h"
 #include "../iicu/iicu_wikimyei.h"

@@ -4,8 +4,9 @@ void get_price_ticker(bnc_price_tick_t *payload,char *symbol){
     snprintf(target_url,256,"%s%s?symbol=%s",BROKER_BASE_URL,BROKER_TICKER_PRICE,symbol);
     curl_string_t responce=get_request(target_url);
     int ref = interpret_rest_code(responce.res_code);
+    assert(ref==0x01);
     payload->symbol=symbol;
-    fprintf(stdout,"request : [%d] : %s : %s\n",ref,target_url,responce.ptr);
+    // fprintf(stdout,"request : [%d] : %s : %s\n",ref,target_url,responce.ptr);
     char *ch;
     char filter_str[64];
     snprintf(filter_str,256,"},{\"symbol:%sprice",symbol);
@@ -13,6 +14,7 @@ void get_price_ticker(bnc_price_tick_t *payload,char *symbol){
     // fprintf(stdout," :: %s\n",ch);
     if(ch!=NULL){payload->price=strtof(ch,NULL);
     } else {payload->price=0.0;}
+    free_curl_string(&responce);
 }
 
 void print_kline(bnc_klines_t *payload, int payload_idx){
@@ -36,9 +38,10 @@ void get_klines(bnc_klines_t *payload,char *symbol,char *interval){
     // fprintf(stdout,"%s\n",target_url);
     curl_string_t responce=get_request(target_url);
     int ref = interpret_rest_code(responce.res_code);
+    assert(ref==0x01);
     payload->symbol=symbol;
     payload->interval=interval;
-    printf("request : [%d] : %s : ...\n",ref,target_url); //,responce.ptr
+    // fprintf(stdout,"request : [%d] : %s : ...\n",ref,target_url); //,responce.ptr
     char *ch;
     payload->klines_count=0;
     ch=strtok(responce.ptr, "],[\"");
@@ -62,6 +65,7 @@ void get_klines(bnc_klines_t *payload,char *symbol,char *interval){
     //     for(int payload_idx=0;payload_idx<payload->klines_count;payload_idx++){print_kline(payload, payload_idx);}
     // }
     // for(int payload_idx=0;payload_idx<payload->klines_count;payload_idx++){print_kline(payload, payload_idx);}
+    free_curl_string(&responce);
 }
 int test_network_by_ping(){
     char target_url[256];

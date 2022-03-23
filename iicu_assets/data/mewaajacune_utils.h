@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <math.h>
 #include "../config/general_config.h"
+#include "../communications/broker_api.h"
 /* MEWAAJACUNE DEFINITIONS */
 typedef enum {_cwcn_FLAT, _cwcn_BEAR, _cwcn_BULL} __ujcamei_state_t;
 //------------- TRAYECTORY ------------ -------
@@ -80,5 +81,5 @@ __cwcn_type_t std_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int alliu_ind
 void test_populate_alliu(__iicu_mewaajacune_t *_mewaajacune);
 void populate_alliu_with_klines(__iicu_mewaajacune_t *_mewaajacune, int _alliu_index, char *symbol, char *interval);
 __cwcn_type_t request_latest_alliu(char *symbol);
-#include "../data/data_utils.h"
+#include "../data/kemu_utils.h"
 #endif

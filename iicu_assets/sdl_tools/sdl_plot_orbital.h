@@ -4,8 +4,9 @@
 #include "../sdl_tools/sdl_utils.h"
 #include "../sdl_tools/sdl_object.h"
 #include "../data/kemu_utils.h"
-#include "../data/nijcyota_utils.h"
+#include "../config/nijcyota_utils.h"
 #include "../data/mewaajacune_utils.h"
+#include "../data/staticques_kemu.h"
 void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl, 
     __iicu_mewaajacune_t *_mewaajacune, 
     __iicu_nijcyota_t *_nijcyota,

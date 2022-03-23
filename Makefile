@@ -42,8 +42,14 @@ encription: \
 
 data: \
 		./iicu_assets/data/kemu_utils.c \
-		./iicu_assets/data/mewaajacune_utils.c \
+		./iicu_assets/data/polinomial_kemu.c \
+		./iicu_assets/data/regressive_kemu.c \
+		./iicu_assets/data/staticques_kemu.c \
+		./iicu_assets/data/mewaajacune_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/kemu_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/polinomial_kemu.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/regressive_kemu.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/staticques_kemu.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/mewaajacune_utils.c
 
 sdl: \
@@ -75,20 +81,26 @@ communications: \
 threads: \
 		./iicu_assets/threads/broker_thread.c \
 		./iicu_assets/threads/jkimyei_thread.c \
+		./iicu_assets/threads/regressive_thread.c \
+		./iicu_assets/threads/polinomial_thread.c \
+		./iicu_assets/threads/staticques_thread.c \
 		./iicu_assets/threads/state_thread.c \
 		./iicu_assets/threads/clock_thread.c \
 		./iicu_assets/threads/thread_launcher.c \
 		./iicu_assets/threads/main_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/broker_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/jkimyei_thread.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/regressive_thread.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/polinomial_thread.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/staticques_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/state_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/clock_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/thread_launcher.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/main_thread.c
 
 config: \
-		./iicu_assets/data/nijcyota_utils.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/data/nijcyota_utils.c
+		./iicu_assets/config/nijcyota_utils.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/config/nijcyota_utils.c
 
 iicu: \
 		curl_utils.o \
@@ -136,8 +148,12 @@ test_iicu: \
 		broker_thread.o \
 		state_thread.o \
 		jkimyei_thread.o \
+		regressive_thread.o \
+		polinomial_thread.o \
+		staticques_thread.o \
 		thread_launcher.o \
 		main_thread.o \
+		kemu_utils.o \
 		iicu_state_utils.o \
 		iicu_scene_utils.o \
 		sdl_object.o \
@@ -155,7 +171,9 @@ test_iicu: \
 		curl_utils.o \
 		broker_api.o \
 		nijcyota_utils.o \
-		kemu_utils.o \
+		regressive_kemu.o \
+		polinomial_kemu.o \
+		staticques_kemu.o \
 		mewaajacune_utils.o \
 		sdl_plot_queue.o \
 		iicu_loops.o \
@@ -173,8 +191,12 @@ test_queue: \
 		broker_thread.o \
 		state_thread.o \
 		jkimyei_thread.o \
+		regressive_thread.o \
+		polinomial_thread.o \
+		staticques_thread.o \
 		thread_launcher.o \
 		main_thread.o \
+		kemu_utils.o \
 		iicu_state_utils.o \
 		iicu_scene_utils.o \
 		sdl_object.o \
@@ -192,7 +214,9 @@ test_queue: \
 		curl_utils.o \
 		broker_api.o \
 		nijcyota_utils.o \
-		kemu_utils.o \
+		regressive_kemu.o \
+		polinomial_kemu.o \
+		staticques_kemu.o \
 		mewaajacune_utils.o \
 		sdl_plot_queue.o \
 		iicu_loops.o \
@@ -209,7 +233,9 @@ test_linalg: \
 	curl_utils.o \
 	broker_api.o \
 	mewaajacune_utils.o \
-	kemu_utils.o \
+	regressive_kemu.o \
+	polinomial_kemu.o \
+	staticques_kemu.o \
 	./iicu_test/test_linalg.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_linalg.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
@@ -221,6 +247,7 @@ test_jkimyei: \
 		jkimyei_thread.o \
 		thread_launcher.o \
 		main_thread.o \
+		kemu_utils.o \
 		iicu_state_utils.o \
 		iicu_scene_utils.o \
 		sdl_object.o \
@@ -238,7 +265,9 @@ test_jkimyei: \
 		curl_utils.o \
 		broker_api.o \
 		nijcyota_utils.o \
-		kemu_utils.o \
+		regressive_kemu.o \
+		polinomial_kemu.o \
+		staticques_kemu.o \
 		mewaajacune_utils.o \
 		sdl_plot_queue.o \
 		iicu_loops.o \
