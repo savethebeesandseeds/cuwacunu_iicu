@@ -3,6 +3,13 @@
 __iicu_nijcyota_t *nijcyota_fabric(){
     __iicu_nijcyota_t *new_nijcyota=malloc(sizeof(__iicu_nijcyota_t));
     new_nijcyota->nijcyota_index=NIJCYOTA_ALLIU_INDEX;
+    new_nijcyota->jkimyei_klines_index=NIJCYOTA_JKIMYEI_KLINES_INDEX;
+
+    SDL_Color grey_color={
+        .r=71,
+        .g=71,
+        .b=71
+    };
     SDL_Color line_color={
         .r=NIJCYOTA_LINE_COLOR_R,
         .g=NIJCYOTA_LINE_COLOR_G,
@@ -28,6 +35,8 @@ __iicu_nijcyota_t *nijcyota_fabric(){
         .g=NIJCYOTA_NEGATIVE_COLOR_G,
         .b=NIJCYOTA_NEGATIVE_COLOR_B
     };
+
+    new_nijcyota->grey_color=grey_color;
 
     new_nijcyota->positive_color=positive_color;
     new_nijcyota->negative_color=negative_color;
@@ -101,5 +110,6 @@ void print_nijcyota(__iicu_nijcyota_t *_nijcyota){
 }
 
 void update_iicu_nicjyota(__iicu_nijcyota_t *_nijcyota){
-    // #FIXME implement
+    // #FIXME implement ...
+    // fprintf(stderr,"%s[ERROR:] unable to update_iicu_nicjyota : not implemented%s\n",COLOR_DANGER,COLOR_REGULAR);
 }

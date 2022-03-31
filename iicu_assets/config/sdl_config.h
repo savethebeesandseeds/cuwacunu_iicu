@@ -36,7 +36,7 @@
 #define STATE_PANEL_BROKER "./iicu_resources/Binance-coin-bnb-logo.png"
 #define STATE_PANEL_KEYBOARD "./iicu_resources/keyboard-solid_white.png"
 #define STATE_PANEL_CONTROLLER "./iicu_resources/Controller_white.png"
-#define STATE_PANEL_SCENE_BOX_W 75
+#define STATE_PANEL_SCENE_BOX_W 100
 #define STATE_PANEL_SCENE_BOX_H SCREEN_FONT_SIZE + 5
 #define STATE_PANEL_KLINES_BOX_W 50
 #define STATE_PANEL_KLINES_BOX_H SCREEN_FONT_SIZE + 5
@@ -51,7 +51,8 @@
 #define ORBITAL_EXCENTRICITY 0.3
 #define MATH_PI (float) acos(-1)
 
-#define NIJCYOTA_ALLIU_INDEX 0 // #FIXME put somewhere else
+#define NIJCYOTA_ALLIU_INDEX 0x00 // #FIXME put somewhere else (all nijcyota)
+#define NIJCYOTA_JKIMYEI_KLINES_INDEX 0x06
 #define NIJCYOTA_LINE_COLOR_R 171
 #define NIJCYOTA_LINE_COLOR_G 171
 #define NIJCYOTA_LINE_COLOR_B 171

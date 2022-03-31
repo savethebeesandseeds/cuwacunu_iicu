@@ -6,6 +6,7 @@ void launch_IICU();
 #include "../threads/clock_thread.h"
 #include "../threads/broker_thread.h"
 #include "../threads/state_thread.h"
+#include "../threads/itsaave_thread.h"
 #include "../threads/jkimyei_thread.h"
 #include "../threads/staticques_thread.h"
 #include "../threads/polinomial_thread.h"

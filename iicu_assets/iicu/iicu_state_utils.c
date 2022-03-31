@@ -4,37 +4,49 @@
 */
 __iicu_state_struct_t *fabric_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     __iicu_state_struct_t *new_iicu_state=malloc(sizeof(__iicu_state_struct_t));
+    new_iicu_state->__req_itsaave=0x00;
     new_iicu_state->__jk_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
-    new_iicu_state->__rg_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
-    new_iicu_state->__pl_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
-    new_iicu_state->__sq_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
-    for(int jk_idx=0x00;jk_idx<INTERNAL_NUM_THREADS;jk_idx++){ // #OK multiple malloc seems ok
-        new_iicu_state->__jk_thread_order[jk_idx]=malloc(sizeof(__jkimyei_thread_order_t));
-        new_iicu_state->__rg_thread_order[jk_idx]=malloc(sizeof(__regressive_thread_order_t));
-        new_iicu_state->__pl_thread_order[jk_idx]=malloc(sizeof(__polinomial_thread_order_t));
-        new_iicu_state->__sq_thread_order[jk_idx]=malloc(sizeof(__staticques_thread_order_t));
+    new_iicu_state->__rg_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__regressive_thread_order_t *));
+    new_iicu_state->__pl_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__polinomial_thread_order_t *));
+    new_iicu_state->__sq_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__staticques_thread_order_t *));
+    new_iicu_state->__it_thread_order=malloc(MAX_IICU_ITSAAVES*sizeof(__itsaave_thread_order_t *));
+    for(int temp_idx=0x00;temp_idx<INTERNAL_NUM_THREADS;temp_idx++){ // #OK multiple malloc seems ok #FIXME not it does not
+        new_iicu_state->__jk_thread_order[temp_idx]=malloc(sizeof(__jkimyei_thread_order_t));
+        new_iicu_state->__rg_thread_order[temp_idx]=malloc(sizeof(__regressive_thread_order_t));
+        new_iicu_state->__pl_thread_order[temp_idx]=malloc(sizeof(__polinomial_thread_order_t));
+        new_iicu_state->__sq_thread_order[temp_idx]=malloc(sizeof(__staticques_thread_order_t));
+    }
+    for(int temp_idx=0x00;temp_idx<MAX_IICU_ITSAAVES;temp_idx++){
+        new_iicu_state->__it_thread_order[temp_idx]=malloc(sizeof(__itsaave_thread_order_t));
     }
     initialize_iicu_state(new_iicu_state,_iicu_wikimyei);
     return new_iicu_state;
 }
 void destroy_iicu_state(__iicu_state_struct_t *_iicu_state){
     kill_iicu_state(_iicu_state);
-    for(int jk_idx=0x00;jk_idx<INTERNAL_NUM_THREADS;jk_idx++){
-        free(_iicu_state->__jk_thread_order[jk_idx]);
-        free(_iicu_state->__rg_thread_order[jk_idx]);
-        free(_iicu_state->__pl_thread_order[jk_idx]);
-        free(_iicu_state->__sq_thread_order[jk_idx]);
+    for(int temp_idx=0x00;temp_idx<INTERNAL_NUM_THREADS;temp_idx++){
+        free(_iicu_state->__jk_thread_order[temp_idx]);
+        free(_iicu_state->__rg_thread_order[temp_idx]);
+        free(_iicu_state->__pl_thread_order[temp_idx]);
+        free(_iicu_state->__sq_thread_order[temp_idx]);
+    }
+    for(int temp_idx=0x00;temp_idx<MAX_IICU_ITSAAVES;temp_idx++){
+        free(_iicu_state->__it_thread_order[temp_idx]);
     }
     free(_iicu_state->__jk_thread_order);
     free(_iicu_state->__rg_thread_order);
     free(_iicu_state->__pl_thread_order);
     free(_iicu_state->__sq_thread_order);
+    free(_iicu_state->__it_thread_order);
     free(_iicu_state);
 }
 void initialize_iicu_state(__iicu_state_struct_t *_iicu_state,__iicu_wikimyei_t *_iicu_wikimyei){
     // --- initialize the in_use states
+    _iicu_state->nijcyota_in_use=0x00;
+    _iicu_state->wk_itsaave_in_use=0x00;
     for(int bsi_idx=0x00;bsi_idx<MAX_IICU_SCENES;bsi_idx++){
         _iicu_state->jkimyei_in_use[bsi_idx]=0x00;
+        _iicu_state->scene_itsaave_in_use[bsi_idx]=0x00;
         for(int bki_idx=0x00;bki_idx<BROKER_CANDLE_N_INTERVALS;bki_idx++){
             _iicu_state->mewaajacune_in_use[bsi_idx][bki_idx]=0x00;
             _iicu_state->regressive_in_use[bsi_idx][bki_idx]=0x00;
@@ -43,18 +55,23 @@ void initialize_iicu_state(__iicu_state_struct_t *_iicu_state,__iicu_wikimyei_t 
         }
     }
     // --- initialize the threads_states
-    for(int jk_idx=0x00;jk_idx<INTERNAL_NUM_THREADS;jk_idx++){
-        ((__jkimyei_thread_order_t*)_iicu_state->__jk_thread_order[jk_idx])->__jk_thead_is_bussy=0x00;
-        ((__jkimyei_thread_order_t*)_iicu_state->__jk_thread_order[jk_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
+    for(int temp_idx=0x00;temp_idx<INTERNAL_NUM_THREADS;temp_idx++){
+        ((__jkimyei_thread_order_t*)_iicu_state->__jk_thread_order[temp_idx])->__jk_thead_is_bussy=0x00;
+        ((__jkimyei_thread_order_t*)_iicu_state->__jk_thread_order[temp_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
 
-        ((__regressive_thread_order_t*)_iicu_state->__rg_thread_order[jk_idx])->__rg_thead_is_bussy=0x00;
-        ((__regressive_thread_order_t*)_iicu_state->__rg_thread_order[jk_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
+        ((__regressive_thread_order_t*)_iicu_state->__rg_thread_order[temp_idx])->__rg_thead_is_bussy=0x00;
+        ((__regressive_thread_order_t*)_iicu_state->__rg_thread_order[temp_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
 
-        ((__polinomial_thread_order_t*)_iicu_state->__pl_thread_order[jk_idx])->__pl_thead_is_bussy=0x00;
-        ((__polinomial_thread_order_t*)_iicu_state->__pl_thread_order[jk_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
+        ((__polinomial_thread_order_t*)_iicu_state->__pl_thread_order[temp_idx])->__pl_thead_is_bussy=0x00;
+        ((__polinomial_thread_order_t*)_iicu_state->__pl_thread_order[temp_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
 
-        ((__staticques_thread_order_t*)_iicu_state->__sq_thread_order[jk_idx])->__sq_thead_is_bussy=0x00;
-        ((__staticques_thread_order_t*)_iicu_state->__sq_thread_order[jk_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
+        ((__staticques_thread_order_t*)_iicu_state->__sq_thread_order[temp_idx])->__sq_thead_is_bussy=0x00;
+        ((__staticques_thread_order_t*)_iicu_state->__sq_thread_order[temp_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
+    }
+    for(int temp_idx=0x00;temp_idx<MAX_IICU_ITSAAVES;temp_idx++){
+        ((__itsaave_thread_order_t*)_iicu_state->__it_thread_order[temp_idx])->__it_thead_is_bussy=0x00;
+        ((__itsaave_thread_order_t*)_iicu_state->__it_thread_order[temp_idx])->__it_policy_is_bussy=0x00;
+        ((__itsaave_thread_order_t*)_iicu_state->__it_thread_order[temp_idx])->__ref_iicu_wikimyei=_iicu_wikimyei;
     }
     // _iicu_state->kline_id[scene_idx]; // initialized in fabric_all_iicu_scenes()
     // --- initialize the network state

@@ -9,6 +9,7 @@
 #include "../sdl_tools/sdl_plot_queue.h"
 #include "../sdl_tools/sdl_plot_orbital.h"
 #include "../sdl_tools/sdl_jkimyei.h"
+#include "../sdl_tools/sdl_itsaave.h"
 #include "../data/kemu_utils.h"
 #include "../iicu/iicu_jkimyei.h"
 #include "../iicu/iicu_wikimyei.h"

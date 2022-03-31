@@ -84,27 +84,39 @@ int get_next_aviable_staticques_thread(__iicu_wikimyei_t *_iicu_wikimyei){
     }
     return v_ret;
 }
+int get_next_aviable_itsaave_thread(__iicu_wikimyei_t *_iicu_wikimyei){
+    int v_ret=-0x01;
+    for(int _idx_th=0x00;_idx_th<MAX_IICU_ITSAAVES;_idx_th++){
+        if(!get_it_thread_order(_iicu_wikimyei,_idx_th)->__it_thead_is_bussy){
+            v_ret=_idx_th;
+            break;
+        }
+    }
+    return v_ret;
+}
 void jkimyei_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing current mewaajacune
     // --- --- --- TRYING TO SET THE JK ORDER TO FIX        ^
     fprintf(stdout,"[cuwacunu:] %s jkimyei_loop%s--- --- ---\n",COLOR_WARNING,COLOR_REGULAR);
     // --- --- --- 
     int rc;
     int th_idx;
-    int c_kline_id=0x00;
+    beseech_current_nijcyota(_iicu_wikimyei);
+    int c_kline_id=giicn(_iicu_wikimyei)->jkimyei_klines_index;
+    release_current_nijcyota(_iicu_wikimyei);
     // --- --- --- 
     #ifdef DO_JKIMYEI_RANDOM_MONTECARLO_SEARCH
-    for(int forech_scene=0x00;forech_scene<MAX_IICU_SCENES;forech_scene++){
+    for(int scene_idx=0x00;scene_idx<MAX_IICU_SCENES;scene_idx++){
         th_idx=get_next_aviable_jkimyei_thread(_iicu_wikimyei);
         get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_type=JK_MONTECARLO;
         get_jk_thread_order(_iicu_wikimyei,th_idx)->__kline_id=c_kline_id; // #FIXME
-        get_jk_thread_order(_iicu_wikimyei,th_idx)->__scene_id=forech_scene;
+        get_jk_thread_order(_iicu_wikimyei,th_idx)->__scene_id=scene_idx;
         if(th_idx!=-0x01){
             fprintf(stdout,"[launching:jkimyei_thread] thead sucess in id: %d for JK_MONTECARLO\n",th_idx);
             get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_thead_is_bussy=0x01;
             rc=pthread_create(&get_jk_thread_order(_iicu_wikimyei,th_idx)->__jk_thread_launcher
                 ,NULL,jkimyei_launcher,(void*)get_jk_thread_order(_iicu_wikimyei,th_idx));
             if(rc){fprintf(stderr,"ERROR; return code from pthread_create(jk_thread_launcher) is %d\n",rc);exit(-1);}
-        } else {fprintf(stderr,"%s[ERROR:] unable to launch jkimyei_thread JK_MONTECARLO : unable to alocate required thread : %d %s\n",COLOR_DANGER,forech_scene,COLOR_REGULAR);}
+        } else {fprintf(stderr,"%s[ERROR:] unable to launch jkimyei_thread JK_MONTECARLO : unable to alocate required thread : %d %s\n",COLOR_DANGER,scene_idx,COLOR_REGULAR);}
     } 
     #endif
     // --- --- --- 
@@ -176,7 +188,6 @@ void polinomial_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing
     // // pthread_exit(NULL);
 }
 
-
 void staticques_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing current mewaajacune
     // --- --- --- TRYING TO SET THE JK ORDER TO FIX        ^
     fprintf(stdout,"[cuwacunu:] %s staticques_loop (empty)%s--- --- ---\n",COLOR_WARNING,COLOR_REGULAR);
@@ -227,5 +238,52 @@ void staticques_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing
     // pthread_exit(NULL);
 }
 
-
-
+void itsaave_loop(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME is only doing current mewaajacune
+    // --- --- --- TRYING TO SET THE JK ORDER TO FIX        ^
+    fprintf(stdout,"[cuwacunu:] %s itsaave_loop (empty)%s--- --- ---\n",COLOR_WARNING,COLOR_REGULAR);
+    // --- --- --- --- 
+    int rc;
+    int th_idx;
+    // --- --- --- --- 
+    beseech_jkimyei(_iicu_wikimyei,gcsid(_iicu_wikimyei));
+    ___cwcn_bool_t jk_ready=giicjk(_iicu_wikimyei)->__jk_policy_has_computed;
+    release_jkimyei(_iicu_wikimyei,gcsid(_iicu_wikimyei));
+    if(jk_ready && get_state_itsaave_request(_iicu_wikimyei)==0x01){
+        // --- --- --- 
+        desactive_itsaave_request(_iicu_wikimyei);
+        // --- --- --- 
+        th_idx=get_next_aviable_itsaave_thread(_iicu_wikimyei);
+        // --- --- --- 
+        if(th_idx!=-0x01){
+            // --- --- 
+            fprintf(stdout,"[%slaunching:itsaave_thread%s] %d \n",COLOR_GOOD,COLOR_REGULAR,th_idx);
+            // --- --- 
+            get_it_thread_order(
+                _iicu_wikimyei,th_idx)->__scene_id=gcsid(_iicu_wikimyei);
+            get_it_thread_order(
+                _iicu_wikimyei,th_idx)->__it_id=th_idx;
+            get_it_thread_order(
+                _iicu_wikimyei,th_idx)->__it_type=IT_FAKE;
+            get_it_thread_order(
+                _iicu_wikimyei,th_idx)->__ref_iicu_wikimyei=_iicu_wikimyei;
+            get_it_thread_order(
+                _iicu_wikimyei,th_idx)->__it_policy_is_bussy=0x00;
+            // --- --- 
+            rc=pthread_create(&get_it_thread_order(_iicu_wikimyei,th_idx)->__it_thread_launcher
+                ,NULL,itsaave_launcher,(void*)get_it_thread_order(_iicu_wikimyei,th_idx));
+            // --- --- 
+            if(rc){
+                // --- 
+                fprintf(stderr,"ERROR; return code from pthread_create(it_thread_launcher) is %d\n",rc);
+                exit(-1);
+            }
+            // --- --- 
+        } else {
+            // --- --- 
+            fprintf(stderr,"%s[ERROR:] unable to launch itsaave_thread %s\n",COLOR_DANGER,COLOR_REGULAR);
+        }
+    }
+    // --- --- --- --- 
+    // SDL_Delay(100000);
+    // pthread_exit(NULL);
+}

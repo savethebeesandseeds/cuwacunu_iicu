@@ -3,6 +3,7 @@
 __iicu_staticques_t *staticques_fabric(){
     // fprintf(stdout,"[cuwacunu:] staticques_fabric() \n");
     __iicu_staticques_t *new_staticques = malloc(sizeof(__iicu_staticques_t));
+    assert(ALLIU_SIZE==0x01); // alliu asigments are not vectorized
     new_staticques->__alliu_latest=0x00;
     new_staticques->__alliu_mean=0x00;
     new_staticques->__alliu_std=0x00;

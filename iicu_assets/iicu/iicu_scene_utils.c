@@ -2,10 +2,14 @@
 // ---------- SCENE --- --- --- --- --- --- --- 
 __iicu_scene_struct_t *iicu_scene_fabric(){
 	__iicu_scene_struct_t *new_scene=malloc(sizeof(__iicu_scene_struct_t));
+	// --- --- --- JKIMYEI
+	new_scene->__iicu_jkimyei=jkimyei_fabric();
+	// --- --- --- ITSAAVE
+	new_scene->__scene_itsaave=itsaave_fabric(new_scene->__iicu_jkimyei->__jk_inteligent_order_policy);
 	// --- --- --- NIJCYOTA
-	new_scene->nijcyota=nijcyota_fabric();
+	new_scene->__nijcyota=nijcyota_fabric();
 	// --- --- --- MEWAAJACUNE
-	for(int m_idx=0;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
+	for(int m_idx=0x00;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
 		new_scene->__mewaajacune[m_idx]=mewaajacune_fabric();
 		new_scene->__iicu_regressive[m_idx]=regressive_fabric();
 		new_scene->__iicu_polinomial[m_idx]=polinomial_fabric();
@@ -24,7 +28,7 @@ void fabric_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei){
 		// --- --- --- 
 		_iicu_wikimyei->__iicu_scene[get_state(_iicu_wikimyei)->scene_count]=iicu_scene_fabric();
 		// --- --- --- 
-		for(int idx_interval=0;idx_interval<BROKER_CANDLE_N_INTERVALS;idx_interval++){
+		for(int idx_interval=0x00;idx_interval<BROKER_CANDLE_N_INTERVALS;idx_interval++){
 			get_state(_iicu_wikimyei)->kline_last_update[get_state(_iicu_wikimyei)->scene_count][idx_interval]=0x00;
 		}
 		get_state(_iicu_wikimyei)->kline_id[get_state(_iicu_wikimyei)->scene_count]=0x00;
@@ -39,7 +43,9 @@ void update_current_iicu_scene(__iicu_wikimyei_t *_iicu_wikimyei){
 	update_iicu_mewaajacune(giicm(_iicu_wikimyei));	
 	release_current_mewaajacune(_iicu_wikimyei);
 
-    update_iicu_nicjyota(giicn(_iicu_wikimyei)); // #FIXME add beseech nijcyota
+	beseech_current_nijcyota(_iicu_wikimyei);
+    update_iicu_nicjyota(giicn(_iicu_wikimyei));
+	release_current_nijcyota(_iicu_wikimyei);
 	
 }
 void refresh_iicu_scene(__iicu_scene_struct_t *_iicu_scene){
@@ -51,13 +57,15 @@ void refresh_current_iicu_scene(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 void destroy_iicu_scene(__iicu_scene_struct_t *_iicu_scene){ // #FIXME fix fixed size of scenes, rather allocate memory
 	refresh_iicu_scene(_iicu_scene); // #FIXME is refresh enough?
-	for(int m_idx=0;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
+	for(int m_idx=0x00;m_idx<BROKER_CANDLE_N_INTERVALS;m_idx++){
 		destroy_mewaajacune(_iicu_scene->__mewaajacune[m_idx]);
 		destroy_regressive(_iicu_scene->__iicu_regressive[m_idx]);
 		destroy_polinomial(_iicu_scene->__iicu_polinomial[m_idx]);
 		destroy_staticques(_iicu_scene->__iicu_staticques[m_idx]);
 	}
-	destroy_nijcyota(_iicu_scene->nijcyota);
+	destroy_jkimyei(_iicu_scene->__iicu_jkimyei);
+	destroy_nijcyota(_iicu_scene->__nijcyota);
+	destroy_itsaave(_iicu_scene->__scene_itsaave);
 	free(_iicu_scene);
 }
 void destroy_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei){

@@ -56,7 +56,7 @@ void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl,
     //     obj_sdl->renderer);
 }
     // char d_caption[2]="";
-    // for(int caption_idx=0;caption_idx<strlen(caption);caption_idx++){
+    // for(int caption_idx=0x00;caption_idx<strlen(caption);caption_idx++){
     //     SDL_Color d_color={.r=(int)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)256),.g=(int)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)256),.b=(int)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)256)};
     //     d_caption[0]=caption[caption_idx];
     //     fprintf(stdout,"[waka] strlen : caption : %ld : letter : %s : pixel_sizeof : %d \n",strlen(caption),d_caption, TTF_SizeText(obj_sdl->screen_font,d_caption,NULL,NULL));

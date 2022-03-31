@@ -40,9 +40,18 @@ void launch_IICU(){
         exit(-1);
     }
     #endif
+    // --- --- --- itsaave thread
+    #ifdef __cwcn_ITSAAVE_THREAD__
+    SDL_Delay(2500); // #FIXME 
+    rc=pthread_create(&untsdao_launcher[4],NULL,IICU_itsaave_thread,(void*)c_iicu_wikimyei);
+    if(rc){
+        fprintf(stderr,"ERROR; return code from pthread_create(IICU_itsaave_thread) is %d\n",rc);
+        exit(-1);
+    }
+    #endif
     // --- --- --- jkimyei thread
     #ifdef __cwcn_JKIMYEI_THREAD__
-    SDL_Delay(5000); // #FIXME 
+    SDL_Delay(2500); // #FIXME 
     rc=pthread_create(&untsdao_launcher[4],NULL,IICU_jkimyei_thread,(void*)c_iicu_wikimyei);
     if(rc){
         fprintf(stderr,"ERROR; return code from pthread_create(IICU_jkimyei_thread) is %d\n",rc);
@@ -51,7 +60,7 @@ void launch_IICU(){
     #endif
     // --- --- --- regressive thread
     #ifdef __cwcn_REGRESSIVE_THREAD__
-    SDL_Delay(5000); // #FIXME 
+    SDL_Delay(2500); // #FIXME 
     rc=pthread_create(&untsdao_launcher[5],NULL,IICU_regressive_thread,(void*)c_iicu_wikimyei);
     if(rc){
         fprintf(stderr,"ERROR; return code from pthread_create(IICU_regressive_thread) is %d\n",rc);
@@ -60,7 +69,7 @@ void launch_IICU(){
     #endif
     // // --- --- --- polinomial thread
     #ifdef __cwcn_POLINOMIAL_THREAD__
-    SDL_Delay(5000); // #FIXME 
+    SDL_Delay(2500); // #FIXME 
     rc=pthread_create(&untsdao_launcher[6],NULL,IICU_polinomial_thread,(void*)c_iicu_wikimyei);
     if(rc){
         fprintf(stderr,"ERROR; return code from pthread_create(IICU_polinomial_thread) is %d\n",rc);
@@ -69,7 +78,7 @@ void launch_IICU(){
     #endif
     // --- --- --- staticques thread
     #ifdef __cwcn_STATICQUES_THREAD__
-    SDL_Delay(5000); // #FIXME 
+    SDL_Delay(2500); // #FIXME 
     rc=pthread_create(&untsdao_launcher[7],NULL,IICU_staticques_thread,(void*)c_iicu_wikimyei);
     if(rc){
         fprintf(stderr,"ERROR; return code from pthread_create(IICU_staticques_thread) is %d\n",rc);

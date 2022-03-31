@@ -19,8 +19,10 @@ typedef void (*__void_function_pointer_t)(void*);
 // #define MEWAAJACUNE_DEBUG_LOAD
 // #define DEBUG_QUEUE
 // #define ALOCATION_DEBUG
-#define MAX_IICU_SCENES (int) 5 // if augmented augment also IICU_SCENES_SYMBOLS
-#define IICU_SCENES_SYMBOLS (char[MAX_IICU_SCENES][12])  {"BTCUSDT","ETHUSDT","CNDBTC","BTTCUSDT","ADAUSDT"} // #FIXME encode
+#define ALLIU_SIZE (int) 0x01
+#define MAX_IICU_ITSAAVES (int) 0x0C // max amount of pending itsaaves for each scene
+#define MAX_IICU_SCENES (int) 0x07 // if augmented augment also IICU_SCENES_SYMBOLS
+#define IICU_SCENES_SYMBOLS (char[MAX_IICU_SCENES][12])  {"BTCUSDT","BTCUPUSDT","BTCDOWNUSDT","ETHUSDT","CNDBTC","BTTCUSDT","ADAUSDT"} // #FIXME encode
 
 // FIXME fix colors
 #define COLOR_L_GOOD "\033[0;32m"

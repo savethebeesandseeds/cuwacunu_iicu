@@ -8,6 +8,7 @@
 #include "../config/broker_config.h"
 #include "../config/threads_config.h"
 #include "../iicu/iicu_jkimyei.h"
+#include "../iicu/iicu_itsaave.h"
 #include "../data/regressive_kemu.h"
 #include "../data/polinomial_kemu.h"
 #include "../data/staticques_kemu.h"
@@ -25,29 +26,39 @@ typedef struct _iicu_state_struct {
 	int broker_is_up;
 	int keyboard_is_up;
 	int controller_is_up;
-	double kline_last_update[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS]; // [List] seconds since Jan 1, 1970
+	double kline_last_update[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS]; // [in] seconds since Jan 1, 1970
 	
 	char scene_symbol[16]; // #FIXME somehow do something
-	int fps;
+	double fps;
 	int scene_count;
 	int scene_id;
 	int interface_id;
 	int kline_id[MAX_IICU_SCENES];
 
+
 	void **__jk_thread_order; // aux holder of type(__jkimyei_thread_order_t) to launch jkimyei threads
 	void **__rg_thread_order; // aux holder of type(__regression_thread_order_t) to launch regression threads
 	void **__pl_thread_order; // aux holder of type(__polonomial_thread_order_t) to launch polonomial threads
 	void **__sq_thread_order; // aux holder of type(__staticques_thread_order_t) to launch staticques threads
+	void **__it_thread_order; // aux holder of type(__itsaave_thread_order_t) to launch staticques threads
 
+	___cwcn_bool_t __req_itsaave;
+	
 	___cwcn_bool_t jkimyei_in_use[MAX_IICU_SCENES];
 	___cwcn_bool_t polinomial_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
 	___cwcn_bool_t regressive_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
 	___cwcn_bool_t staticques_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
 	___cwcn_bool_t mewaajacune_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
+	___cwcn_bool_t scene_itsaave_in_use[MAX_IICU_SCENES]; // #FIXME add more wk
+	___cwcn_bool_t wk_itsaave_in_use;
+	___cwcn_bool_t nijcyota_in_use; // #FIXME add more wk
+	
 } __iicu_state_struct_t;
 //------------- SCENE ------------ ------------
 typedef struct _iicu_scene_struct {
-	__iicu_nijcyota_t *nijcyota;
+	__iicu_nijcyota_t *__nijcyota;
+	__iicu_jkimyei_t *__iicu_jkimyei;
+	__iicu_itsaave_t *__scene_itsaave;
 	__iicu_mewaajacune_t *__mewaajacune[BROKER_CANDLE_N_INTERVALS];
 	__iicu_polinomial_t *__iicu_polinomial[BROKER_CANDLE_N_INTERVALS];
 	__iicu_regressive_t *__iicu_regressive[BROKER_CANDLE_N_INTERVALS];
@@ -56,9 +67,9 @@ typedef struct _iicu_scene_struct {
 //------------- WIKIMYEI ------------ ---------
 typedef struct __iicu_wikimyei{
 	__sdl_screen_object_t *__obj_sdl;
+	__iicu_itsaave_t *__wk_tsaave;
 	__iicu_state_struct_t *__iicu_state; // there is just one state
 	__iicu_scene_struct_t *__iicu_scene[MAX_IICU_SCENES];
-	__iicu_jkimyei_t *__iicu_jkimyei[MAX_IICU_SCENES];
 }__iicu_wikimyei_t;
 //------------- JK_THREAD ------------ --------
 typedef enum {JK_MONTECARLO}__jkimyei_types_t;
@@ -70,6 +81,18 @@ typedef struct __jkimyei_thread_order{
     ___cwcn_bool_t __jk_thead_is_bussy;
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__jkimyei_thread_order_t;
+//------------- IT_THREAD ------------ --------
+typedef enum {IT_FAKE}__itsaave_types_t;
+typedef struct __itsaave_thread_order {
+	int __scene_id;
+	int __it_id;
+	__itsaave_types_t __it_type;
+	pthread_t __it_thread_launcher;
+    ___cwcn_bool_t __it_thead_is_bussy;
+	___cwcn_bool_t __it_policy_is_bussy;
+	__iicu_wikimyei_t *__ref_iicu_wikimyei;  // reference wikimyei
+	__iicu_itsaave_t *__ref_iicu_itsaave; // reference itsaave
+}__itsaave_thread_order_t;
 //------------- RG_THREAD ------------ --------
 typedef enum {RG_BISHOP_LINEAR_REGRESSION}__regressive_types_t;
 typedef struct __regressive_thread_order{
@@ -110,10 +133,19 @@ void release_current_mewaajacune(__iicu_wikimyei_t *_iicu_wikimyei);
 void beseech_mewaajacune(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index,int _kline_index);
 void release_mewaajacune(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index, int _kline_index);
 
+void beseech_current_nijcyota(__iicu_wikimyei_t *_iicu_wikimyei);
+void release_current_nijcyota(__iicu_wikimyei_t *_iicu_wikimyei);
+void beseech_nijcyota(__iicu_wikimyei_t *_iicu_wikimyei);
+void release_nijcyota(__iicu_wikimyei_t *_iicu_wikimyei);
+
+void beseech_scene_itsaave(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index);
+void release_scene_itsaave(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index);
+
+void beseech_wk_itsaave(__iicu_wikimyei_t *_iicu_wikimyei);
+void release_wk_itsaave(__iicu_wikimyei_t *_iicu_wikimyei);
+
 void beseech_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei);
 void release_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei);
-void beseech_kemu(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index,int _kline_index);
-void release_kemu(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index, int _kline_index);
 
 void beseech_current_jkimyei(__iicu_wikimyei_t *_iicu_wikimyei);
 void release_current_jkimyei(__iicu_wikimyei_t *_iicu_wikimyei);
@@ -140,6 +172,10 @@ void release_current_all(__iicu_wikimyei_t *_iicu_wikimyei);
 void beseech_all(__iicu_wikimyei_t *_iicu_wikimyei);
 void release_all(__iicu_wikimyei_t *_iicu_wikimyei);
 
+__iicu_itsaave_t *get_wk_itsaave(__iicu_wikimyei_t *_iicu_wikimyei);
+__iicu_itsaave_t *get_scene_itsaave(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id);
+
+__iicu_scene_struct_t *get_scene(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id);
 __iicu_scene_struct_t *get_current_scene(__iicu_wikimyei_t *_iicu_wikimyei);
 __iicu_scene_struct_t *giics(__iicu_wikimyei_t *_iicu_wikimyei);
 
@@ -171,6 +207,7 @@ __jkimyei_thread_order_t *get_jk_thread_order(__iicu_wikimyei_t *_iicu_wikimyei,
 __regressive_thread_order_t *get_rg_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _rg_id);
 __polinomial_thread_order_t *get_pl_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _pl_id);
 __staticques_thread_order_t *get_sq_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _sq_id);
+__itsaave_thread_order_t *get_it_thread_order(__iicu_wikimyei_t *_iicu_wikimyei, int _it_id);
 
 int get_current_scene_id(__iicu_wikimyei_t *_iicu_wikimyei);
 int gcsid(__iicu_wikimyei_t *_iicu_wikimyei);

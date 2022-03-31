@@ -59,7 +59,7 @@ __iicu_mewaajacune_t *mewaajacune_fabric(){
         fprintf(stderr,"ERROR, unable to allocate new mewaajacune\n");
         assert(0x00);
     } // declaration MEWAAJACUNE FABRIC order is set, do not shuffle.
-    new_mewaajacune->__alliu_size=0x04; // #FIXME forced alliu size
+    new_mewaajacune->__alliu_size=ALLIU_SIZE; // #FIXME forced alliu size
     new_mewaajacune->__load_index=-1; // redundant (due to fabric load)
     new_mewaajacune->__load_size=0x00; // redundant (due to fabric load)
     new_mewaajacune->__load_head=NULL;//load_fabric(new_mewaajacune);
@@ -289,7 +289,7 @@ ___cwcn_bool_t load_on_end(__iicu_mewaajacune_t *_mewaajacune){
     return _mewaajacune->__load_index-_mewaajacune->__load_size==-1;
 }
 ___cwcn_bool_t load_on_start(__iicu_mewaajacune_t *_mewaajacune){
-    return _mewaajacune->__load_index==0;
+    return _mewaajacune->__load_index==0x00;
 }
 ___cwcn_bool_t load_on_noob(__iicu_mewaajacune_t *_mewaajacune){
     return load_on_start(_mewaajacune) && load_on_end(_mewaajacune);
@@ -445,7 +445,7 @@ void empty_queue_on_last(__iicu_mewaajacune_t *_mewaajacune){
     if(_mewaajacune->__load_size>=0x02){
         load_go_down(_mewaajacune); // head is null
         #if defined(MEWAAJACUNE_DEBUG) || defined(ALOCATION_DEBUG)
-        fprintf(stdout,"\t [killing load in]: [%d]->__up (load size: %d)\n",_mewaajacune->__load_index,_mewaajacune->__load_size);
+        fprintf(stdout,"\t [killing load last]: [%d]->__up (load size: %d)\n",_mewaajacune->__load_index,_mewaajacune->__load_size);
         #endif
         assert(!load_on_end(_mewaajacune));
         kill_queue(*_mewaajacune->__load_head->__up);
@@ -465,6 +465,49 @@ void empty_queue_on_last(__iicu_mewaajacune_t *_mewaajacune){
         #endif
         #if defined(MEWAAJACUNE_DEBUG) || defined(ALOCATION_DEBUG)
         fprintf(stdout,"\t [killing last queue]: [%d] with (load size: %d)\n",_mewaajacune->__load_index,_mewaajacune->__load_size);
+        #endif
+        assert(load_on_start(_mewaajacune) && load_on_end(_mewaajacune));
+        kill_queue(_mewaajacune->__load_head);
+        #if defined(ALOCATION_DEBUG)
+        fprintf(stdout,">> > --- [killin head] \n\t(kill)[head:]%p",_mewaajacune->__load_head);
+        #endif
+        free(_mewaajacune->__load_head);
+        _mewaajacune->__load_head=NULL;
+        _mewaajacune->__load_size--;
+        _mewaajacune->__load_index--;
+        assert(load_is_empty(_mewaajacune));
+        assert(load_is_healty(_mewaajacune)); // #FIXME an empty load is a healty load?
+    }
+    #if defined(ALOCATION_DEBUG)
+    else{fprintf(stdout,">> > /// [skippin up queue] \t(item found to be NULL)\t at load index: [%d]\t with address: %p\n",_mewaajacune->__load_index,_mewaajacune->__load_head->__up);}
+    #endif
+}
+void empty_queue_on_first(__iicu_mewaajacune_t *_mewaajacune){
+    assert(load_is_healty(_mewaajacune));
+    load_to_start(_mewaajacune);
+    if(_mewaajacune->__load_size>=0x02){
+        load_go_up(_mewaajacune); // head is null
+        #if defined(MEWAAJACUNE_DEBUG) || defined(ALOCATION_DEBUG)
+        fprintf(stdout,"\t [killing load first]: [%d]->__down (load size: %d)\n",_mewaajacune->__load_index,_mewaajacune->__load_size);
+        #endif
+        assert(!load_on_start(_mewaajacune));
+        kill_queue(*_mewaajacune->__load_head->__down);
+        #if defined(ALOCATION_DEBUG)
+        fprintf(stdout,">> > --- [killin *up] \n\t(kill)[*head->__down:]%p",*_mewaajacune->__load_head->__down);
+        #endif
+        free(*_mewaajacune->__load_head->__down);
+        *_mewaajacune->__load_head->__down=NULL;
+        assert(_mewaajacune->__load_head->__down!=NULL);
+        assert(*_mewaajacune->__load_head->__down==NULL);
+        assert(_mewaajacune->__load_head!=NULL);
+        assert(_mewaajacune->__load_size>=0x02);
+        _mewaajacune->__load_size--;
+        assert(load_is_healty(_mewaajacune));
+    } else if(_mewaajacune->__load_size==1){
+        #if defined(MEWAAJACUNE_DEBUG) || defined(ALOCATION_DEBUG)
+        #endif
+        #if defined(MEWAAJACUNE_DEBUG) || defined(ALOCATION_DEBUG)
+        fprintf(stdout,"\t [killing first queue]: [%d] with (load size: %d)\n",_mewaajacune->__load_index,_mewaajacune->__load_size);
         #endif
         assert(load_on_start(_mewaajacune) && load_on_end(_mewaajacune));
         kill_queue(_mewaajacune->__load_head);
@@ -518,10 +561,10 @@ __cwcn_type_t *alliu_state_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int 
     if(load_is_empty(_mewaajacune)){return NULL;}
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     __cwcn_type_t *rnetrival=malloc(load_n*sizeof(__cwcn_type_t));
-    for(int idx=0;idx<load_n;idx++){rnetrival[idx]=0;}
+    for(int idx=0x00;idx<load_n;idx++){rnetrival[idx]=0x00;}
     if(rnetrival==NULL){fprintf(stderr,"[ERROR:] unable to allocate memory in alliu_state_index_to_list \n");}
     int start_index=_mewaajacune->__load_index;
-    int rnetrival_index=0;
+    int rnetrival_index=0x00;
     load_to_start(_mewaajacune);
     do{
         rnetrival[rnetrival_index]=glti(_mewaajacune)->__alliu_state[_alliu_index];
@@ -534,7 +577,7 @@ __cwcn_type_t *alliu_state_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int 
 __cwcn_type_t fast_max_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     __cwcn_type_t max_alliu=-__cwcn_infinite;
-    for(int idx=0;idx<load_n;idx++){
+    for(int idx=0x00;idx<load_n;idx++){
         if(_c_mewaajacune_list[idx]>max_alliu){max_alliu=_c_mewaajacune_list[idx];}
     }
     return max_alliu;
@@ -542,16 +585,16 @@ __cwcn_type_t fast_max_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_t
 __cwcn_type_t fast_min_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     __cwcn_type_t min_alliu=__cwcn_infinite;
-    for(int idx=0;idx<load_n;idx++){
+    for(int idx=0x00;idx<load_n;idx++){
         if(_c_mewaajacune_list[idx]<min_alliu){min_alliu=_c_mewaajacune_list[idx];}
     }
     return min_alliu;
 }
 __cwcn_type_t fast_mean_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__cwcn_type_t *_c_mewaajacune_list){
     if(load_is_empty(_mewaajacune)){return 0;}
-    __cwcn_type_t alliu_mean=0;
+    __cwcn_type_t alliu_mean=0x00;
     __cwcn_type_t load_n =_mewaajacune->__load_size;
-    for(int idx=0;idx<load_n;idx++){
+    for(int idx=0x00;idx<load_n;idx++){
         alliu_mean+=_c_mewaajacune_list[idx];
     }
     return alliu_mean/load_n;
@@ -560,8 +603,8 @@ __cwcn_type_t fast_variance_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,__c
     __cwcn_type_t load_n =_mewaajacune->__load_size;
     if(load_n<2){return 0;}
     __cwcn_type_t alliu_mean=fast_mean_alliu_in_load(_mewaajacune,_c_mewaajacune_list);
-    __cwcn_type_t alliu_sdt=0;
-    for(int idx=0;idx<load_n;idx++){
+    __cwcn_type_t alliu_sdt=0x00;
+    for(int idx=0x00;idx<load_n;idx++){
         alliu_sdt+=pow(_c_mewaajacune_list[idx]-alliu_mean,2);
     }
     return alliu_sdt/(load_n-1);
@@ -614,7 +657,7 @@ void test_populate_alliu(__iicu_mewaajacune_t *_mewaajacune){
     __cwcn_type_t rand_float;
     kill_load(_mewaajacune);
     // --- --- --- --- · --- --- --- --- populate coordinate list
-    for(int x_position=0;x_position<64;x_position++){
+    for(int x_position=0x00;x_position<64;x_position++){
         rand_float=(__cwcn_type_t)rand()/(__cwcn_type_t)RAND_MAX*((__cwcn_type_t)64);
         yield_next_trayectory(_mewaajacune);
         glti(_mewaajacune)->__alliu_state[0]=rand_float;
@@ -629,7 +672,7 @@ void populate_alliu_with_klines(__iicu_mewaajacune_t *_mewaajacune, int _alliu_i
     get_klines(&klines_payload, symbol, interval);
     kill_load(_mewaajacune);
     // --- --- --- --- · --- --- --- --- populate coordinate list
-    for(int x_position=0;x_position<klines_payload.klines_count;x_position++){
+    for(int x_position=0x00;x_position<klines_payload.klines_count;x_position++){
         yield_next_trayectory(_mewaajacune);
         #if defined(MEWAAJACUNE_LOAD_CLOSE_KLINES_DATA)
         glti(_mewaajacune)->__alliu_timestamp=(time_t)(((__cwcn_type_t)klines_payload.klines[x_position].close_time)/((__cwcn_type_t)1000.0));

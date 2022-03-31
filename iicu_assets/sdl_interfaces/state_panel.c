@@ -41,7 +41,7 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     #ifndef __cwcn_CLOCK_THREAD__
     char text_caption[64];
     SDL_Color fps_color={.r=171,.g=255,.b=171};
-    sprintf(text_caption,"%d : fps",get_state(_iicu_wikimyei)->fps);
+    sprintf(text_caption,"%.0f : fps",get_state(_iicu_wikimyei)->fps);
     sdl_draw_text(
         text_caption,
         STATE_PANEL_x_ZERO - 35,
@@ -55,8 +55,8 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     SDL_Color box_selected_color={.r=171,.g=255,.b=171};
     int box_caption_x=(int)NIJCYOTA_MAIN_BOX_X-(int)STATE_PANEL_SCENE_BOX_W-0x02;
     int box_caption_y=(int)NIJCYOTA_MAIN_BOX_Y+(int)NIJCYOTA_MAIN_BOX_H;
-    int selected_box_caption_y=0;
-    for(int sidx=0;sidx<MAX_IICU_SCENES;sidx++){
+    int selected_box_caption_y=0x00;
+    for(int sidx=0x00;sidx<MAX_IICU_SCENES;sidx++){
         box_caption_y-=STATE_PANEL_SCENE_BOX_H;
         sprintf(text_caption,"%s",IICU_SCENES_SYMBOLS[sidx]);
         sdl_draw_box(
@@ -80,7 +80,7 @@ void render_state_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     // --- klines boxes
     box_caption_x=NIJCYOTA_MAIN_BOX_X+((int)STATE_PANEL_KLINES_BOX_W*((int)BROKER_CANDLE_N_INTERVALS-(int)0x01));
     box_caption_y=(int)NIJCYOTA_MAIN_BOX_Y-(int)2*(int)STATE_PANEL_KLINES_BOX_H;
-    for(int kidx=0;kidx<BROKER_CANDLE_N_INTERVALS;kidx++){
+    for(int kidx=0x00;kidx<BROKER_CANDLE_N_INTERVALS;kidx++){
         sprintf(text_caption,"%s",BROKER_CANDLE_INTERVALS[kidx]);
         sdl_draw_box(
             _iicu_wikimyei->__obj_sdl->renderer,

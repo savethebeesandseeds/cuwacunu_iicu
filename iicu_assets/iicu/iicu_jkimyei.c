@@ -4,7 +4,7 @@
 // --- --- --- POLICY
 __inteligent_order_policy_t *policy_fabric(){
     __inteligent_order_policy_t *new_iicu_policy=malloc(sizeof(__inteligent_order_policy_t));
-    new_iicu_policy->__order_margin_up=0x00;
+    new_iicu_policy->__order_margin_uper=0x00;
     new_iicu_policy->__order_margin_down=0x00;
     new_iicu_policy->__base_margin_investment=POLICY_BASE_INVESTMENT;
     new_iicu_policy->__policy_total_reward=0x00;//(-0x01)*__cwcn_infinite;
@@ -17,7 +17,7 @@ __inteligent_order_policy_t *policy_clone_fabric(__inteligent_order_policy_t *sr
 }
 void rebase_policy(__inteligent_order_policy_t *dest_iicu_policy, __inteligent_order_policy_t *src_iicu_policy){
     dest_iicu_policy->__order_margin_down=src_iicu_policy->__order_margin_down;
-    dest_iicu_policy->__order_margin_up=src_iicu_policy->__order_margin_up;
+    dest_iicu_policy->__order_margin_uper=src_iicu_policy->__order_margin_uper;
     dest_iicu_policy->__base_margin_investment=src_iicu_policy->__base_margin_investment;
     dest_iicu_policy->__policy_total_reward=src_iicu_policy->__policy_total_reward;
 }
@@ -25,7 +25,7 @@ void destroy_policy(__inteligent_order_policy_t *_iicu_policy){
     free(_iicu_policy);
 }
 void plot_policy(__inteligent_order_policy_t *_iicu_policy){
-    fprintf(stdout,"[policy:] \t __order_margin_up:\t\t%f\n",_iicu_policy->__order_margin_up);
+    fprintf(stdout,"[policy:] \t __order_margin_uper:\t\t%f\n",_iicu_policy->__order_margin_uper);
     fprintf(stdout,"[policy:] \t __order_margin_down:\t\t%f\n",_iicu_policy->__order_margin_down);
     fprintf(stdout,"[policy:] \t __base_margin_investment:\t%f\n",_iicu_policy->__base_margin_investment);
     fprintf(stdout,"[policy:] \t __policy_total_reward:   \t%f\n",_iicu_policy->__policy_total_reward);
@@ -82,7 +82,7 @@ void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME chan
     //     alliu_a=glti(_iicu_jkimyei->__jk_mewaajacune)->__alliu_state[NIJCYOTA_ALLIU_INDEX];
     //     do{ // evaluate if the order closes down or up
     //         alliu_b=glti(_iicu_jkimyei->__jk_mewaajacune)->__alliu_state[NIJCYOTA_ALLIU_INDEX];
-    //         if(alliu_b>=(0x01+c_policy->__order_margin_up)*alliu_a){
+    //         if(alliu_b>=(0x01+c_policy->__order_margin_uper)*alliu_a){
     //             alliu_delta=alliu_b-alliu_a;
     //             c_policy->__policy_total_reward+=alliu_delta*c_policy->__base_margin_investment;
     //             break;
@@ -99,15 +99,17 @@ void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME chan
     
     __cwcn_type_t *c_mewaajcune_list=alliu_state_index_to_list(_iicu_jkimyei->__jk_mewaajacune,NIJCYOTA_ALLIU_INDEX);
     __inteligent_order_policy_t *c_policy=_iicu_jkimyei->__jk_inteligent_order_policy;
-    int index_a=0x00,index_b,_a_,_b_;
+    int index_a=0x00,index_b=-0x01,_a_,_b_;
     int l_size=_iicu_jkimyei->__jk_mewaajacune->__load_size;
     __cwcn_type_t alliu_a,alliu_b,alliu_delta;
-    for(_a_=0x00;_a_<l_size && index_a<l_size;_a_++){
+    for(_a_=0x00;index_b+0x01<l_size;_a_++){
+        index_a=index_b+0x01; // if jump
+        // // // index_a=_a_; // if all index _a_
         alliu_a=c_mewaajcune_list[index_a];
         for(_b_=index_a;_b_<l_size && index_b<l_size;_b_++){
             index_b=_b_;
             alliu_b=c_mewaajcune_list[index_b];
-            if(alliu_b>=(0x01+c_policy->__order_margin_up)*alliu_a){
+            if(alliu_b>=(0x01+c_policy->__order_margin_uper)*alliu_a){
                 alliu_delta=alliu_b-alliu_a;
                 c_policy->__policy_total_reward+=alliu_delta*c_policy->__base_margin_investment;
                 break;
@@ -117,7 +119,6 @@ void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME chan
                 break;
             }
         }
-        index_a+=index_b+1;
     }
     free(c_mewaajcune_list);
 }
@@ -140,7 +141,7 @@ void monte_carlo_random_search(__iicu_jkimyei_t *_iicu_jkimyei){
     for(int ctx_episode=0x00;ctx_episode<MONTECARLO_EPISODES;ctx_episode++){
         // #FIXME add reset policy function
         _iicu_jkimyei->__jk_inteligent_order_policy->__policy_total_reward=0x00;
-        _iicu_jkimyei->__jk_inteligent_order_policy->__order_margin_up=max_min_res_rand(mc_up_max, mc_up_min, mc_res);
+        _iicu_jkimyei->__jk_inteligent_order_policy->__order_margin_uper=max_min_res_rand(mc_up_max, mc_up_min, mc_res);
         _iicu_jkimyei->__jk_inteligent_order_policy->__order_margin_down=max_min_res_rand(mc_down_max, mc_down_min, mc_res);
         run_policy_on_mewaajacunwe(_iicu_jkimyei);
         if(first_run || _iicu_jkimyei->__jk_inteligent_order_policy->__policy_total_reward>best_policy->__policy_total_reward){

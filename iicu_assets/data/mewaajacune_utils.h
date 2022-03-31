@@ -59,6 +59,7 @@ ___cwcn_bool_t load_is_empty(__iicu_mewaajacune_t *_mewaajacune);
 void kill_trayectory(__trayectory_t *_trayectory);
 void kill_queue(__load_queue_t *_queue);
 void empty_queue_on_last(__iicu_mewaajacune_t *_mewaajacune);
+void empty_queue_on_first(__iicu_mewaajacune_t *_mewaajacune);
 void kill_load(__iicu_mewaajacune_t *_mewaajacune);
 
 __cwcn_type_t *alliu_state_index_to_list(__iicu_mewaajacune_t *_mewaajacune,int alliu_index);

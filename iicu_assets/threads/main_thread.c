@@ -14,7 +14,7 @@ void *IICU_main_thread(void *_iicu_wikimyei){
         if((SDL_GetTicks()-start_time)<(1000*CLOCK_THREAD_PERIOD)){
             SDL_Delay((1000*CLOCK_THREAD_PERIOD)-(SDL_GetTicks()-start_time));
         }
-        ((__iicu_wikimyei_t*)_iicu_wikimyei)->__iicu_state->fps=(int)((float)1000/((float)(SDL_GetTicks()-start_time)));
+        ((__iicu_wikimyei_t*)_iicu_wikimyei)->__iicu_state->fps=(float)((float)1000/((float)(SDL_GetTicks()-start_time)));
         #else 
         iicu_scene_loop((__iicu_wikimyei_t*)_iicu_wikimyei);
         #endif

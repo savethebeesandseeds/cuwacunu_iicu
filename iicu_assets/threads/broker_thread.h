@@ -7,7 +7,7 @@
 #include "../iicu/iicu_wikimyei.h"
 void *IICU_broker_thread(void *_iicu_wikimyei);
 void update_kemu_broker(__iicu_wikimyei_t *_iicu_wikimyei);
+___cwcn_bool_t symbol_kline_broker_update_needed(__iicu_wikimyei_t *_iicu_wikimyei, int _idx_scene, int _idx_kline);
 void update_mewaajacune_broker(__iicu_wikimyei_t *_iicu_wikimyei);
-void update_mewaajacune_broker_symbol(__iicu_wikimyei_t *_iicu_wikimyei, char *symbol);
-void update_mewaajacune_broker_symbol_interval(__iicu_wikimyei_t *_iicu_wikimyei, char *symbol, char *interval);
+void update_mewaajacune_broker_item(__iicu_wikimyei_t *_iicu_wikimyei, char *symbol, char *interval);
 #endif

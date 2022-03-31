@@ -41,7 +41,7 @@ void get_klines(bnc_klines_t *payload,char *symbol,char *interval){
     assert(ref==0x01);
     payload->symbol=symbol;
     payload->interval=interval;
-    // fprintf(stdout,"request : [%d] : %s : ...\n",ref,target_url); //,responce.ptr
+    fprintf(stdout,"request : [%d] : %s : ...\n",ref,target_url); //,responce.ptr
     char *ch;
     payload->klines_count=0;
     ch=strtok(responce.ptr, "],[\"");

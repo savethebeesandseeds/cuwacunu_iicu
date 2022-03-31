@@ -7,11 +7,11 @@
 #include "../data/mewaajacune_utils.h"
 #include "../config/nijcyota_utils.h"
 #include "../data/kemu_utils.h"
-#define POLICY_BASE_INVESTMENT (__cwcn_type_t) 1.0 // #FIXME put in nijcyota
+
 typedef struct __inteligent_order_policy{
-    __cwcn_type_t __order_margin_up; // (in [%]) how much porcentaje to margin up
-    __cwcn_type_t __order_margin_down; // (in [%]) how much porcentaje to margin down
-    __cwcn_type_t __base_margin_investment; // (in [%]) how much to invest
+    __cwcn_type_t __order_margin_uper; // (in [0-1]) how much porcentaje to margin up
+    __cwcn_type_t __order_margin_down; // (in [0-1]) how much porcentaje to margin down
+    __cwcn_type_t __base_margin_investment; // (in [0-1]) how much to invest
     __cwcn_type_t __policy_total_reward;
 } __inteligent_order_policy_t;
 typedef struct __iicu_jkimyei{

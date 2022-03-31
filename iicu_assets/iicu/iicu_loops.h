@@ -14,10 +14,12 @@ int get_next_aviable_jkimyei_thread(__iicu_wikimyei_t *_iicu_wikimyei);
 int get_next_aviable_regressive_thread(__iicu_wikimyei_t *_iicu_wikimyei);
 int get_next_aviable_polinomial_thread(__iicu_wikimyei_t *_iicu_wikimyei);
 int get_next_aviable_staticques_thread(__iicu_wikimyei_t *_iicu_wikimyei);
+int get_next_aviable_itsaave_thread(__iicu_wikimyei_t *_iicu_wikimyei);
 void jkimyei_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void regressive_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void polinomial_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void staticques_loop(__iicu_wikimyei_t *_iicu_wikimyei);
+void itsaave_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 #include "../sdl_interfaces/loading.h"
 #include "../sdl_tools/sdl_object.h"
 #include "../sdl_tools/sdl_control.h"

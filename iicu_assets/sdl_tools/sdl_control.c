@@ -35,7 +35,7 @@ int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
         break;
     case SDL_JOYBUTTONDOWN:
         #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
-        fprintf(stdout,"[waka] Joystick-KEY : jbutton.button: %d\n",
+        fprintf(stdout,"[SDL_JOYBUTTONDOWN] Joystick-KEY : jbutton.button: %d\n",
             event->jbutton.button);
         #endif
         switch (event->jbutton.button){
@@ -47,7 +47,7 @@ int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
     case SDL_JOYAXISMOTION:
         // event->jaxis.value == -129 means the jaxis action return to steady position
         #ifdef __cwcn_DEBUG_JOYSTICK_EVENTS__
-        fprintf(stdout,"[waka] Joystick-KEY : jbutton.button: %d ,jaxis.axis: %d, jaxis.value: %d \n",
+        fprintf(stdout,"[SDL_JOYAXISMOTION] Joystick-KEY : jbutton.button: %d ,jaxis.axis: %d, jaxis.value: %d \n",
             event->jbutton.button,
             event->jaxis.axis,
             event->jaxis.value);
@@ -87,6 +87,13 @@ int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
                     break;
                 }
             }
+        case 4: // L2
+            // fprintf(stdout,"L2!\n");
+            break;
+        case 6: // L1
+            // fprintf(stdout,"L1!\n");
+            active_itsaave_request(_iicu_wikimyei); // makes order
+            break;
         default:
             break;
         }
@@ -101,7 +108,7 @@ int handle_keyboard_events(__iicu_wikimyei_t *_iicu_wikimyei){
 	int keyCode=__cwcn_EVENT_WAIT;
     SDL_Event *event=&_iicu_wikimyei->__obj_sdl->event;
     #ifdef __cwcn_DEBUG_KEYBOARD_EVENTS__
-    fprintf(stdout,"KEYBOARD-KEY : [%d] : %s \n",event->type,SDL_GetKeyName(event->key.keysym.sym));
+    fprintf(stdout,"[handle_keyboard_events] KEYBOARD-KEY : [%d] : %s \n",event->type,SDL_GetKeyName(event->key.keysym.sym));
     #endif
     #ifdef NO_KEY_REPEAT
     if(!event->key.repeat){

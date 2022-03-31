@@ -6,6 +6,7 @@
 typedef struct __iicu_nijcyota{
     int nijcyota_index;
     int alliu_index;
+    int jkimyei_klines_index;
     int noise_box_x;
     int noise_box_y;
     int noise_box_w;
@@ -16,6 +17,7 @@ typedef struct __iicu_nijcyota{
     int main_box_h;
     int data_box_x;
     int data_box_y;
+    SDL_Color grey_color;
 	SDL_Color positive_color;
 	SDL_Color negative_color;
 	SDL_Color alliu_color;

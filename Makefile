@@ -56,6 +56,7 @@ sdl: \
 		./iicu_assets/sdl_tools/sdl_plot_queue.c \
 		./iicu_assets/sdl_tools/sdl_plot_orbital.c \
 		./iicu_assets/sdl_tools/sdl_jkimyei.c \
+		./iicu_assets/sdl_tools/sdl_itsaave.c \
 		./iicu_assets/sdl_tools/sdl_utils.c \
 		./iicu_assets/sdl_tools/sdl_object.c \
 		./iicu_assets/sdl_tools/sdl_noise_box.c \
@@ -66,6 +67,7 @@ sdl: \
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_object.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_control.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_plot_queue.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_itsaave.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_jkimyei.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_tools/sdl_main_plot.c
@@ -81,6 +83,7 @@ communications: \
 threads: \
 		./iicu_assets/threads/broker_thread.c \
 		./iicu_assets/threads/jkimyei_thread.c \
+		./iicu_assets/threads/itsaave_thread.c \
 		./iicu_assets/threads/regressive_thread.c \
 		./iicu_assets/threads/polinomial_thread.c \
 		./iicu_assets/threads/staticques_thread.c \
@@ -89,6 +92,7 @@ threads: \
 		./iicu_assets/threads/thread_launcher.c \
 		./iicu_assets/threads/main_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/broker_thread.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/itsaave_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/jkimyei_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/regressive_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/polinomial_thread.c
@@ -112,11 +116,13 @@ iicu: \
 		sdl_control.o \
 		sdl_noise_box.o \
 		./iicu_assets/iicu/iicu_loops.c \
+		./iicu_assets/iicu/iicu_itsaave.c \
 		./iicu_assets/iicu/iicu_wikimyei.c \
 		./iicu_assets/iicu/iicu_jkimyei.c \
 		./iicu_assets/iicu/iicu_scene_utils.c \
 		./iicu_assets/iicu/iicu_state_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_jkimyei.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_itsaave.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_wikimyei.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_scene_utils.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/iicu/iicu_state_utils.c
@@ -148,6 +154,7 @@ test_iicu: \
 		broker_thread.o \
 		state_thread.o \
 		jkimyei_thread.o \
+		itsaave_thread.o \
 		regressive_thread.o \
 		polinomial_thread.o \
 		staticques_thread.o \
@@ -166,6 +173,7 @@ test_iicu: \
 		sdl_noise_box.o \
 		sdl_plot_orbital.o \
 		sdl_jkimyei.o \
+		sdl_itsaave.o \
 		sdl_utils.o \
 		rcsi.o \
 		curl_utils.o \
@@ -181,6 +189,7 @@ test_iicu: \
 		sdl_object.o \
 		scene_panel.o \
 		iicu_jkimyei.o \
+		iicu_itsaave.o \
 		iicu_wikimyei.o \
 		./iicu_test/test_iicu.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_iicu.c
@@ -191,6 +200,7 @@ test_queue: \
 		broker_thread.o \
 		state_thread.o \
 		jkimyei_thread.o \
+		itsaave_thread.o \
 		regressive_thread.o \
 		polinomial_thread.o \
 		staticques_thread.o \
@@ -207,6 +217,7 @@ test_queue: \
 		login.o \
 		sdl_main_plot.o \
 		sdl_jkimyei.o \
+		sdl_itsaave.o \
 		sdl_noise_box.o \
 		sdl_plot_orbital.o \
 		sdl_utils.o \
@@ -224,6 +235,7 @@ test_queue: \
 		sdl_object.o \
 		scene_panel.o \
 		iicu_jkimyei.o \
+		iicu_itsaave.o \
 		iicu_wikimyei.o \
 		./iicu_test/test_queue.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_queue.c
@@ -245,6 +257,7 @@ test_jkimyei: \
 		broker_thread.o \
 		state_thread.o \
 		jkimyei_thread.o \
+		itsaave_thread.o \
 		thread_launcher.o \
 		main_thread.o \
 		kemu_utils.o \
@@ -258,6 +271,7 @@ test_jkimyei: \
 		login.o \
 		sdl_main_plot.o \
 		sdl_jkimyei.o \
+		sdl_itsaave.o \
 		sdl_noise_box.o \
 		sdl_plot_orbital.o \
 		sdl_utils.o \
@@ -274,6 +288,7 @@ test_jkimyei: \
 		sdl_utils.o \
 		sdl_object.o \
 		scene_panel.o \
+		iicu_itsaave.o \
 		iicu_jkimyei.o \
 		iicu_wikimyei.o \
 	./iicu_test/test_jkimyei.c
