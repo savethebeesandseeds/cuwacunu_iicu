@@ -86,6 +86,7 @@ __iicu_mewaajacune_t *mewaajacune_clone_fabric(__iicu_mewaajacune_t *src_mewaaja
 }
 
 void rebase_mewaajacune(__iicu_mewaajacune_t *dest_mewaajacune,__iicu_mewaajacune_t *src_mewaajacune){ // copies src to dest, but kills none of them.
+    assert(load_is_healty(src_mewaajacune));
     kill_load(dest_mewaajacune);
     int src_start_index=src_mewaajacune->__load_index;
     load_to_start(src_mewaajacune);
@@ -95,6 +96,7 @@ void rebase_mewaajacune(__iicu_mewaajacune_t *dest_mewaajacune,__iicu_mewaajacun
     }while(load_go_up(src_mewaajacune)!=-1);
     load_to_index(src_mewaajacune,src_start_index);
     load_to_index(dest_mewaajacune,src_start_index);
+    assert(load_is_healty(dest_mewaajacune));
 }
 /*
     UPDATE QUEUE
@@ -150,7 +152,7 @@ int load_go_down(__iicu_mewaajacune_t *_mewaajacune){
     return 0x00;
 }
 void load_to_start(__iicu_mewaajacune_t *_mewaajacune){
-    assert(!load_on_noob(_mewaajacune));
+    // assert(!load_on_noob(_mewaajacune));
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
         fprintf(stdout,">> > load_to_start ; c_index: [%d]\n",_mewaajacune->__load_index);
     #endif
@@ -552,7 +554,7 @@ void destroy_mewaajacune(__iicu_mewaajacune_t *_mewaajacune){
     fprintf(stdout,">> > destroy_mewaajacune [#FIXME alocation cleaning]\n");
     #endif
     kill_load(_mewaajacune);
-    free(_mewaajacune); // #FIXME assert if needed outside
+    free(_mewaajacune);                    _mewaajacune=NULL;
 }
 /*
     MAIN OBJECT STATISTICS
@@ -681,6 +683,16 @@ void populate_alliu_with_klines(__iicu_mewaajacune_t *_mewaajacune, int _alliu_i
         glti(_mewaajacune)->__alliu_timestamp=(time_t)(((__cwcn_type_t)klines_payload.klines[x_position].open_time)/((__cwcn_type_t)1000.0));
         glti(_mewaajacune)->__alliu_state[_alliu_index]=(__cwcn_type_t)klines_payload.klines[x_position].open;
         #endif
+    }
+    load_to_start(_mewaajacune);
+}
+void test_populate_alliu_with_list(__iicu_mewaajacune_t *_mewaajacune, int _alliu_index, __cwcn_type_t *_list, int _size_of_list){
+    kill_load(_mewaajacune);
+    // --- --- --- --- · --- --- --- --- populate coordinate list
+    for(int x_position=0x00;x_position<_size_of_list;x_position++){
+        yield_next_trayectory(_mewaajacune);
+        glti(_mewaajacune)->__alliu_timestamp=0x00;
+        glti(_mewaajacune)->__alliu_state[_alliu_index]=(__cwcn_type_t)_list[x_position];
     }
     load_to_start(_mewaajacune);
 }

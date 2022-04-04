@@ -3,7 +3,7 @@ void sdl_draw_jkimyei_policy(__iicu_wikimyei_t *_iicu_wikimyei){
     __sdl_screen_object_t *c_obj_sdl=_iicu_wikimyei->__obj_sdl;
     __iicu_mewaajacune_t *c_mewaajacune=giicm(_iicu_wikimyei);
     __iicu_nijcyota_t *c_nijcyota=giicn(_iicu_wikimyei);
-    __iicu_staticques_t *c_staticques=giicsq(_iicu_wikimyei);
+    __cwcn_type_t c_latest_alliu=gentil_get_alliu_latest(_iicu_wikimyei, gcsid(_iicu_wikimyei));
     __cwcn_type_t main_box_max=max_alliu_in_load(c_mewaajacune,NIJCYOTA_ALLIU_INDEX);
     __cwcn_type_t main_box_min=min_alliu_in_load(c_mewaajacune,NIJCYOTA_ALLIU_INDEX);
     __iicu_jkimyei_t *c_jkimyei=giicjk(_iicu_wikimyei);
@@ -30,7 +30,7 @@ void sdl_draw_jkimyei_policy(__iicu_wikimyei_t *_iicu_wikimyei){
         c_obj_sdl->renderer);
     // --- --- --- --- --- 
     draw_factor_x=c_nijcyota->main_box_x+c_nijcyota->main_box_w+alliu_dx;
-    draw_factor_y=(int)((c_staticques->__alliu_latest-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
+    draw_factor_y=(int)((c_latest_alliu-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
     draw_factor_color=c_nijcyota->alliu_color;
     sprintf(aux_caption,"              _______________");
     sdl_draw_text(aux_caption, // alliu current
@@ -39,7 +39,7 @@ void sdl_draw_jkimyei_policy(__iicu_wikimyei_t *_iicu_wikimyei){
         draw_factor_color,c_obj_sdl->screen_font,c_obj_sdl->renderer);
     // --- --- --- --- --- 
     // draw_factor_x=c_nijcyota->main_box_x+c_nijcyota->main_box_w+alliu_dx;
-    // draw_factor_y=(int)((c_staticques->__alliu_latest*(0x01+BROKER_MARKET_TOTAL_COMMISSION)-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
+    // draw_factor_y=(int)((c_latest_alliu*(0x01+BROKER_MARKET_TOTAL_COMMISSION)-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
     // sprintf(aux_caption,"-----------------------------");
     // sdl_draw_text(aux_caption, // alliu margin of comission
     //     draw_factor_x,
@@ -47,7 +47,7 @@ void sdl_draw_jkimyei_policy(__iicu_wikimyei_t *_iicu_wikimyei){
     //     c_nijcyota->negative_color,c_obj_sdl->screen_font,c_obj_sdl->renderer);
     // --- --- --- --- --- 
     draw_factor_x=c_nijcyota->main_box_x+c_nijcyota->main_box_w+alliu_dx;
-    draw_factor_y=(int)((c_staticques->__alliu_latest*(0x01-c_policy->__order_margin_down)-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
+    draw_factor_y=(int)((c_latest_alliu*(0x01-c_policy->__order_margin_down)-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
     draw_factor_color=c_nijcyota->negative_color;
     sprintf(aux_caption,"-----------------------------");
     sdl_draw_text(aux_caption, // alliu magin of max loss
@@ -56,7 +56,7 @@ void sdl_draw_jkimyei_policy(__iicu_wikimyei_t *_iicu_wikimyei){
         draw_factor_color,c_obj_sdl->screen_font,c_obj_sdl->renderer);
     // --- --- --- --- --- 
     draw_factor_x=c_nijcyota->main_box_x+c_nijcyota->main_box_w+alliu_dx;
-    draw_factor_y=(int)((c_staticques->__alliu_latest*(0x01+c_policy->__order_margin_uper)-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
+    draw_factor_y=(int)((c_latest_alliu*(0x01+c_policy->__order_margin_uper)-main_box_min)*((__cwcn_type_t)c_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
     draw_factor_color=c_nijcyota->positive_color;
     sprintf(aux_caption,"+++++++++++++++++++++++++++++");
     sdl_draw_text(aux_caption, // alliu margine of gain

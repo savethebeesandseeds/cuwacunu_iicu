@@ -17,11 +17,12 @@ void sdl_draw_1d_plot(__sdl_screen_object_t *obj_sdl,
     if(load_is_empty(_mewaajacune)){fprintf(stderr,"[WARNING:] trying to print an empy _mewaajacune\n");return;}
     __cwcn_type_t graph_max=max_alliu_in_load(_mewaajacune,alliu_index);
     __cwcn_type_t graph_min=min_alliu_in_load(_mewaajacune,alliu_index);
-    __cwcn_type_t x_delta=(__cwcn_type_t)_mewaajacune->__load_size;
+    int c_load_size=_mewaajacune->__load_size;
+    __cwcn_type_t x_delta=(__cwcn_type_t)c_load_size;
     __cwcn_type_t y_delta=((__cwcn_type_t)graph_max-graph_min);
     __cwcn_type_t y_mid=(graph_max+graph_min)/((__cwcn_type_t)2);
-    if(box_w<_mewaajacune->__load_size){fprintf(stderr,"[WARNING:] not enough discrete pixels to print [%d] items in plot of size [%d]\n",_mewaajacune->__load_size,box_w);return;} // #FIXME
-    // if(box_h<graph_max-graph_min){fprintf(stderr,"[WARNING:] not enough discrete pixels to print [%d] items in plot of size [%d]\n",_mewaajacune->__load_size,box_w);return;}
+    if(box_w<c_load_size){fprintf(stderr,"[WARNING:] not enough discrete pixels to print [%d] items in plot of size [%d]\n",c_load_size,box_w);return;} // #FIXME
+    // if(box_h<graph_max-graph_min){fprintf(stderr,"[WARNING:] not enough discrete pixels to print [%d] items in plot of size [%d]\n",c_load_size,box_w);return;}
     __cwcn_type_t past_x;
     __cwcn_type_t past_y;
     __cwcn_type_t bias_x=((__cwcn_type_t)box_x);
@@ -80,7 +81,7 @@ void sdl_draw_1d_plot(__sdl_screen_object_t *obj_sdl,
                 fprintf(stdout,"[WARNING:] method for printing _cwcn_BULL (dot) not implemented\n");
                 break;
             default:
-                fprintf(stdout,"[WARNING:] found __ujcamei_state not set at _mewaajacune_index %d\n",_mewaajacune->__load_size);
+                fprintf(stdout,"[WARNING:] found __ujcamei_state not set at _mewaajacune_index %d\n",c_load_size);
                 break;
             }
 

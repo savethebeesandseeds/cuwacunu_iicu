@@ -2,7 +2,7 @@
 
 // ---- ---- ---- ---- ---- 
 void sdl_abandon_ship(){
-    fprintf(stdout,"[cuwacunu:] iicu quit...\n");
+    fprintf(stdout,"[%s cuwacunu %s:] iicu quit...\n",COLOR_CUWACUNU,COLOR_REGULAR);
     exit(0);
 }
 int test_keyboard(){
@@ -39,8 +39,13 @@ int handle_joystick_events(__iicu_wikimyei_t *_iicu_wikimyei){
             event->jbutton.button);
         #endif
         switch (event->jbutton.button){
+        case 8:
+            keyCode=__cwcn_EVENT_CONTINUE;
+            get_state(_iicu_wikimyei)->__scene_case_button=BUTTON_SELECT;
+            break;
         case 9:
             keyCode=__cwcn_EVENT_CONTINUE;
+            get_state(_iicu_wikimyei)->__scene_case_button=BUTTON_START;
             break;
         break;
         }
@@ -122,6 +127,11 @@ int handle_keyboard_events(__iicu_wikimyei_t *_iicu_wikimyei){
                 sdl_abandon_ship();
             case SDLK_q:
                 keyCode=__cwcn_EVENT_CONTINUE;
+                get_state(_iicu_wikimyei)->__scene_case_button=BUTTON_START;
+                break;
+            case SDLK_p:
+                keyCode=__cwcn_EVENT_CONTINUE;
+                get_state(_iicu_wikimyei)->__scene_case_button=BUTTON_SELECT;
                 break;
             default:
                 break;

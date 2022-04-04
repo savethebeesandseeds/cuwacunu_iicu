@@ -6,7 +6,7 @@ void get_price_ticker(bnc_price_tick_t *payload,char *symbol){
     int ref = interpret_rest_code(responce.res_code);
     assert(ref==0x01);
     payload->symbol=symbol;
-    // fprintf(stdout,"request : [%d] : %s : %s\n",ref,target_url,responce.ptr);
+    fprintf(stdout,"request : [%d] : %s : %s\n",ref,target_url,responce.ptr);
     char *ch;
     char filter_str[64];
     snprintf(filter_str,256,"},{\"symbol:%sprice",symbol);
@@ -47,18 +47,30 @@ void get_klines(bnc_klines_t *payload,char *symbol,char *interval){
     ch=strtok(responce.ptr, "],[\"");
     while(ch!=NULL){ // capture data into the klines structure
         payload->klines[payload->klines_count].open_time=strtol(ch,NULL,10);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].open=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].high=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].low=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].close=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].volume=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].close_time=strtol(ch,NULL,10);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].quote_asset_volume=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].number_of_trades=strtol(ch,NULL,10);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].taker_by_base_asset_volume=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].taker_by_quote_asset_volume=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines[payload->klines_count].ignore=strtof(ch,NULL);
-        ch=strtok(NULL,"],[\"");payload->klines_count++;
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].open=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].high=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].low=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].close=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].volume=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].close_time=strtol(ch,NULL,10);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].quote_asset_volume=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].number_of_trades=strtol(ch,NULL,10);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].taker_by_base_asset_volume=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].taker_by_quote_asset_volume=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines[payload->klines_count].ignore=strtof(ch,NULL);
+        ch=strtok(NULL,"],[\"");
+        payload->klines_count++;
     }
     // if(strcmp(symbol,"BTCUSDT")==0 && strcmp(interval,"1m")==0){
     //     fprintf(stdout,"%s : %s :: ",symbol,interval);

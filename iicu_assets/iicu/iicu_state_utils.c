@@ -4,6 +4,7 @@
 */
 __iicu_state_struct_t *fabric_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     __iicu_state_struct_t *new_iicu_state=malloc(sizeof(__iicu_state_struct_t));
+    new_iicu_state->__scene_case_button=BUTTON_NONE;
     new_iicu_state->__req_itsaave=0x00;
     new_iicu_state->__jk_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
     new_iicu_state->__rg_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__regressive_thread_order_t *));
@@ -47,11 +48,11 @@ void initialize_iicu_state(__iicu_state_struct_t *_iicu_state,__iicu_wikimyei_t 
     for(int bsi_idx=0x00;bsi_idx<MAX_IICU_SCENES;bsi_idx++){
         _iicu_state->jkimyei_in_use[bsi_idx]=0x00;
         _iicu_state->scene_itsaave_in_use[bsi_idx]=0x00;
+        _iicu_state->staticques_in_use[bsi_idx]=0x00;
         for(int bki_idx=0x00;bki_idx<BROKER_CANDLE_N_INTERVALS;bki_idx++){
             _iicu_state->mewaajacune_in_use[bsi_idx][bki_idx]=0x00;
             _iicu_state->regressive_in_use[bsi_idx][bki_idx]=0x00;
             _iicu_state->polinomial_in_use[bsi_idx][bki_idx]=0x00;
-            _iicu_state->staticques_in_use[bsi_idx][bki_idx]=0x00;
         }
     }
     // --- initialize the threads_states
@@ -117,7 +118,7 @@ void update_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     // --- update network state
     d_time = c_time-get_state(_iicu_wikimyei)->network_last_update;
     if(get_state(_iicu_wikimyei)->network_last_update==0x00 || d_time > STATE_NETWORK_UPDATE_PERIOD){
-        fprintf(stdout,"[cuwacunu:] update_iicu_state : network\n");
+        fprintf(stdout,"[%s cuwacunu %s:] update_iicu_state : network\n",COLOR_CUWACUNU,COLOR_REGULAR);
         if(test_network_by_ping()!=STATE_STATUS_UP){
             get_state(_iicu_wikimyei)->network_is_up=0x00;
         } else {
@@ -128,7 +129,7 @@ void update_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     // --- update broker state
     d_time = c_time-get_state(_iicu_wikimyei)->broker_last_update;
     if(get_state(_iicu_wikimyei)->broker_last_update==0x00 || d_time > STATE_BROKER_UPDATE_PERIOD){
-        fprintf(stdout,"[cuwacunu:] update_iicu_state : broker\n");
+        fprintf(stdout,"[%s cuwacunu %s:] update_iicu_state : broker\n",COLOR_CUWACUNU,COLOR_REGULAR);
         if(test_network_by_ping()!=STATE_STATUS_UP){
             get_state(_iicu_wikimyei)->broker_is_up=0x00;
         } else {
@@ -139,7 +140,7 @@ void update_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     // --- update keyboard state
     d_time = c_time-get_state(_iicu_wikimyei)->keyboard_last_update;
     if(get_state(_iicu_wikimyei)->keyboard_last_update==0x00 || d_time > STATE_KEYBOARD_UPDATE_PERIOD){
-        fprintf(stdout,"[cuwacunu:] update_iicu_state : keyboard\n");
+        fprintf(stdout,"[%s cuwacunu %s:] update_iicu_state : keyboard\n",COLOR_CUWACUNU,COLOR_REGULAR);
         if(test_keyboard()!=STATE_STATUS_UP){
             get_state(_iicu_wikimyei)->keyboard_is_up=0x00;
         } else {
@@ -150,7 +151,7 @@ void update_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     // --- update controller state
     d_time = c_time-get_state(_iicu_wikimyei)->controller_last_update;
     if(get_state(_iicu_wikimyei)->controller_last_update==0x00 || d_time > STATE_CONTROLLER_UPDATE_PERIOD){
-        fprintf(stdout,"[cuwacunu:] update_iicu_state : controller\n");
+        fprintf(stdout,"[%s cuwacunu %s:] update_iicu_state : controller\n",COLOR_CUWACUNU,COLOR_REGULAR);
         if(test_controller()!=STATE_STATUS_UP){
             get_state(_iicu_wikimyei)->controller_is_up=0x00;
         } else {

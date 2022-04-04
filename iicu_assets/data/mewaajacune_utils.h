@@ -81,6 +81,7 @@ __cwcn_type_t std_alliu_in_load(__iicu_mewaajacune_t *_mewaajacune,int alliu_ind
 // --- --- --- 
 void test_populate_alliu(__iicu_mewaajacune_t *_mewaajacune);
 void populate_alliu_with_klines(__iicu_mewaajacune_t *_mewaajacune, int _alliu_index, char *symbol, char *interval);
+void test_populate_alliu_with_list(__iicu_mewaajacune_t *_mewaajacune, int _alliu_index, __cwcn_type_t *_list, int _size_of_list);
 __cwcn_type_t request_latest_alliu(char *symbol);
 #include "../data/kemu_utils.h"
 #endif

@@ -19,4 +19,9 @@ void render_home(__sdl_screen_object_t *obj_sdl){
     captionY=425;
     SDL_Color font_color_3 = {255,255,255};
     sdl_draw_text(caption,captionX,captionY,font_color_3,obj_sdl->screen_font,obj_sdl->renderer);
+    caption="press select |____| (to debug)";
+    captionX=500;
+    captionY=440;
+    SDL_Color font_color_4 = {255,255,255};
+    sdl_draw_text(caption,captionX,captionY,font_color_4,obj_sdl->screen_font,obj_sdl->renderer);
 }

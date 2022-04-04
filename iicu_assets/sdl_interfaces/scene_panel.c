@@ -31,18 +31,20 @@ void render_scene_panel(__iicu_wikimyei_t *_iicu_wikimyei){
         _iicu_wikimyei->__obj_sdl->screen_font,
         _iicu_wikimyei->__obj_sdl->renderer);
     
-    sprintf(aux_caption,"SCENE[%d]POCKET:%f",gcsid(_iicu_wikimyei),get_scene_itsaave(_iicu_wikimyei,gcsid(_iicu_wikimyei))->__it_pocket->__holding_value);
+    // sprintf(aux_caption,"SCENE[%d]POCKET:%f",gcsid(_iicu_wikimyei),gentil_get_scene_itsaave_holding_value(_iicu_wikimyei,gcsid(_iicu_wikimyei)));
+    sprintf(aux_caption,"SCENE[%d]POCKET:%f",gcsid(_iicu_wikimyei),get_scene_itsaave(_iicu_wikimyei, gcsid(_iicu_wikimyei))->__it_pocket->__holding_value);
     sdl_draw_text(aux_caption,
         giicn(_iicu_wikimyei)->data_box_x,
         giicn(_iicu_wikimyei)->data_box_y+6*SCREEN_FONT_DELTA,
         giicn(_iicu_wikimyei)->line_color,
         _iicu_wikimyei->__obj_sdl->screen_font,
         _iicu_wikimyei->__obj_sdl->renderer);
-
-    sprintf(aux_caption,"WK_POCKET:%f",get_wk_itsaave(_iicu_wikimyei)->__it_pocket->__holding_value);
+    
+    // sprintf(aux_caption,"WK_POCKET:%f",gentil_get_wk_itsaave_holding_value(_iicu_wikimyei));
+    sprintf(aux_caption,"WK_POCKET:%f",get_wk_itsaave(_iicu_wikimyei)->__it_pocket->__holding_value); // 
     sdl_draw_text(aux_caption,
         giicn(_iicu_wikimyei)->data_box_x,
-        giicn(_iicu_wikimyei)->data_box_y+8*SCREEN_FONT_DELTA,
+        giicn(_iicu_wikimyei)->data_box_y+10*SCREEN_FONT_DELTA,
         giicn(_iicu_wikimyei)->line_color,
         _iicu_wikimyei->__obj_sdl->screen_font,
         _iicu_wikimyei->__obj_sdl->renderer);
@@ -53,7 +55,7 @@ void render_scene_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     sprintf(aux_caption,"TIMESTAMP:%ld",now);
     sdl_draw_text(aux_caption,
         giicn(_iicu_wikimyei)->data_box_x,
-        giicn(_iicu_wikimyei)->data_box_y+10*SCREEN_FONT_DELTA,
+        giicn(_iicu_wikimyei)->data_box_y+12*SCREEN_FONT_DELTA,
         giicn(_iicu_wikimyei)->line_color,
         _iicu_wikimyei->__obj_sdl->screen_font,
         _iicu_wikimyei->__obj_sdl->renderer);
@@ -96,9 +98,6 @@ void render_scene_panel(__iicu_wikimyei_t *_iicu_wikimyei){
     //         giicn(_iicu_wikimyei));
     // }
     // --- --- --- --- · --- --- --- --- ORBITAL 1
-    sdl_draw_1d_orbital(_iicu_wikimyei->__obj_sdl, 
-        giicm(_iicu_wikimyei), 
-        giicn(_iicu_wikimyei),
-        giicsq(_iicu_wikimyei));
+    sdl_draw_1d_orbital(_iicu_wikimyei);
     // --- --- --- --- · --- --- --- --- 
 }

@@ -1,30 +1,18 @@
 #include "broker_thread.h"
 void *IICU_broker_thread(void *_iicu_wikimyei){
-    fprintf(stdout,"[cuwacunu:] : start : IICU_broker_thread()\n");
+    fprintf(stdout,"[%s cuwacunu %s:] : start : IICU_broker_thread()\n",COLOR_CUWACUNU,COLOR_REGULAR);
     while(0xFF){
-        fprintf(stdout,"[cuwacunu:] step broker thread--- ... ---\n");
+        fprintf(stdout,"[%s cuwacunu %s:] step broker thread--- ... ---\n",COLOR_CUWACUNU,COLOR_REGULAR);
         Uint32 start_time = SDL_GetTicks();
-        update_kemu_broker((__iicu_wikimyei_t *)_iicu_wikimyei);
         update_mewaajacune_broker((__iicu_wikimyei_t *)_iicu_wikimyei);
         if((SDL_GetTicks()-start_time)<(1000*BROKER_THREAD_PERIOD)){
             SDL_Delay((1000*BROKER_THREAD_PERIOD)-(SDL_GetTicks()-start_time));
         }
     }
     pthread_exit(NULL);
-    fprintf(stdout,"[cuwacunu:] : end : IICU_broker_thread()\n");
+    fprintf(stdout,"[%s cuwacunu %s:] : end : IICU_broker_thread()\n",COLOR_CUWACUNU,COLOR_REGULAR);
 }
 
-void update_kemu_broker(__iicu_wikimyei_t *_iicu_wikimyei){
-    __cwcn_type_t symbol_latest_alliu=0x00;
-    for(int idx_symb=0x00;idx_symb<MAX_IICU_SCENES;idx_symb++){ // all symbols
-        symbol_latest_alliu=(__cwcn_type_t) request_latest_alliu(IICU_SCENES_SYMBOLS[idx_symb]);
-        for(int idx_kline=0x00;idx_kline<BROKER_CANDLE_N_INTERVALS;idx_kline++){ // all intervals per symbol
-            beseech_staticques(_iicu_wikimyei, idx_symb, idx_kline);
-            get_staticques(_iicu_wikimyei, idx_symb, idx_kline)->__alliu_latest=symbol_latest_alliu;
-            release_staticques(_iicu_wikimyei, idx_symb, idx_kline);
-        }
-    }
-}
 ___cwcn_bool_t symbol_kline_broker_update_needed(__iicu_wikimyei_t *_iicu_wikimyei, int _idx_scene, int _idx_kline){
     double c_time= (double) time(NULL);
     double d_time = c_time-get_state(_iicu_wikimyei)->kline_last_update[_idx_scene][_idx_kline];
@@ -39,19 +27,19 @@ void update_mewaajacune_broker(__iicu_wikimyei_t *_iicu_wikimyei){
     for(int idx_kline=0x00;idx_kline<BROKER_CANDLE_N_INTERVALS;idx_kline++){ // all intervals per symbol
         for(int idx_symb=0x00;idx_symb<MAX_IICU_SCENES;idx_symb++){ // all symbols
             if(symbol_kline_broker_update_needed(_iicu_wikimyei,gcsid(_iicu_wikimyei),gcklid(_iicu_wikimyei))){ // give priority to the active item
-                update_mewaajacune_broker_item(_iicu_wikimyei, IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)], BROKER_CANDLE_INTERVALS[gcklid(_iicu_wikimyei)]);
+                update_mewaajacune_item(_iicu_wikimyei, IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)], BROKER_CANDLE_INTERVALS[gcklid(_iicu_wikimyei)]);
             }
             beseech_nijcyota(_iicu_wikimyei);
             test_index_kline=giicn(_iicu_wikimyei)->jkimyei_klines_index;
             release_nijcyota(_iicu_wikimyei);
             if(symbol_kline_broker_update_needed(_iicu_wikimyei,idx_symb,test_index_kline)){ // give priority to policy needs
-                update_mewaajacune_broker_item(_iicu_wikimyei, IICU_SCENES_SYMBOLS[idx_symb], BROKER_CANDLE_INTERVALS[test_index_kline]);
+                update_mewaajacune_item(_iicu_wikimyei, IICU_SCENES_SYMBOLS[idx_symb], BROKER_CANDLE_INTERVALS[test_index_kline]);
             }
-            update_mewaajacune_broker_item(_iicu_wikimyei, IICU_SCENES_SYMBOLS[idx_symb], BROKER_CANDLE_INTERVALS[idx_kline]);
+            update_mewaajacune_item(_iicu_wikimyei, IICU_SCENES_SYMBOLS[idx_symb], BROKER_CANDLE_INTERVALS[idx_kline]);
         }
     }
 }
-void update_mewaajacune_broker_item(__iicu_wikimyei_t *_iicu_wikimyei, char *symbol, char *interval){
+void update_mewaajacune_item(__iicu_wikimyei_t *_iicu_wikimyei, char *symbol, char *interval){
     int idx_kline=-1;
     int idx_scene=-1;
     for(int ctx_kline=0x00;ctx_kline<BROKER_CANDLE_N_INTERVALS;ctx_kline++){
@@ -80,12 +68,13 @@ void update_mewaajacune_broker_item(__iicu_wikimyei_t *_iicu_wikimyei, char *sym
             beseech_mewaajacune(_iicu_wikimyei, idx_scene, idx_kline);
             rebase_mewaajacune(get_mewaajacune(_iicu_wikimyei, idx_scene, idx_kline),tmp_mewaajacune);
             release_mewaajacune(_iicu_wikimyei, idx_scene, idx_kline);
+            // --- safely destoy temporal mewaajacune
             destroy_mewaajacune(tmp_mewaajacune);
             // --- safely update desired staticques
-            beseech_staticques(_iicu_wikimyei, idx_scene, idx_kline);
-            get_staticques(_iicu_wikimyei, idx_scene, idx_kline)->__alliu_mean=tmp_mean;
-            get_staticques(_iicu_wikimyei, idx_scene, idx_kline)->__alliu_std=tmp_std;
-            release_staticques(_iicu_wikimyei, idx_scene, idx_kline);
+            beseech_staticques(_iicu_wikimyei, idx_scene);
+            get_staticques(_iicu_wikimyei, idx_scene)->__alliu_mean[idx_kline]=tmp_mean;
+            get_staticques(_iicu_wikimyei, idx_scene)->__alliu_std[idx_kline]=tmp_std;
+            release_staticques(_iicu_wikimyei, idx_scene);
         }
     } else {
         if(idx_kline==-1){fprintf(stderr,"[ERROR:] on function update_mewaajacune_broker_interval_symbol : cound't find CANDLE INTERVAL %s...\n", interval);}

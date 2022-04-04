@@ -3,7 +3,7 @@ void sdl_draw_main_plot(__iicu_wikimyei_t *_iicu_wikimyei){
     __sdl_screen_object_t *_obj_sdl=_iicu_wikimyei->__obj_sdl;
     __iicu_mewaajacune_t *_mewaajacune=giicm(_iicu_wikimyei);
     __iicu_nijcyota_t *_nijcyota=giicn(_iicu_wikimyei);
-    __iicu_staticques_t *_staticques=giicsq(_iicu_wikimyei);
+    __cwcn_type_t c_latest_alliu=gentil_get_alliu_latest(_iicu_wikimyei, gcsid(_iicu_wikimyei));
     char aux_caption[512]="";
     char aux_time_caption[256]="";
     struct tm ts_v;
@@ -53,8 +53,8 @@ void sdl_draw_main_plot(__iicu_wikimyei_t *_iicu_wikimyei){
     int alliu_dx=5;
     int alliu_dy=-5;
     int latest_alliu_relative_y=0x00;
-    latest_alliu_relative_y=(int)((_staticques->__alliu_latest-main_box_min)*((__cwcn_type_t)_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
-    sprintf(aux_caption,"%.8f",_staticques->__alliu_latest);
+    latest_alliu_relative_y=(int)((c_latest_alliu-main_box_min)*((__cwcn_type_t)_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
+    sprintf(aux_caption,"%.8f",c_latest_alliu);
     sdl_draw_text(aux_caption, // alliu
         _nijcyota->main_box_x+_nijcyota->main_box_w+alliu_dx,
         _nijcyota->main_box_y+_nijcyota->main_box_h-latest_alliu_relative_y+alliu_dy,
@@ -66,7 +66,7 @@ void sdl_draw_main_plot(__iicu_wikimyei_t *_iicu_wikimyei){
             _nijcyota->main_box_y+_nijcyota->main_box_h+alliu_dy,
             _nijcyota->alliu_color,_obj_sdl->screen_font,_obj_sdl->renderer);
     }
-    latest_alliu_relative_y=(int)((main_box_max-_staticques->__alliu_latest)*((__cwcn_type_t)_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
+    latest_alliu_relative_y=(int)((main_box_max-c_latest_alliu)*((__cwcn_type_t)_nijcyota->main_box_h)/(main_box_max-main_box_min+1e-9));
     if(latest_alliu_relative_y>SCREEN_FONT_SIZE){
         sprintf(aux_caption,"%.8f",main_box_max);
         sdl_draw_text(aux_caption, // max alliu

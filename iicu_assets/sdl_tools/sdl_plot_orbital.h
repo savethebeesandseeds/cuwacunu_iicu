@@ -7,8 +7,6 @@
 #include "../config/nijcyota_utils.h"
 #include "../data/mewaajacune_utils.h"
 #include "../data/staticques_kemu.h"
-void sdl_draw_1d_orbital(__sdl_screen_object_t * obj_sdl, 
-    __iicu_mewaajacune_t *_mewaajacune, 
-    __iicu_nijcyota_t *_nijcyota,
-    __iicu_staticques_t *_staticques);
+#include "../iicu/iicu_wikimyei.h"
+void sdl_draw_1d_orbital(__iicu_wikimyei_t *_iicu_wikimyei);
 #endif

@@ -1,8 +1,14 @@
 #include "regressive_kemu.h"
 #include "../iicu/iicu_wikimyei.h"
 void *regressive_launcher(void *_rg_thread_order){
-    fprintf(stdout,"[cuwacunu:regressive] %sstart regressive_launcher%s\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[%s cuwacunu %s: regressive] %sstart regressive_launcher%s\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_WARNING,COLOR_REGULAR);
     // it finds for _iicu_regressive the best policy
+    #ifdef __REGRESSIVE_THREAD_FORCE_CORE
+    cpu_set_t cpuset;
+    int cpu = __REGRESSIVE_THREAD_FORCE_CORE;
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpu,&cpuset);
+    #endif
     ((__regressive_thread_order_t*)_rg_thread_order)->__rg_thead_is_bussy=0x01;
     __iicu_wikimyei_t *temp_iicu_wikimyei=((__regressive_thread_order_t*)_rg_thread_order)->__ref_iicu_wikimyei;
     // --- --- --- 
@@ -35,7 +41,7 @@ void *regressive_launcher(void *_rg_thread_order){
         bishop_linear_regression(temp_iicu_regressive);
         break;
     default:
-        fprintf(stderr,"[cuwacunu:]%sERROR, not understood regressive type configured in regressive thread order%s\n",COLOR_DANGER,COLOR_REGULAR);
+        fprintf(stderr,"[%s cuwacunu %s:]%sERROR, not understood regressive type configured in regressive thread order%s\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_DANGER,COLOR_REGULAR);
         break;
     }
     // --- --- --- #FIXME add tsdo
@@ -62,7 +68,7 @@ void *regressive_launcher(void *_rg_thread_order){
     destroy_regressive(temp_iicu_regressive);
     // --- --- --- 
     ((__regressive_thread_order_t*)_rg_thread_order)->__rg_thead_is_bussy=0x00;
-    fprintf(stdout,"[cuwacunu:regressive] %send regressive_launcher%s\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[%s cuwacunu %s:regressive] %send regressive_launcher%s\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_WARNING,COLOR_REGULAR);
     pthread_exit(NULL);
 }
 
@@ -72,8 +78,9 @@ void *regressive_launcher(void *_rg_thread_order){
 */
 void bishop_build_desing_matrix(__bishop_linear_regression_t *_blrk){
     // --- --- --- 
+    int c_load_size=_blrk->__mewaajacune->__load_size;
     __cwcn_matrix_t *c_desing_matrix=_blrk->__desing_matrix;
-    assert(c_desing_matrix->n_rows==_blrk->__mewaajacune->__load_size); // unable to fit design matrix
+    assert(c_desing_matrix->n_rows==c_load_size); // unable to fit design matrix
     assert(c_desing_matrix->n_cols==HILBERT_DESING_SIZE); // unable to fit design matrix
     __cwcn_type_t **c_dmtx=c_desing_matrix->_matrx;
     // --- --- --- LINESPACE
@@ -90,7 +97,7 @@ void bishop_build_desing_matrix(__bishop_linear_regression_t *_blrk){
     __cwcn_type_t hdss=(__cwcn_type_t)HILBERT_DESING_SPARTIAL_SCALE;
     switch(_blrk->__h_basis){
     case HILBERT_SIGMOIDAL:
-        for(int mwj_idx=0x00;mwj_idx<_blrk->__mewaajacune->__load_size;mwj_idx++){
+        for(int mwj_idx=0x00;mwj_idx<c_load_size;mwj_idx++){
             c_dmtx[mwj_idx][0x00]=0x01; // the basis is one
             for(int h_idx=0x01;h_idx<HILBERT_DESING_SIZE;h_idx++){
                 c_dmtx[mwj_idx][h_idx]=(_blrk->__mwjcn_matrx->_matrx[mwj_idx][0x00]-h_miu[h_idx])/hdss; // the items are sigmoidal
@@ -99,7 +106,7 @@ void bishop_build_desing_matrix(__bishop_linear_regression_t *_blrk){
         }
         break;
     case HILBERT_TANH:
-        for(int mwj_idx=0x00;mwj_idx<_blrk->__mewaajacune->__load_size;mwj_idx++){
+        for(int mwj_idx=0x00;mwj_idx<c_load_size;mwj_idx++){
             c_dmtx[mwj_idx][0x00]=0x01; // the basis is one
             for(int h_idx=0x01;h_idx<HILBERT_DESING_SIZE;h_idx++){
                 c_dmtx[mwj_idx][h_idx]=(_blrk->__mwjcn_matrx->_matrx[mwj_idx][0x00]-h_miu[h_idx])/hdss; // the items are hyperbolic tangent
@@ -115,13 +122,14 @@ void bishop_build_desing_matrix(__bishop_linear_regression_t *_blrk){
 }
 
 __bishop_linear_regression_t *blrk_fabric(__iicu_regressive_t *_iicu_regressive){
+    int c_load_size=_iicu_regressive->__rg_mewaajacune->__load_size;
     __bishop_linear_regression_t *new_blrk=malloc(sizeof(__bishop_linear_regression_t));
-    new_blrk->__desing_matrix=fabric_cwcn_matrix(_iicu_regressive->__rg_mewaajacune->__load_size, HILBERT_DESING_SIZE);
-    new_blrk->__moore_penrose_pseudo_inverse=fabric_cwcn_matrix(HILBERT_DESING_SIZE, _iicu_regressive->__rg_mewaajacune->__load_size);
+    new_blrk->__desing_matrix=fabric_cwcn_matrix(c_load_size, HILBERT_DESING_SIZE);
+    new_blrk->__moore_penrose_pseudo_inverse=fabric_cwcn_matrix(HILBERT_DESING_SIZE, c_load_size);
     new_blrk->__w_coefs=fabric_cwcn_matrix(HILBERT_DESING_SIZE, 0X01);
     new_blrk->__h_basis=HILBERT_DESING_BASIS;
     new_blrk->__mewaajacune=_iicu_regressive->__rg_mewaajacune;
-    new_blrk->__mwjcn_matrx=fabric_cwcn_matrix(_iicu_regressive->__rg_mewaajacune->__load_size, 0x01); // Hx1 = t
+    new_blrk->__mwjcn_matrx=fabric_cwcn_matrix(c_load_size, 0x01); // Hx1 = t
     load_mewaajacune_into_iicu_matrix(new_blrk->__mewaajacune, NIJCYOTA_ALLIU_INDEX, new_blrk->__mwjcn_matrx);
     // --- --- --- 
     new_blrk->__mwjcn_mean=mean_alliu_in_load(new_blrk->__mewaajacune, NIJCYOTA_ALLIU_INDEX);
@@ -159,13 +167,14 @@ void destroy_blrk(__bishop_linear_regression_t *_blrk){
 void load_mewaajacune_into_iicu_matrix(__iicu_mewaajacune_t *_mewaajacune, int _alliu_index, __cwcn_matrix_t *_A){
     int start_index=_mewaajacune->__load_index;
     int d_ctx=0x00;
+    int c_load_size=_mewaajacune->__load_size;
     load_to_start(_mewaajacune);
-    if(_A->n_rows==_mewaajacune->__load_size){
+    if(_A->n_rows==c_load_size){
         do{ // load mewaajacune alliu to rows
             _A->_matrx[d_ctx][0x00]=glti(_mewaajacune)->__alliu_state[_alliu_index];
             d_ctx++;
         }while(load_go_up(_mewaajacune)!=-0x01);
-    } else if(_A->n_cols==_mewaajacune->__load_size){
+    } else if(_A->n_cols==c_load_size){
         do{ // load mewaajacune alliu_to cols
             _A->_matrx[0x00][d_ctx]=glti(_mewaajacune)->__alliu_state[_alliu_index];
             d_ctx++;
@@ -198,7 +207,7 @@ void bishop_linear_regression(__iicu_regressive_t *_iicu_regressive){
     if(invertible==0x01){
         multiply_cwcn_inv_a_times_b(c_blrk->__moore_penrose_pseudo_inverse, c_phiTphi,c_phiT); // (phi^T*phi)^(-1)*phi^T
         multiply_cwcn_matrix(c_blrk->__w_coefs, c_blrk->__moore_penrose_pseudo_inverse, c_blrk->__mwjcn_matrx); // ((phi^T*phi)^(-1)*phi^T)*t
-        fprintf(stdout,"%s[cuwacunu:regressive] : bishop_linear_regression : __w_coefs : %s\n",COLOR_WARNING,COLOR_REGULAR);
+        fprintf(stdout,"%s[%s cuwacunu %s:regressive] : bishop_linear_regression : __w_coefs : %s\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_WARNING,COLOR_REGULAR);
         print_matrix(c_blrk->__w_coefs);
     } else {
         fprintf(stderr,"%s[ERROR:] non invertible matrix found on bishop_linear_regression!\n%s",COLOR_DANGER,COLOR_REGULAR);
@@ -211,7 +220,7 @@ void bishop_linear_regression(__iicu_regressive_t *_iicu_regressive){
     time_spent = (double)(end-begin) / CLOCKS_PER_SEC;
     _iicu_regressive->__rg_blrk_has_computed=0x01;
     // --- --- --- 
-    fprintf(stdout,"[cuwacunu:regressive] %send bishop_linear_regression%s : time : %f [s]\n",COLOR_WARNING,COLOR_REGULAR,time_spent);
+    fprintf(stdout,"[%s cuwacunu %s:regressive] %send bishop_linear_regression%s : time : %f [s]\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_WARNING,COLOR_REGULAR,time_spent);
 }
 
 
@@ -240,13 +249,14 @@ void rebase_regressive(__iicu_regressive_t *dest_iicu_regressive, __iicu_regress
     if(src_iicu_regressive->__rg_blrk != NULL){
         dest_iicu_regressive->__rg_blrk=blrk_clone_fabric(src_iicu_regressive,src_iicu_regressive->__rg_blrk);
     }
-    if(src_iicu_regressive->__rg_mewaajacune != NULL){
-        if(dest_iicu_regressive->__rg_mewaajacune!=NULL){
-            rebase_mewaajacune(dest_iicu_regressive->__rg_mewaajacune,src_iicu_regressive->__rg_mewaajacune);
-        } else {
-            dest_iicu_regressive->__rg_mewaajacune=mewaajacune_clone_fabric(src_iicu_regressive->__rg_mewaajacune);
-        }
-    }
+    dest_iicu_regressive->__rg_mewaajacune=src_iicu_regressive->__rg_mewaajacune;
+    // if(src_iicu_regressive->__rg_mewaajacune != NULL){
+    //     if(dest_iicu_regressive->__rg_mewaajacune!=NULL){
+    //         rebase_mewaajacune(dest_iicu_regressive->__rg_mewaajacune,src_iicu_regressive->__rg_mewaajacune);
+    //     } else {
+    //         dest_iicu_regressive->__rg_mewaajacune=mewaajacune_clone_fabric(src_iicu_regressive->__rg_mewaajacune);
+    //     }
+    // }
     dest_iicu_regressive->__rg_blrk_has_computed=src_iicu_regressive->__rg_blrk_has_computed;
 }
 void destroy_regressive(__iicu_regressive_t *_iicu_regressive){

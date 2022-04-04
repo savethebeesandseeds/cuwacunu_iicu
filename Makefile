@@ -1,4 +1,4 @@
-CC = gcc -Wall
+CC = gcc -Wall -g -O0
 CFLAGS = -O3
 LDFLAGS = -lm -lcurl
 
@@ -28,11 +28,13 @@ interfaces: \
 		./iicu_assets/sdl_interfaces/loading.c \
 		./iicu_assets/sdl_interfaces/home.c \
 		./iicu_assets/sdl_interfaces/state_panel.c \
+		./iicu_assets/sdl_interfaces/debug_panel.c \
 		./iicu_assets/sdl_interfaces/scene_panel.c \
 		./iicu_assets/sdl_interfaces/login.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/loading.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/home.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/login.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/debug_panel.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/state_panel.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/sdl_interfaces/scene_panel.c
 
@@ -89,7 +91,7 @@ threads: \
 		./iicu_assets/threads/staticques_thread.c \
 		./iicu_assets/threads/state_thread.c \
 		./iicu_assets/threads/clock_thread.c \
-		./iicu_assets/threads/thread_launcher.c \
+		./iicu_assets/threads/threads_launcher.c \
 		./iicu_assets/threads/main_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/broker_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/itsaave_thread.c
@@ -99,7 +101,7 @@ threads: \
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/staticques_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/state_thread.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/clock_thread.c
-	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/thread_launcher.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/threads_launcher.c
 	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_assets/threads/main_thread.c
 
 config: \
@@ -158,13 +160,14 @@ test_iicu: \
 		regressive_thread.o \
 		polinomial_thread.o \
 		staticques_thread.o \
-		thread_launcher.o \
+		threads_launcher.o \
 		main_thread.o \
 		kemu_utils.o \
 		iicu_state_utils.o \
 		iicu_scene_utils.o \
 		sdl_object.o \
 		state_panel.o \
+		debug_panel.o \
 		sdl_control.o \
 		loading.o \
 		home.o \
@@ -204,13 +207,14 @@ test_queue: \
 		regressive_thread.o \
 		polinomial_thread.o \
 		staticques_thread.o \
-		thread_launcher.o \
+		threads_launcher.o \
 		main_thread.o \
 		kemu_utils.o \
 		iicu_state_utils.o \
 		iicu_scene_utils.o \
 		sdl_object.o \
 		state_panel.o \
+		debug_panel.o \
 		sdl_control.o \
 		loading.o \
 		home.o \
@@ -258,13 +262,14 @@ test_jkimyei: \
 		state_thread.o \
 		jkimyei_thread.o \
 		itsaave_thread.o \
-		thread_launcher.o \
+		threads_launcher.o \
 		main_thread.o \
 		kemu_utils.o \
 		iicu_state_utils.o \
 		iicu_scene_utils.o \
 		sdl_object.o \
 		state_panel.o \
+		debug_panel.o \
 		sdl_control.o \
 		loading.o \
 		home.o \
@@ -306,17 +311,19 @@ all:
 	make threads
 	make interfaces
 	make test_iicu
-	time ./test_iicu
+	gdb ./test_iicu
+
+test_d_mewaajacune: \
+		mewaajacune_utils.o \
+		broker_api.o \
+		curl_utils.o \
+		./iicu_test/test_mewaajacune.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -c ./iicu_test/test_mewaajacune.c
+	$(CC) $(HEADERS) $(LDFLAGS) $(LIBS) -o $@ $^
 
 test:
 	make clean
-	make encription
 	make communications
-	make config
 	make data
-	make sdl
-	make iicu
-	make threads
-	make interfaces
-	make test_jkimyei
-	time ./test_jkimyei
+	make test_d_mewaajacune
+	gdb ./test_d_mewaajacune

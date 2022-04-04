@@ -1,13 +1,25 @@
 #include "iicu_wikimyei.h"
 
 __iicu_wikimyei_t *iicu_wikimyei_fabric(){
-    fprintf(stdout,"[cuwacunu:] : start : iicu_wikimyei_fabric()\n");
+    fprintf(stdout,"[%s cuwacunu %s:] : start : iicu_wikimyei_fabric()\n",COLOR_CUWACUNU,COLOR_REGULAR);
     __iicu_wikimyei_t *new_iicu_wikimyei=malloc(sizeof(__iicu_wikimyei_t));
     new_iicu_wikimyei->__obj_sdl=fabric_obj_sdl(); // must first initialize obj_sdl
     new_iicu_wikimyei->__iicu_state=fabric_iicu_state(new_iicu_wikimyei);
     fabric_all_iicu_scenes(new_iicu_wikimyei); // and tird scenes
+    
+    
+    
     new_iicu_wikimyei->__wk_tsaave=itsaave_fabric(NULL);
-    fprintf(stdout,"[cuwacunu:] : end : iicu_wikimyei_fabric()\n");
+
+    // --- --- --- --- --- --- --- --- 
+    fprintf(stdout,"[waka] wk fabric : WK:%p\n",new_iicu_wikimyei); // ->__holding_value
+    fprintf(stdout,"[waka] wk fabric : WK_STATE:%p\n",new_iicu_wikimyei->__iicu_state); // ->__holding_value
+    fprintf(stdout,"[waka] wk fabric : WK_OBJ_SDL:%p\n",new_iicu_wikimyei->__obj_sdl); // ->__holding_value
+    fprintf(stdout,"[waka] wk fabric : WK_ITSAAVE:%p\n",new_iicu_wikimyei->__wk_tsaave); // ->__holding_value
+    fprintf(stdout,"[waka] wk fabric : WK_ITSAAVE_POCKET:%p\n",new_iicu_wikimyei->__wk_tsaave->__it_pocket); // ->__holding_value
+    // --- --- --- --- --- --- --- --- 
+    
+    fprintf(stdout,"[%s cuwacunu %s:] : end : iicu_wikimyei_fabric()\n",COLOR_CUWACUNU,COLOR_REGULAR);
     return new_iicu_wikimyei;
 }
 void destroy_iicu_wikimyei(__iicu_wikimyei_t *_iicu_wikimyei){
@@ -182,29 +194,29 @@ void release_current_polinomial(__iicu_wikimyei_t *_iicu_wikimyei){
     release_polinomial(_iicu_wikimyei,gcsid(_iicu_wikimyei),gcklid(_iicu_wikimyei));
 }
 
-void beseech_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index, int _kline_index){
-    // fprintf(stderr,"%s beseech_staticques index scene:[%d]:kline:[%d]...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
+void beseech_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index){
+    // fprintf(stderr,"%s beseech_staticques index scene:[%d]:...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
     Uint32 beseech_ctx=0x00;
-    while(get_state(_iicu_wikimyei)->staticques_in_use[_scene_index][_kline_index]){
+    while(get_state(_iicu_wikimyei)->staticques_in_use[_scene_index]){
         SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
-            fprintf(stderr,"%s [ERROR] beseech_staticques index scene:[%d]:kline:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
-            fprintf(stderr,"%s [beseech_staticques] index scene:[%d]:kline:[%d] forcing release...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
+            fprintf(stderr,"%s [ERROR] beseech_staticques index scene:[%d]: exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
+            fprintf(stderr,"%s [beseech_staticques] index scene:[%d]: forcing release...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
             break;
         }
     } // wait staticques to release
-	get_state(_iicu_wikimyei)->staticques_in_use[_scene_index][_kline_index]=0x01;
+	get_state(_iicu_wikimyei)->staticques_in_use[_scene_index]=0x01;
 }
-void release_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index, int _kline_index){
+void release_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index){
     // fprintf(stderr,"%s release_staticques index scene:[%d]:kline:[%d]...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
-    get_state(_iicu_wikimyei)->staticques_in_use[_scene_index][_kline_index]=0x00;
+    get_state(_iicu_wikimyei)->staticques_in_use[_scene_index]=0x00;
 }
 void beseech_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei){
-    beseech_staticques(_iicu_wikimyei,gcsid(_iicu_wikimyei),gcklid(_iicu_wikimyei));
+    beseech_staticques(_iicu_wikimyei,gcsid(_iicu_wikimyei));
 }
 void release_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei){
-    release_staticques(_iicu_wikimyei,gcsid(_iicu_wikimyei),gcklid(_iicu_wikimyei));
+    release_staticques(_iicu_wikimyei,gcsid(_iicu_wikimyei));
 }
 
 void beseech_current_all(__iicu_wikimyei_t *_iicu_wikimyei){
@@ -235,9 +247,9 @@ void beseech_all(__iicu_wikimyei_t *_iicu_wikimyei){
     for(int scene_idx=0x00; scene_idx<MAX_IICU_SCENES;scene_idx++){
         beseech_jkimyei(_iicu_wikimyei,scene_idx);
         beseech_scene_itsaave(_iicu_wikimyei, scene_idx);
+        beseech_staticques(_iicu_wikimyei, scene_idx);
         for(int kline_idx=0x00; kline_idx<BROKER_CANDLE_N_INTERVALS;kline_idx++){
             beseech_mewaajacune(_iicu_wikimyei, scene_idx, kline_idx);
-            beseech_staticques(_iicu_wikimyei, scene_idx, kline_idx);
             beseech_regressive(_iicu_wikimyei, scene_idx, kline_idx);
             beseech_polinomial(_iicu_wikimyei, scene_idx, kline_idx);
         }
@@ -249,9 +261,9 @@ void release_all(__iicu_wikimyei_t *_iicu_wikimyei){
     for(int scene_idx=0x00; scene_idx<MAX_IICU_SCENES;scene_idx++){
         release_jkimyei(_iicu_wikimyei,scene_idx);
         release_scene_itsaave(_iicu_wikimyei, scene_idx);
+        release_staticques(_iicu_wikimyei, scene_idx);
         for(int kline_idx=0x00; kline_idx<BROKER_CANDLE_N_INTERVALS;kline_idx++){
             release_mewaajacune(_iicu_wikimyei, scene_idx, kline_idx);
-            release_staticques(_iicu_wikimyei, scene_idx, kline_idx);
             release_regressive(_iicu_wikimyei, scene_idx, kline_idx);
             release_polinomial(_iicu_wikimyei, scene_idx, kline_idx);
         }
@@ -385,19 +397,17 @@ __iicu_polinomial_t *giicpl(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 
 
-__iicu_staticques_t *get_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id,int _kline_id){
-    if(get_state(_iicu_wikimyei)->staticques_in_use[_scene_id][_kline_id]!=0x01){
+__iicu_staticques_t *get_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
+    if(get_state(_iicu_wikimyei)->staticques_in_use[_scene_id]!=0x01){
         fprintf(stderr,"[%sERROR:%s] staticques access on get_staticques() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
         #endif
     }
-    return _iicu_wikimyei->__iicu_scene[_scene_id]->__iicu_staticques[_kline_id];
+    return _iicu_wikimyei->__iicu_scene[_scene_id]->__iicu_staticques;
 }
 __iicu_staticques_t *get_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei){ // #FIXME not in use
-    return get_staticques(_iicu_wikimyei, 
-        gcsid(_iicu_wikimyei),
-        gcklid(_iicu_wikimyei));
+    return get_staticques(_iicu_wikimyei, gcsid(_iicu_wikimyei));
 }
 __iicu_staticques_t *giicsq(__iicu_wikimyei_t *_iicu_wikimyei){
     return get_current_staticques(_iicu_wikimyei);
@@ -442,6 +452,39 @@ int get_current_kline_id(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 int gcklid(__iicu_wikimyei_t *_iicu_wikimyei){
     return get_current_kline_id(_iicu_wikimyei);
+}
+__cwcn_type_t gentil_get_alliu_latest(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
+    __cwcn_type_t c_ret;
+    if(get_state(_iicu_wikimyei)->staticques_in_use[_scene_id]!=0x01){
+        beseech_staticques(_iicu_wikimyei, _scene_id);
+        c_ret=get_staticques(_iicu_wikimyei, _scene_id)->__alliu_latest;
+        release_staticques(_iicu_wikimyei, _scene_id);
+    } else {
+        c_ret=_iicu_wikimyei->__iicu_scene[_scene_id]->__iicu_staticques->__alliu_latest;
+    }
+    return c_ret;
+}
+__cwcn_type_t gentil_get_scene_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
+    __cwcn_type_t c_ret;
+    if(get_state(_iicu_wikimyei)->scene_itsaave_in_use[_scene_id]!=0x01){
+        beseech_scene_itsaave(_iicu_wikimyei, _scene_id);
+        c_ret=get_scene_itsaave(_iicu_wikimyei, _scene_id)->__it_pocket->__holding_value;
+        release_scene_itsaave(_iicu_wikimyei, _scene_id);
+    } else {
+        c_ret=_iicu_wikimyei->__iicu_scene[_scene_id]->__scene_itsaave->__it_pocket->__holding_value;
+    }
+    return c_ret;
+}
+__cwcn_type_t gentil_get_wk_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikimyei){
+    __cwcn_type_t c_ret;
+    if(get_state(_iicu_wikimyei)->wk_itsaave_in_use!=0x01){
+        beseech_wk_itsaave(_iicu_wikimyei);
+        c_ret=get_wk_itsaave(_iicu_wikimyei)->__it_pocket->__holding_value;
+        release_wk_itsaave(_iicu_wikimyei);
+    } else {
+        c_ret=_iicu_wikimyei->__wk_tsaave->__it_pocket->__holding_value;
+    }
+    return c_ret;
 }
 
 void wait_scene_kline_load(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id, int _kline_id){

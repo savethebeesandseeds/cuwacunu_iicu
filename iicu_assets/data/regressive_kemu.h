@@ -1,6 +1,7 @@
 #ifndef __REGRESSIVE_KEMU__
 #define __REGRESSIVE_KEMU__
 #include "../config/general_config.h"
+#include "../config/threads_config.h"
 #include "../data/kemu_utils.h"
 #include "../data/mewaajacune_utils.h"
 #include "../config/regressive_config.h"

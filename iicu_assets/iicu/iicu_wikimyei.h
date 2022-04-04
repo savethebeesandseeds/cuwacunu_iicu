@@ -12,6 +12,8 @@
 #include "../data/regressive_kemu.h"
 #include "../data/polinomial_kemu.h"
 #include "../data/staticques_kemu.h"
+//------------- ------------ ------------
+typedef enum {BUTTON_NONE, BUTTON_START, BUTTON_SELECT} __buttons_t;
 //------------- STATE ------------ ------------
 typedef struct _iicu_state_struct {
 	SDL_Texture *network_texture;
@@ -40,6 +42,7 @@ typedef struct _iicu_state_struct {
 	void **__rg_thread_order; // aux holder of type(__regression_thread_order_t) to launch regression threads
 	void **__pl_thread_order; // aux holder of type(__polonomial_thread_order_t) to launch polonomial threads
 	void **__sq_thread_order; // aux holder of type(__staticques_thread_order_t) to launch staticques threads
+	
 	void **__it_thread_order; // aux holder of type(__itsaave_thread_order_t) to launch staticques threads
 
 	___cwcn_bool_t __req_itsaave;
@@ -47,11 +50,13 @@ typedef struct _iicu_state_struct {
 	___cwcn_bool_t jkimyei_in_use[MAX_IICU_SCENES];
 	___cwcn_bool_t polinomial_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
 	___cwcn_bool_t regressive_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
-	___cwcn_bool_t staticques_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
 	___cwcn_bool_t mewaajacune_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
 	___cwcn_bool_t scene_itsaave_in_use[MAX_IICU_SCENES]; // #FIXME add more wk
+	___cwcn_bool_t staticques_in_use[MAX_IICU_SCENES];
 	___cwcn_bool_t wk_itsaave_in_use;
 	___cwcn_bool_t nijcyota_in_use; // #FIXME add more wk
+
+	__buttons_t __scene_case_button;
 	
 } __iicu_state_struct_t;
 //------------- SCENE ------------ ------------
@@ -62,7 +67,7 @@ typedef struct _iicu_scene_struct {
 	__iicu_mewaajacune_t *__mewaajacune[BROKER_CANDLE_N_INTERVALS];
 	__iicu_polinomial_t *__iicu_polinomial[BROKER_CANDLE_N_INTERVALS];
 	__iicu_regressive_t *__iicu_regressive[BROKER_CANDLE_N_INTERVALS];
-	__iicu_staticques_t *__iicu_staticques[BROKER_CANDLE_N_INTERVALS];
+	__iicu_staticques_t *__iicu_staticques;
 } __iicu_scene_struct_t;
 //------------- WIKIMYEI ------------ ---------
 typedef struct __iicu_wikimyei{
@@ -77,7 +82,7 @@ typedef struct __jkimyei_thread_order{
 	int __scene_id;
 	int __kline_id;
 	__jkimyei_types_t __jk_type;
-	pthread_t __jk_thread_launcher;
+	pthread_t __jk_threads_launcher;
     ___cwcn_bool_t __jk_thead_is_bussy;
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__jkimyei_thread_order_t;
@@ -87,7 +92,7 @@ typedef struct __itsaave_thread_order {
 	int __scene_id;
 	int __it_id;
 	__itsaave_types_t __it_type;
-	pthread_t __it_thread_launcher;
+	pthread_t __it_threads_launcher;
     ___cwcn_bool_t __it_thead_is_bussy;
 	___cwcn_bool_t __it_policy_is_bussy;
 	__iicu_wikimyei_t *__ref_iicu_wikimyei;  // reference wikimyei
@@ -99,7 +104,7 @@ typedef struct __regressive_thread_order{
 	int __scene_id;
 	int __kline_id;
 	__regressive_types_t __rg_type;
-	pthread_t __rg_thread_launcher;
+	pthread_t __rg_threads_launcher;
     ___cwcn_bool_t __rg_thead_is_bussy;
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__regressive_thread_order_t;
@@ -109,7 +114,7 @@ typedef struct __polinomial_thread_order{
 	int __scene_id;
 	int __kline_id;
 	__polinomial_types_t __pl_type;
-	pthread_t __pl_thread_launcher;
+	pthread_t __pl_threads_launcher;
     ___cwcn_bool_t __pl_thead_is_bussy;
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__polinomial_thread_order_t;
@@ -117,9 +122,8 @@ typedef struct __polinomial_thread_order{
 typedef enum {FIRST_ORDER_AUTOREGRESSION, FIRST_ORDER_STATISTICS}__staticques_types_t;
 typedef struct __staticques_thread_order{
 	int __scene_id;
-	int __kline_id;
 	__staticques_types_t __sq_type;
-	pthread_t __sq_thread_launcher;
+	pthread_t __sq_threads_launcher;
     ___cwcn_bool_t __sq_thead_is_bussy;
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__staticques_thread_order_t;
@@ -164,8 +168,8 @@ void release_polinomial(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index, int
 
 void beseech_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei);
 void release_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei);
-void beseech_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index, int _kline_index);
-void release_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index, int _kline_index);
+void beseech_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index);
+void release_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index);
 
 void beseech_current_all(__iicu_wikimyei_t *_iicu_wikimyei);
 void release_current_all(__iicu_wikimyei_t *_iicu_wikimyei);
@@ -198,7 +202,7 @@ __iicu_polinomial_t *get_polinomial(__iicu_wikimyei_t *_iicu_wikimyei, int _scen
 __iicu_polinomial_t *get_current_polinomial(__iicu_wikimyei_t *_iicu_wikimyei);
 __iicu_polinomial_t *giicpl(__iicu_wikimyei_t *_iicu_wikimyei);
 
-__iicu_staticques_t *get_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id, int _kline_id);
+__iicu_staticques_t *get_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id);
 __iicu_staticques_t *get_current_staticques(__iicu_wikimyei_t *_iicu_wikimyei);
 __iicu_staticques_t *giicsq(__iicu_wikimyei_t *_iicu_wikimyei);
 
@@ -213,6 +217,9 @@ int get_current_scene_id(__iicu_wikimyei_t *_iicu_wikimyei);
 int gcsid(__iicu_wikimyei_t *_iicu_wikimyei);
 int get_current_kline_id(__iicu_wikimyei_t *_iicu_wikimyei);
 int gcklid(__iicu_wikimyei_t *_iicu_wikimyei);
+__cwcn_type_t gentil_get_alliu_latest(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id); // #FIXME vectorize output
+__cwcn_type_t gentil_get_scene_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id);
+__cwcn_type_t gentil_get_wk_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikimyei);
 
 void wait_scene_kline_load(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id, int _kline_id);
 #include "../iicu/iicu_state_utils.h"

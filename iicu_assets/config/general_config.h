@@ -21,10 +21,12 @@ typedef void (*__void_function_pointer_t)(void*);
 // #define ALOCATION_DEBUG
 #define ALLIU_SIZE (int) 0x01
 #define MAX_IICU_ITSAAVES (int) 0x0C // max amount of pending itsaaves for each scene
-#define MAX_IICU_SCENES (int) 0x07 // if augmented augment also IICU_SCENES_SYMBOLS
-#define IICU_SCENES_SYMBOLS (char[MAX_IICU_SCENES][12])  {"BTCUSDT","BTCUPUSDT","BTCDOWNUSDT","ETHUSDT","CNDBTC","BTTCUSDT","ADAUSDT"} // #FIXME encode
+#define MAX_IICU_SCENES (int) 0x03 // if augmented augment also IICU_SCENES_SYMBOLS
+#define IICU_SCENES_SYMBOLS (char[MAX_IICU_SCENES][16])  {"BTCUSDT","BTCUPUSDT","BTCDOWNUSDT"} // #FIXME encode
 
 // FIXME fix colors
+#define COLOR_JKIMYEI "\033[0;33m"
+#define COLOR_CUWACUNU "\033[0;32m"
 #define COLOR_L_GOOD "\033[0;32m"
 // #define COLOR_L_GOOD "1"
 #define COLOR_R_L_GOOD 71

@@ -95,9 +95,9 @@
 
 #define __COORDINATE_ALL_KLINES_IN_SCENES__
 
-// #define __cwcn_DEBUG_EVENTS__
-// #define __cwcn_DEBUG_JOYSTICK_EVENTS__
-// #define __cwcn_DEBUG_KEYBOARD_EVENTS__
+#define __cwcn_DEBUG_EVENTS__
+#define __cwcn_DEBUG_JOYSTICK_EVENTS__
+#define __cwcn_DEBUG_KEYBOARD_EVENTS__
 // #define __cwcn_DEBUG_MOUSE_EVENTS__
 // #define __cwcn_DEBUG_WINDOW_EVENTS__
 

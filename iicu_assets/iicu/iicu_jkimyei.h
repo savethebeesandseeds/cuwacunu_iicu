@@ -1,13 +1,13 @@
 #ifndef __IICU_JKIMYEI__
 #define __IICU_JKIMYEI__
 #include "../config/general_config.h"
+#include "../config/threads_config.h"
 #include "../config/jkimyei_config.h"
 #include "../config/states_config.h"
 #include "../config/broker_config.h"
 #include "../data/mewaajacune_utils.h"
 #include "../config/nijcyota_utils.h"
 #include "../data/kemu_utils.h"
-
 typedef struct __inteligent_order_policy{
     __cwcn_type_t __order_margin_uper; // (in [0-1]) how much porcentaje to margin up
     __cwcn_type_t __order_margin_down; // (in [0-1]) how much porcentaje to margin down
@@ -36,4 +36,5 @@ void monte_carlo_random_search(__iicu_jkimyei_t *_iicu_jkimyei);
 void *jkimyei_launcher(void *_jk_thread_order);
 void plot_policy(__inteligent_order_policy_t *_iicu_policy);
 
+___cwcn_bool_t policy_is_ready(__inteligent_order_policy_t *_iicu_policy);
 #endif

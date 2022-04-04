@@ -27,7 +27,7 @@ void load_pocket_to_pocket(__iicu_pocket_t *dest_pocket, __iicu_pocket_t *src_po
 void update_itsaave_pocket(__iicu_itsaave_t *_iicu_itsaave);
 void active_itsaave_request(void *_iicu_wikimyei);
 void desactive_itsaave_request(void *_iicu_wikimyei);
-___cwcn_bool_t get_state_itsaave_request(void *_iicu_wikimyei);
-void fake_itsaave_loop(void *_it_thread_order, int _scene_id, int _kline_id);
+___cwcn_bool_t was_there_a_itsaave_request(void *_iicu_wikimyei);
+void fake_itsaave_method(void *_it_thread_order, int _scene_id, int _kline_id);
 void *itsaave_launcher(void *_it_thread_order);
 #endif

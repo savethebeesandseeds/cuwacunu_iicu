@@ -13,8 +13,9 @@ __iicu_scene_struct_t *iicu_scene_fabric(){
 		new_scene->__mewaajacune[m_idx]=mewaajacune_fabric();
 		new_scene->__iicu_regressive[m_idx]=regressive_fabric();
 		new_scene->__iicu_polinomial[m_idx]=polinomial_fabric();
-		new_scene->__iicu_staticques[m_idx]=staticques_fabric();
 	}
+	// --- --- --- STATICQUES
+	new_scene->__iicu_staticques=staticques_fabric();
 	return new_scene;
 }
 void fabric_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei){
@@ -61,8 +62,8 @@ void destroy_iicu_scene(__iicu_scene_struct_t *_iicu_scene){ // #FIXME fix fixed
 		destroy_mewaajacune(_iicu_scene->__mewaajacune[m_idx]);
 		destroy_regressive(_iicu_scene->__iicu_regressive[m_idx]);
 		destroy_polinomial(_iicu_scene->__iicu_polinomial[m_idx]);
-		destroy_staticques(_iicu_scene->__iicu_staticques[m_idx]);
 	}
+	destroy_staticques(_iicu_scene->__iicu_staticques);
 	destroy_jkimyei(_iicu_scene->__iicu_jkimyei);
 	destroy_nijcyota(_iicu_scene->__nijcyota);
 	destroy_itsaave(_iicu_scene->__scene_itsaave);

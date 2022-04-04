@@ -4,6 +4,7 @@
 // --- --- --- POLICY
 __inteligent_order_policy_t *policy_fabric(){
     __inteligent_order_policy_t *new_iicu_policy=malloc(sizeof(__inteligent_order_policy_t));
+    assert(new_iicu_policy!=NULL);
     new_iicu_policy->__order_margin_uper=0x00;
     new_iicu_policy->__order_margin_down=0x00;
     new_iicu_policy->__base_margin_investment=POLICY_BASE_INVESTMENT;
@@ -16,6 +17,7 @@ __inteligent_order_policy_t *policy_clone_fabric(__inteligent_order_policy_t *sr
     return new_iicu_policy;
 }
 void rebase_policy(__inteligent_order_policy_t *dest_iicu_policy, __inteligent_order_policy_t *src_iicu_policy){
+    SDL_Delay(50);
     dest_iicu_policy->__order_margin_down=src_iicu_policy->__order_margin_down;
     dest_iicu_policy->__order_margin_uper=src_iicu_policy->__order_margin_uper;
     dest_iicu_policy->__base_margin_investment=src_iicu_policy->__base_margin_investment;
@@ -33,6 +35,7 @@ void plot_policy(__inteligent_order_policy_t *_iicu_policy){
 // --- --- --- JKIMYEI
 __iicu_jkimyei_t *jkimyei_fabric(){
     __iicu_jkimyei_t *new_iicu_jkimyei=malloc(sizeof(__iicu_jkimyei_t));
+    assert(new_iicu_jkimyei!=NULL);
     new_iicu_jkimyei->__jk_inteligent_order_policy=policy_fabric();
     new_iicu_jkimyei->__jk_mewaajacune=NULL;
     new_iicu_jkimyei->__jk_policy_has_computed=0x00;
@@ -55,13 +58,14 @@ void rebase_jkimyei(__iicu_jkimyei_t *dest_iicu_jkimyei, __iicu_jkimyei_t *src_i
     if(src_iicu_jkimyei->__jk_inteligent_order_policy != NULL){
         dest_iicu_jkimyei->__jk_inteligent_order_policy=policy_clone_fabric(src_iicu_jkimyei->__jk_inteligent_order_policy);
     }
-    if(src_iicu_jkimyei->__jk_mewaajacune != NULL){
-        if(dest_iicu_jkimyei->__jk_mewaajacune!=NULL){
-            rebase_mewaajacune(dest_iicu_jkimyei->__jk_mewaajacune,src_iicu_jkimyei->__jk_mewaajacune);
-        } else {
-            dest_iicu_jkimyei->__jk_mewaajacune=mewaajacune_clone_fabric(src_iicu_jkimyei->__jk_mewaajacune);
-        }
-    }
+    dest_iicu_jkimyei->__jk_mewaajacune=src_iicu_jkimyei->__jk_mewaajacune;
+    // if(src_iicu_jkimyei->__jk_mewaajacune != NULL){
+    //     if(dest_iicu_jkimyei->__jk_mewaajacune!=NULL){
+    //         rebase_mewaajacune(dest_iicu_jkimyei->__jk_mewaajacune,src_iicu_jkimyei->__jk_mewaajacune);
+    //     } else {
+    //         dest_iicu_jkimyei->__jk_mewaajacune=mewaajacune_clone_fabric(src_iicu_jkimyei->__jk_mewaajacune);
+    //     }
+    // }
     dest_iicu_jkimyei->__jk_policy_has_computed=src_iicu_jkimyei->__jk_policy_has_computed;
 }
 void destroy_jkimyei(__iicu_jkimyei_t *_iicu_jkimyei){
@@ -71,6 +75,10 @@ void destroy_jkimyei(__iicu_jkimyei_t *_iicu_jkimyei){
 /*
     jk funks
 */
+___cwcn_bool_t policy_is_ready(__inteligent_order_policy_t *_iicu_policy){
+    return (_iicu_policy->__order_margin_uper!=0x00) && (_iicu_policy->__order_margin_down!=0x00);
+}
+
 void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME change to mewaajacune_list
     // __inteligent_order_policy_t *c_policy=_iicu_jkimyei->__jk_inteligent_order_policy;
     // int start_index=_iicu_jkimyei->__jk_mewaajacune->__load_index;
@@ -111,11 +119,11 @@ void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME chan
             alliu_b=c_mewaajcune_list[index_b];
             if(alliu_b>=(0x01+c_policy->__order_margin_uper)*alliu_a){
                 alliu_delta=alliu_b-alliu_a;
-                c_policy->__policy_total_reward+=alliu_delta*c_policy->__base_margin_investment;
+                c_policy->__policy_total_reward+=alliu_delta*c_policy->__base_margin_investment/alliu_a;
                 break;
             } else if(alliu_b<=(0x01-c_policy->__order_margin_down)*alliu_a){
                 alliu_delta=alliu_b-alliu_a;
-                c_policy->__policy_total_reward-=alliu_delta*c_policy->__base_margin_investment;
+                c_policy->__policy_total_reward-=alliu_delta*c_policy->__base_margin_investment/alliu_a;
                 break;
             }
         }
@@ -124,7 +132,7 @@ void run_policy_on_mewaajacunwe(__iicu_jkimyei_t *_iicu_jkimyei){ // #FIXME chan
 }
 
 void monte_carlo_random_search(__iicu_jkimyei_t *_iicu_jkimyei){
-    fprintf(stdout,"[cuwacunu:jkimyei] %sstart monte_carlo_random_search%s\n",COLOR_WARNING,COLOR_REGULAR);
+    fprintf(stdout,"[%s cuwacunu %s:jkimyei] %s [ start ] %s monte_carlo_random_search\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_JKIMYEI,COLOR_REGULAR);
     // --- --- --- 
     __inteligent_order_policy_t *best_policy=policy_fabric();
     ___cwcn_bool_t first_run=0x01;
@@ -151,7 +159,6 @@ void monte_carlo_random_search(__iicu_jkimyei_t *_iicu_jkimyei){
     }
     // --- --- --- 
     // --- --- --- 
-    plot_policy(best_policy);
     rebase_policy(_iicu_jkimyei->__jk_inteligent_order_policy,best_policy); // put the best policy inside _iicu_jkimyei
     destroy_policy(best_policy);
     // --- --- --- 
@@ -159,69 +166,60 @@ void monte_carlo_random_search(__iicu_jkimyei_t *_iicu_jkimyei){
     time_spent = (double)(end-begin) / CLOCKS_PER_SEC;
     // --- --- --- 
     _iicu_jkimyei->__jk_policy_has_computed=0x01;
-    fprintf(stdout,"[cuwacunu:jkimyei] %send monte_carlo_random_search%s : steps : %d : time : %f [s]\n",COLOR_WARNING,COLOR_REGULAR,MONTECARLO_EPISODES,time_spent);
+    fprintf(stdout,"[%s cuwacunu %s:jkimyei] %s [ end ] %s monte_carlo_random_search : steps : %d : time : %f [s]\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_JKIMYEI,COLOR_REGULAR,MONTECARLO_EPISODES,time_spent);
 }
 
 
 void *jkimyei_launcher(void *_jk_thread_order){
-    fprintf(stdout,"[cuwacunu:jkimyei] %sstart jkimyei_launcher for type order [scene:%d, kline:%d]%s\n",COLOR_WARNING,((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id,COLOR_REGULAR);
+    #ifdef __JKIMYEI_THREAD_FORCE_CORE
+    cpu_set_t cpuset;
+    int cpu = __JKIMYEI_THREAD_FORCE_CORE;
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpu,&cpuset);
+    #endif
+    int c_scene_id = ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id;
+    int c_kline_id = ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id;
+    fprintf(stdout,"[%s cuwacunu %s:jkimyei] %s [ start ] %s jkimyei_launcher for type order : scene:[%d], kline:[%d]\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_JKIMYEI,COLOR_REGULAR,c_scene_id,c_kline_id);
     // it finds for _iicu_jkimyei the best policy
     ((__jkimyei_thread_order_t*)_jk_thread_order)->__jk_thead_is_bussy=0x01;
     __iicu_wikimyei_t *temp_iicu_wikimyei=((__jkimyei_thread_order_t*)_jk_thread_order)->__ref_iicu_wikimyei;
     // --- --- --- wait for scene kline to be loaded
-    wait_scene_kline_load(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id);
+    wait_scene_kline_load(temp_iicu_wikimyei, c_scene_id,c_kline_id);
     // --- --- --- #FIXME make bessech as a wrapper for optm methods
-    beseech_mewaajacune(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id);
-    beseech_jkimyei(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id);
+    beseech_mewaajacune(temp_iicu_wikimyei, c_scene_id, c_kline_id);
+    beseech_jkimyei(temp_iicu_wikimyei, c_scene_id);
     // --- --- --- 
-    __iicu_jkimyei_t *temp_iicu_jkimyei=jkimyei_clone_fabric(
-        get_jkimyei(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id)); // make a temporal copy
+    __iicu_jkimyei_t *temp_iicu_jkimyei=jkimyei_clone_fabric(get_jkimyei(temp_iicu_wikimyei, c_scene_id)); // make a temporal copy
     temp_iicu_jkimyei->__jk_mewaajacune=mewaajacune_clone_fabric(
-        get_mewaajacune(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id)); // load mewaajacune to temporal copy
+        get_mewaajacune(temp_iicu_wikimyei, c_scene_id, c_kline_id)); // load mewaajacune to temporal copy
     // --- --- --- 
-    release_jkimyei(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id);
-    release_mewaajacune(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id);
+    release_jkimyei(temp_iicu_wikimyei, c_scene_id);
+    release_mewaajacune(temp_iicu_wikimyei, c_scene_id, c_kline_id);
     // --- --- --- LAUNCH type METHOD
     switch(((__jkimyei_thread_order_t*)_jk_thread_order)->__jk_type){
     case JK_MONTECARLO:
         monte_carlo_random_search(temp_iicu_jkimyei);
         break;
     default:
-        fprintf(stderr,"[cuwacunu:]%sERROR, not understood jkimyei type configured in jkimyei thread order%s\n",COLOR_DANGER,COLOR_REGULAR);
+        fprintf(stderr,"[%s cuwacunu %s:] %s ERROR %s, not understood jkimyei type configured in jkimyei thread order\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_DANGER,COLOR_REGULAR);
         break;
     }
+    // --- --- --- 
+    fprintf(stdout,"[%s cuwacunu %s:jkimyei] %s [ printing policy ] %s : scene:[%d] kline:[%d]\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_JKIMYEI,COLOR_REGULAR,c_scene_id,c_kline_id);
+    plot_policy(temp_iicu_jkimyei->__jk_inteligent_order_policy);
     // --- --- --- #FIXME add tsdo
     // --- --- --- SAVES JKIMYEI RESULT
-    beseech_mewaajacune(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id);
-    beseech_jkimyei(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id);
+    beseech_mewaajacune(temp_iicu_wikimyei, c_scene_id,c_kline_id);
+    beseech_jkimyei(temp_iicu_wikimyei, c_scene_id);
     // --- --- --- 
-    rebase_jkimyei(get_jkimyei(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id), 
-        temp_iicu_jkimyei);
+    rebase_jkimyei(get_jkimyei(temp_iicu_wikimyei, c_scene_id), temp_iicu_jkimyei);
     // --- --- --- 
-    release_jkimyei(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id);
-    release_mewaajacune(temp_iicu_wikimyei, 
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,
-        ((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id);
+    release_jkimyei(temp_iicu_wikimyei, c_scene_id);
+    release_mewaajacune(temp_iicu_wikimyei, c_scene_id,c_kline_id);
     // --- --- --- 
     destroy_jkimyei(temp_iicu_jkimyei);
     // --- --- --- 
     ((__jkimyei_thread_order_t*)_jk_thread_order)->__jk_thead_is_bussy=0x00;
-    fprintf(stdout,"[cuwacunu:jkimyei] %s end jkimyei_launcher : for type order : [scene:%d, kline:%d] %s\n",COLOR_WARNING,((__jkimyei_thread_order_t*)_jk_thread_order)->__scene_id,((__jkimyei_thread_order_t*)_jk_thread_order)->__kline_id,COLOR_REGULAR);
+    fprintf(stdout,"[%s cuwacunu %s:jkimyei] %s [ end ] %s jkimyei_launcher : for type order : [scene:%d, kline:%d]\n",COLOR_CUWACUNU,COLOR_REGULAR,COLOR_JKIMYEI,COLOR_REGULAR,c_scene_id,c_kline_id);
     pthread_exit(NULL);
 }
