@@ -9,6 +9,7 @@
 #	include "SDL2/SDL_ttf.h"
 #endif
 #include "../config/general_config.h"
+#include "../config/threads_config.h"
 //-------------SDL structure  ------------
 typedef struct sdl_struct{
 	TTF_Font *screen_font;

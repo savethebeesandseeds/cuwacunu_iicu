@@ -1,4 +1,5 @@
 #include "mewaajacune_utils.h"
+#include "../communications/broker_api.h"
 /*
     MEWAAJACUNE AND TRAYECTORY
 */
@@ -157,14 +158,14 @@ void load_to_start(__iicu_mewaajacune_t *_mewaajacune){
         fprintf(stdout,">> > load_to_start ; c_index: [%d]\n",_mewaajacune->__load_index);
     #endif
     while(load_go_down(_mewaajacune)!=-1){}
-    assert(load_on_start(_mewaajacune));
+    if(!load_on_noob(_mewaajacune) && !load_is_empty(_mewaajacune)){assert(load_on_start(_mewaajacune));}
 }
 void load_to_end(__iicu_mewaajacune_t *_mewaajacune){
     #if defined(MEWAAJACUNE_DEBUG_LOAD)
         fprintf(stdout,">> > load_to_end ; c_index: [%d]\n",_mewaajacune->__load_index);
     #endif
     while(load_go_up(_mewaajacune)!=-1){}
-    assert(load_on_end(_mewaajacune));
+    if(!load_on_noob(_mewaajacune) && !load_is_empty(_mewaajacune)){assert(load_on_end(_mewaajacune));}
 }
 void load_to_index(__iicu_mewaajacune_t *_mewaajacune, int _index){
     assert(_index<_mewaajacune->__load_size);
@@ -676,10 +677,10 @@ void populate_alliu_with_klines(__iicu_mewaajacune_t *_mewaajacune, int _alliu_i
     // --- --- --- --- · --- --- --- --- populate coordinate list
     for(int x_position=0x00;x_position<klines_payload.klines_count;x_position++){
         yield_next_trayectory(_mewaajacune);
-        #if defined(MEWAAJACUNE_LOAD_CLOSE_KLINES_DATA)
+        #if defined(INTERPRET_CURRENT_PRICE_AS_CLOSE_PRICE)
         glti(_mewaajacune)->__alliu_timestamp=(time_t)(((__cwcn_type_t)klines_payload.klines[x_position].close_time)/((__cwcn_type_t)1000.0));
         glti(_mewaajacune)->__alliu_state[_alliu_index]=(__cwcn_type_t)klines_payload.klines[x_position].close;
-        #elif defined(MEWAAJACUNE_LOAD_OPEN_KLINES_DATA)
+        #elif defined(INTERPRET_CURRENT_PRICE_AS_OPEN_PRICE)
         glti(_mewaajacune)->__alliu_timestamp=(time_t)(((__cwcn_type_t)klines_payload.klines[x_position].open_time)/((__cwcn_type_t)1000.0));
         glti(_mewaajacune)->__alliu_state[_alliu_index]=(__cwcn_type_t)klines_payload.klines[x_position].open;
         #endif

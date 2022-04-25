@@ -82,23 +82,28 @@ void destroy_all_iicu_scenes(__iicu_wikimyei_t *_iicu_wikimyei){
 
 
 void iicu_scene_go_up(__iicu_wikimyei_t *_iicu_wikimyei){
+	beseech_all(_iicu_wikimyei);
 	if(gcsid(_iicu_wikimyei)<get_state(_iicu_wikimyei)->scene_count-0x01){
 		get_state(_iicu_wikimyei)->scene_id++;
 	} else {
 		get_state(_iicu_wikimyei)->scene_id=0x00;
 	}
 	strcpy(get_state(_iicu_wikimyei)->scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
+	release_all(_iicu_wikimyei);
 }
 void iicu_scene_go_down(__iicu_wikimyei_t *_iicu_wikimyei){
+	beseech_all(_iicu_wikimyei);
 	if(gcsid(_iicu_wikimyei)>0x00){
 		get_state(_iicu_wikimyei)->scene_id--;
 	} else {
 		get_state(_iicu_wikimyei)->scene_id=get_state(_iicu_wikimyei)->scene_count-0x01;
 	}
 	strcpy(get_state(_iicu_wikimyei)->scene_symbol,IICU_SCENES_SYMBOLS[gcsid(_iicu_wikimyei)]);
+	release_all(_iicu_wikimyei);
 }
 
 void iicu_klines_increse(__iicu_wikimyei_t *_iicu_wikimyei){
+	beseech_all(_iicu_wikimyei);
 	if(gcklid(_iicu_wikimyei)<BROKER_CANDLE_N_INTERVALS-0x01){
 		get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)]++;
 	} else {
@@ -109,8 +114,10 @@ void iicu_klines_increse(__iicu_wikimyei_t *_iicu_wikimyei){
 		get_state(_iicu_wikimyei)->kline_id[scene_idx]=get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)];
 	}
 	#endif
+	release_all(_iicu_wikimyei);
 }
 void iicu_klines_decrese(__iicu_wikimyei_t *_iicu_wikimyei){
+	beseech_all(_iicu_wikimyei);
 	if(gcklid(_iicu_wikimyei)>0x00){
 		get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)]--;
 	} else {
@@ -121,4 +128,5 @@ void iicu_klines_decrese(__iicu_wikimyei_t *_iicu_wikimyei){
 		get_state(_iicu_wikimyei)->kline_id[scene_idx]=get_state(_iicu_wikimyei)->kline_id[gcsid(_iicu_wikimyei)];
 	}
 	#endif
+	release_all(_iicu_wikimyei);
 }

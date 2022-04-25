@@ -30,13 +30,7 @@ void *staticques_launcher(void *_sq_thread_order){
     switch(((__staticques_thread_order_t*)_sq_thread_order)->__sq_type){
     case FIRST_ORDER_STATISTICS:
         // --- --- --- --- 
-        __cwcn_type_t symbol_latest_alliu=(__cwcn_type_t) request_latest_alliu(IICU_SCENES_SYMBOLS[c_scene_id]);
-        // --- --- --- --- 
-        beseech_staticques(((__staticques_thread_order_t*)_sq_thread_order)->__ref_iicu_wikimyei, c_scene_id);
-        // --- --- --- --- 
-        get_staticques(((__staticques_thread_order_t*)_sq_thread_order)->__ref_iicu_wikimyei, c_scene_id)->__alliu_latest=symbol_latest_alliu;
-        // --- --- --- --- 
-        release_staticques(((__staticques_thread_order_t*)_sq_thread_order)->__ref_iicu_wikimyei, c_scene_id);
+        fprintf(stdout,"[%sWARNING:%s] empty action in staticques_launcher FIRST_ORDER_STATISTICS : [%s]\n",COLOR_WARNING,COLOR_REGULAR,IICU_SCENES_SYMBOLS[c_scene_id]);
         // --- --- --- --- 
         break;
         // --- --- --- --- 
@@ -55,4 +49,8 @@ void *staticques_launcher(void *_sq_thread_order){
     ((__staticques_thread_order_t*)_sq_thread_order)->__sq_thead_is_bussy=0x00;
     // -- --- --- 
     pthread_exit(NULL);
+}
+
+___cwcn_bool_t staticques_is_ready(__iicu_staticques_t *_staticques){
+    return _staticques->__alliu_latest!=0x00;
 }

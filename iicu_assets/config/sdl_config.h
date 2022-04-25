@@ -30,6 +30,7 @@
 #define LOGIN_STATE_ID (int) 0xFE02
 #define CONFIG_PANEL_STATE_ID (int) 0xFE03
 #define IICU_SCREEN_PANEL_STATE_ID (int) 0xFE04
+#define IICU_SCREEN_PANEL_DEBUG_ID (int) 0xFE05
 
 
 #define STATE_PANEL_WIFI "./iicu_resources/wifi-solid_white.png"
@@ -52,7 +53,7 @@
 #define MATH_PI (float) acos(-1)
 
 #define NIJCYOTA_ALLIU_INDEX 0x00 // #FIXME put somewhere else (all nijcyota)
-#define NIJCYOTA_JKIMYEI_KLINES_INDEX 0x06
+#define NIJCYOTA_JKIMYEI_KLINES_INDEX 0x04
 #define NIJCYOTA_LINE_COLOR_R 171
 #define NIJCYOTA_LINE_COLOR_G 171
 #define NIJCYOTA_LINE_COLOR_B 171
@@ -95,9 +96,9 @@
 
 #define __COORDINATE_ALL_KLINES_IN_SCENES__
 
-#define __cwcn_DEBUG_EVENTS__
-#define __cwcn_DEBUG_JOYSTICK_EVENTS__
-#define __cwcn_DEBUG_KEYBOARD_EVENTS__
+// #define __cwcn_DEBUG_EVENTS__
+// #define __cwcn_DEBUG_JOYSTICK_EVENTS__
+// #define __cwcn_DEBUG_KEYBOARD_EVENTS__
 // #define __cwcn_DEBUG_MOUSE_EVENTS__
 // #define __cwcn_DEBUG_WINDOW_EVENTS__
 

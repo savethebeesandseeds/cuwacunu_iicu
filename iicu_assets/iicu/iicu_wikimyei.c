@@ -1,32 +1,55 @@
 #include "iicu_wikimyei.h"
 
 __iicu_wikimyei_t *iicu_wikimyei_fabric(){
+    // --- --- --- --- --- --- --- --- 
+    // --- --- --- --- --- --- --- --- 
     fprintf(stdout,"[%s cuwacunu %s:] : start : iicu_wikimyei_fabric()\n",COLOR_CUWACUNU,COLOR_REGULAR);
     __iicu_wikimyei_t *new_iicu_wikimyei=malloc(sizeof(__iicu_wikimyei_t));
+    // --- --- --- --- --- --- --- --- 
+    // --- --- --- --- --- --- --- --- 
     new_iicu_wikimyei->__obj_sdl=fabric_obj_sdl(); // must first initialize obj_sdl
+    // --- --- --- --- --- --- --- --- 
+    // --- --- --- --- --- --- --- --- 
     new_iicu_wikimyei->__iicu_state=fabric_iicu_state(new_iicu_wikimyei);
+    // --- --- --- --- --- --- --- --- 
+    // --- --- --- --- --- --- --- --- 
     fabric_all_iicu_scenes(new_iicu_wikimyei); // and tird scenes
-    
-    
-    
+    // --- --- --- --- --- --- --- --- 
+    // --- --- --- --- --- --- --- --- 
     new_iicu_wikimyei->__wk_tsaave=itsaave_fabric(NULL);
-
     // --- --- --- --- --- --- --- --- 
-    fprintf(stdout,"[waka] wk fabric : WK:%p\n",new_iicu_wikimyei); // ->__holding_value
-    fprintf(stdout,"[waka] wk fabric : WK_STATE:%p\n",new_iicu_wikimyei->__iicu_state); // ->__holding_value
-    fprintf(stdout,"[waka] wk fabric : WK_OBJ_SDL:%p\n",new_iicu_wikimyei->__obj_sdl); // ->__holding_value
-    fprintf(stdout,"[waka] wk fabric : WK_ITSAAVE:%p\n",new_iicu_wikimyei->__wk_tsaave); // ->__holding_value
-    fprintf(stdout,"[waka] wk fabric : WK_ITSAAVE_POCKET:%p\n",new_iicu_wikimyei->__wk_tsaave->__it_pocket); // ->__holding_value
     // --- --- --- --- --- --- --- --- 
-    
+    broker_websocketclient_factory(new_iicu_wikimyei);
+    // --- --- --- --- --- --- --- --- 
+    // --- --- --- --- --- --- --- --- 
+    #ifdef __cwcn_SAVE_n_LOAD_THREAD__
+    load_itsaave_from_state_backup(new_iicu_wikimyei);
+    #endif
+    // --- --- --- --- --- --- --- --- 
+    beseech_all(new_iicu_wikimyei);
+    fprintf(stdout," %s [waka] [ITSAAVE]: \n",COLOR_DANGER);
+    fprintf(stdout,"[waka] [wk]: \n");
+    print_itsaave(get_wk_itsaave(new_iicu_wikimyei));
+    fprintf(stdout,"[waka] scene itsaave [0]: \n");
+    print_itsaave(get_scene_itsaave(new_iicu_wikimyei,0));
+    fprintf(stdout,"[waka] scene itsaave [1]: \n");
+    print_itsaave(get_scene_itsaave(new_iicu_wikimyei,1));
+    fprintf(stdout,"[waka] scene itsaave [2]: \n");
+    print_itsaave(get_scene_itsaave(new_iicu_wikimyei,2));
+    fprintf(stdout,"%s",COLOR_REGULAR);
+    release_all(new_iicu_wikimyei);
+    // --- --- --- --- --- --- --- --- 
     fprintf(stdout,"[%s cuwacunu %s:] : end : iicu_wikimyei_fabric()\n",COLOR_CUWACUNU,COLOR_REGULAR);
     return new_iicu_wikimyei;
 }
 void destroy_iicu_wikimyei(__iicu_wikimyei_t *_iicu_wikimyei){
+    beseech_all(_iicu_wikimyei);
     destroy_all_iicu_scenes(_iicu_wikimyei);
-    destroy_iicu_state(get_state(_iicu_wikimyei));
 	destroy_obj_sdl(_iicu_wikimyei->__obj_sdl);
     destroy_itsaave(_iicu_wikimyei->__wk_tsaave);
+    destroy_broker_websocketclient(_iicu_wikimyei->__broker_wsclient);
+    release_all(_iicu_wikimyei);
+    destroy_iicu_state(get_state(_iicu_wikimyei));
     free(_iicu_wikimyei);
 }
 /*
@@ -36,13 +59,13 @@ void beseech_mewaajacune(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index,int
     // fprintf(stdout,"request to beseech_mewaajacune...\n");
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->mewaajacune_in_use[_scene_index][_kline_index]){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_mewaajacune index scene:[%d]:kline:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_mewaajacune] index scene:[%d]:kline:[%d] forcing release...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait mewaajacune to release
 	get_state(_iicu_wikimyei)->mewaajacune_in_use[_scene_index][_kline_index]=0x01;
 }
@@ -62,13 +85,13 @@ void beseech_scene_itsaave(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index){
     // fprintf(stdout,"request to beseech_scene_itsaave...\n");
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->scene_itsaave_in_use[_scene_index]){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_scene_itsaave index scene:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_scene_itsaave] index scene:[%d] forcing release...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait kemu to release
 	get_state(_iicu_wikimyei)->scene_itsaave_in_use[_scene_index]=0x01;
 }
@@ -80,13 +103,13 @@ void beseech_wk_itsaave(__iicu_wikimyei_t *_iicu_wikimyei){
     // fprintf(stdout,"request to beseech_wk_itsaave...\n");
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->wk_itsaave_in_use){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_wk_itsaave exceed maxima timeout...%s\n",COLOR_DANGER,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_wk_itsaave] forcing release...%s\n",COLOR_DANGER,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait kemu to release
 	get_state(_iicu_wikimyei)->wk_itsaave_in_use=0x01;
 }
@@ -98,13 +121,13 @@ void beseech_jkimyei(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index){
     // fprintf(stdout,"request to beseech_jkimyei...\n");
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->jkimyei_in_use[_scene_index]){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_jkimyei index scene:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_jkimyei] index scene:[%d] forcing release...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait kemu to release
 	get_state(_iicu_wikimyei)->jkimyei_in_use[_scene_index]=0x01;
 }
@@ -122,13 +145,13 @@ void beseech_nijcyota(__iicu_wikimyei_t *_iicu_wikimyei){
     // fprintf(stdout,"request to beseech_nijcyota...\n");
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->nijcyota_in_use){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_nijcyota exceed maxima timeout...%s\n",COLOR_DANGER,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_nijcyota] forcing release...%s\n",COLOR_DANGER,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait kemu to release
 	get_state(_iicu_wikimyei)->nijcyota_in_use=0x01;
 }
@@ -146,13 +169,13 @@ void beseech_regressive(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index,int 
     // fprintf(stdout,"request to beseech_regressive...\n");
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->regressive_in_use[_scene_index][_kline_index]){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_regressive index scene:[%d]:kline:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_regressive] index scene:[%d]:kline:[%d] forcing release...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait regressive to release
 	get_state(_iicu_wikimyei)->regressive_in_use[_scene_index][_kline_index]=0x01;
 }
@@ -172,13 +195,13 @@ void beseech_polinomial(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index,int 
     // fprintf(stdout,"request to beseech_polinomial...\n");
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->polinomial_in_use[_scene_index][_kline_index]){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_polinomial index scene:[%d]:kline:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_polinomial] index scene:[%d]:kline:[%d] forcing release...%s\n",COLOR_DANGER,_scene_index,_kline_index,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait polinomial to release
 	get_state(_iicu_wikimyei)->polinomial_in_use[_scene_index][_kline_index]=0x01;
 }
@@ -198,13 +221,13 @@ void beseech_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_index){
     // fprintf(stderr,"%s beseech_staticques index scene:[%d]:...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
     Uint32 beseech_ctx=0x00;
     while(get_state(_iicu_wikimyei)->staticques_in_use[_scene_index]){
-        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 200)));
         beseech_ctx++;
         if(beseech_ctx>BESEECH_MAX_RETRY){
             fprintf(stderr,"%s [ERROR] beseech_staticques index scene:[%d]: exceed maxima timeout...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
             fprintf(stderr,"%s [beseech_staticques] index scene:[%d]: forcing release...%s\n",COLOR_DANGER,_scene_index,COLOR_REGULAR);
             break;
         }
+        SDL_Delay((Uint32)((((__cwcn_type_t)BESEECH_TIMEOUT))*max_min_res_rand(2.0, 0.5, 100)));
     } // wait staticques to release
 	get_state(_iicu_wikimyei)->staticques_in_use[_scene_index]=0x01;
 }
@@ -274,7 +297,7 @@ void release_all(__iicu_wikimyei_t *_iicu_wikimyei){
 */
 
 __iicu_scene_struct_t *get_scene(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
-    // if(get_state(_iicu_wikimyei)->scene_in_use[_scene_id]!=0x01){ // not beseech
+    // if(get_state(_iicu_wikimyei)->scene_in_use[_scene_id]==0x00){ // not beseech
     //     fprintf(stderr,"[%sERROR:%s] scene access on get_scene() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         // #ifndef LOWFORCE_BEESECH
         // return NULL;
@@ -290,7 +313,7 @@ __iicu_scene_struct_t *giics(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 
 __iicu_itsaave_t *get_wk_itsaave(__iicu_wikimyei_t *_iicu_wikimyei){
-    if(get_state(_iicu_wikimyei)->wk_itsaave_in_use!=0x01){ // not beseech
+    if(get_state(_iicu_wikimyei)->wk_itsaave_in_use==0x00){ // not beseech
         fprintf(stderr,"[%sERROR:%s] itsaave access on get_wk_itsaave() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -299,7 +322,7 @@ __iicu_itsaave_t *get_wk_itsaave(__iicu_wikimyei_t *_iicu_wikimyei){
     return _iicu_wikimyei->__wk_tsaave;
 }
 __iicu_itsaave_t *get_scene_itsaave(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
-    if(get_state(_iicu_wikimyei)->scene_itsaave_in_use[_scene_id]!=0x01){ // not beseech
+    if(get_state(_iicu_wikimyei)->scene_itsaave_in_use[_scene_id]==0x00){ // not beseech
         fprintf(stderr,"[%sERROR:%s] itsaave access on get_scene_itsaave() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -309,7 +332,7 @@ __iicu_itsaave_t *get_scene_itsaave(__iicu_wikimyei_t *_iicu_wikimyei, int _scen
 }
 
 __iicu_nijcyota_t *get_current_nijcyota(__iicu_wikimyei_t *_iicu_wikimyei){
-    if(get_state(_iicu_wikimyei)->nijcyota_in_use!=0x01){ // not beseech
+    if(get_state(_iicu_wikimyei)->nijcyota_in_use==0x00){ // not beseech
         fprintf(stderr,"[%sERROR:%s] nijcyota access on get_current_nijcyota() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -322,9 +345,8 @@ __iicu_nijcyota_t *giicn(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 
 
-
 __iicu_mewaajacune_t *get_mewaajacune(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id,int _kline_id){
-    if(get_state(_iicu_wikimyei)->mewaajacune_in_use[_scene_id][_kline_id]!=0x01){
+    if(get_state(_iicu_wikimyei)->mewaajacune_in_use[_scene_id][_kline_id]==0x00){
         fprintf(stderr,"[%sERROR:%s] mewaajacune access on get_mewaajacune() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -343,7 +365,7 @@ __iicu_mewaajacune_t *giicm(__iicu_wikimyei_t *_iicu_wikimyei){
 
 
 __iicu_jkimyei_t *get_jkimyei(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
-    if(get_state(_iicu_wikimyei)->jkimyei_in_use[_scene_id]!=0x01){
+    if(get_state(_iicu_wikimyei)->jkimyei_in_use[_scene_id]==0x00){
         fprintf(stderr,"[%sERROR:%s] jkimyei access on get_jkimyei() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -360,7 +382,7 @@ __iicu_jkimyei_t *giicjk(__iicu_wikimyei_t *_iicu_wikimyei){
 
 
 __iicu_regressive_t *get_regressive(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id,int _kline_id){
-    if(get_state(_iicu_wikimyei)->regressive_in_use[_scene_id][_kline_id]!=0x01){
+    if(get_state(_iicu_wikimyei)->regressive_in_use[_scene_id][_kline_id]==0x00){
         fprintf(stderr,"[%sERROR:%s] regressive access on get_regressive() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -379,7 +401,7 @@ __iicu_regressive_t *giicrg(__iicu_wikimyei_t *_iicu_wikimyei){
 
 
 __iicu_polinomial_t *get_polinomial(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id,int _kline_id){
-    if(get_state(_iicu_wikimyei)->polinomial_in_use[_scene_id][_kline_id]!=0x01){
+    if(get_state(_iicu_wikimyei)->polinomial_in_use[_scene_id][_kline_id]==0x00){
         fprintf(stderr,"[%sERROR:%s] polinomial access on get_polinomial() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -398,7 +420,7 @@ __iicu_polinomial_t *giicpl(__iicu_wikimyei_t *_iicu_wikimyei){
 
 
 __iicu_staticques_t *get_staticques(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
-    if(get_state(_iicu_wikimyei)->staticques_in_use[_scene_id]!=0x01){
+    if(get_state(_iicu_wikimyei)->staticques_in_use[_scene_id]==0x00){
         fprintf(stderr,"[%sERROR:%s] staticques access on get_staticques() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
         #ifndef LOWFORCE_BEESECH
         return NULL;
@@ -414,7 +436,7 @@ __iicu_staticques_t *giicsq(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 
 __iicu_state_struct_t *get_state(__iicu_wikimyei_t *_iicu_wikimyei){
-    // if(get_state(_iicu_wikimyei)->state_in_use[_scene_id][_kline_id]!=0x01){
+    // if(get_state(_iicu_wikimyei)->state_in_use[_scene_id][_kline_id]==0x00){
     //     fprintf(stderr,"[%sERROR:%s] state access on get_state() was not beseech.\n",COLOR_DANGER,COLOR_REGULAR);
     #ifndef LOWFORCE_BEESECH
     //     return NULL;
@@ -455,7 +477,7 @@ int gcklid(__iicu_wikimyei_t *_iicu_wikimyei){
 }
 __cwcn_type_t gentil_get_alliu_latest(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
     __cwcn_type_t c_ret;
-    if(get_state(_iicu_wikimyei)->staticques_in_use[_scene_id]!=0x01){
+    if(get_state(_iicu_wikimyei)->staticques_in_use[_scene_id]==0x00){
         beseech_staticques(_iicu_wikimyei, _scene_id);
         c_ret=get_staticques(_iicu_wikimyei, _scene_id)->__alliu_latest;
         release_staticques(_iicu_wikimyei, _scene_id);
@@ -466,7 +488,7 @@ __cwcn_type_t gentil_get_alliu_latest(__iicu_wikimyei_t *_iicu_wikimyei, int _sc
 }
 __cwcn_type_t gentil_get_scene_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id){
     __cwcn_type_t c_ret;
-    if(get_state(_iicu_wikimyei)->scene_itsaave_in_use[_scene_id]!=0x01){
+    if(get_state(_iicu_wikimyei)->scene_itsaave_in_use[_scene_id]==0x00){
         beseech_scene_itsaave(_iicu_wikimyei, _scene_id);
         c_ret=get_scene_itsaave(_iicu_wikimyei, _scene_id)->__it_pocket->__holding_value;
         release_scene_itsaave(_iicu_wikimyei, _scene_id);
@@ -477,7 +499,7 @@ __cwcn_type_t gentil_get_scene_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wi
 }
 __cwcn_type_t gentil_get_wk_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikimyei){
     __cwcn_type_t c_ret;
-    if(get_state(_iicu_wikimyei)->wk_itsaave_in_use!=0x01){
+    if(get_state(_iicu_wikimyei)->wk_itsaave_in_use==0x00){
         beseech_wk_itsaave(_iicu_wikimyei);
         c_ret=get_wk_itsaave(_iicu_wikimyei)->__it_pocket->__holding_value;
         release_wk_itsaave(_iicu_wikimyei);
@@ -490,7 +512,7 @@ __cwcn_type_t gentil_get_wk_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikim
 void wait_scene_kline_load(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id, int _kline_id){
     int wait_ctx=0x00;
     while(get_state(_iicu_wikimyei)->kline_last_update[_scene_id][_kline_id]==0x00){
-        SDL_Delay(1500);
+        SDL_Delay(500);
         wait_ctx++;
         if(wait_ctx>1000){
             fprintf(stderr,"%s [ERROR] wait_scene_kline_load index scene:[%d]: kline:[%d] exceed maxima timeout...%s\n",COLOR_DANGER,_scene_id,_kline_id,COLOR_REGULAR);

@@ -13,4 +13,5 @@ typedef struct __iicu_staticques_kemu {
 __iicu_staticques_t *staticques_fabric();
 void destroy_staticques(__iicu_staticques_t *_staticques);
 void *staticques_launcher(void *_sq_thread_order);
+___cwcn_bool_t staticques_is_ready(__iicu_staticques_t *_staticques);
 #endif

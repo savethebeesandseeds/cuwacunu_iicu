@@ -8,6 +8,7 @@
 #include "../config/staticques_config.h"
 #include "../iicu/iicu_wikimyei.h"
 void iicu_scene_loop(__iicu_wikimyei_t *_iicu_wikimyei);
+void iicu_controls_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void iicu_debug_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void loading_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void home_loop(__iicu_wikimyei_t *_iicu_wikimyei);
@@ -21,6 +22,7 @@ void regressive_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void polinomial_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void staticques_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 void itsaave_loop(__iicu_wikimyei_t *_iicu_wikimyei);
+void save_n_load_loop(__iicu_wikimyei_t *_iicu_wikimyei);
 #include "../sdl_interfaces/loading.h"
 #include "../sdl_tools/sdl_object.h"
 #include "../sdl_tools/sdl_control.h"

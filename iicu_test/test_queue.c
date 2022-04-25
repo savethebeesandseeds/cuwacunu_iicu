@@ -1,4 +1,4 @@
-// #include "../iicu_assets/data/mewaajacune_utils.c"
+// #include "../iicu_assets/data/mewaajacune_utils.h"
 // #include "../iicu_assets/config/general_config.h"
 // #include "../iicu_assets/sdl_tools/sdl_object.h"
 #include "../iicu_assets/iicu/iicu_loops.h"
@@ -40,8 +40,8 @@ int main(int argc, char* argv[]){
         end = clock();
         time_spent = (double)(end-begin) / CLOCKS_PER_SEC;
         printf("[waka] :: time spend drawing plot :: %f [s]\n",time_spent);
-        if((SDL_GetTicks()-start_time)<(1000*CLOCK_THREAD_PERIOD)){
-            SDL_Delay((1000*CLOCK_THREAD_PERIOD)-(SDL_GetTicks()-start_time));
+        if((SDL_GetTicks()-start_time)<(1000*CLOCK_MAIN_PERIOD)){
+            SDL_Delay((1000*CLOCK_MAIN_PERIOD)-(SDL_GetTicks()-start_time));
         }
         printf("[waka] :: fps : %f\n",((float)1000)/((float)(SDL_GetTicks()-start_time)));
         miss_or_catch_sdl_event(&c_obj_sdl);

@@ -6,6 +6,7 @@ __iicu_state_struct_t *fabric_iicu_state(__iicu_wikimyei_t *_iicu_wikimyei){
     __iicu_state_struct_t *new_iicu_state=malloc(sizeof(__iicu_state_struct_t));
     new_iicu_state->__scene_case_button=BUTTON_NONE;
     new_iicu_state->__req_itsaave=0x00;
+    new_iicu_state->__req_scene_itsaave=0x00;
     new_iicu_state->__jk_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__jkimyei_thread_order_t *));
     new_iicu_state->__rg_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__regressive_thread_order_t *));
     new_iicu_state->__pl_thread_order=malloc(INTERNAL_NUM_THREADS*sizeof(__polinomial_thread_order_t *));

@@ -14,9 +14,9 @@ void sdl_draw_itsaave(__iicu_wikimyei_t *_iicu_wikimyei){
             // --- --- --- --- --- 
             c_latest_alliu=gentil_get_alliu_latest(_iicu_wikimyei,get_it_thread_order(_iicu_wikimyei,_idx_th)->__scene_id);
             // --- --- --- --- --- 
-            __iicu_itsaave_t *c_itsaave=get_it_thread_order(_iicu_wikimyei,_idx_th)->__ref_iicu_itsaave;
+            __iicu_itsaave_t *c_itsaave=get_it_thread_order(_iicu_wikimyei,_idx_th)->__ref_iicu_itsaave; // #FIXME do not ref itsaave, ref scene
             // --- --- --- --- --- 
-            // __inteligent_order_policy_t *c_policy=c_itsaave->__it_policy;
+            // __intelligent_order_policy_t *c_policy=c_itsaave->__it_policy;
             // --- --- --- --- --- 
             SDL_Color draw_factor_color;
             char aux_caption[512]="";
@@ -24,7 +24,7 @@ void sdl_draw_itsaave(__iicu_wikimyei_t *_iicu_wikimyei){
             int alliu_dy=-5;
             int draw_factor_y=0x00, draw_factor_x=0x00;
             // --- --- --- --- --- 
-            draw_factor_x=(int)(c_nijcyota->main_box_x+c_nijcyota->main_box_w-35);
+            draw_factor_x=(int)(c_nijcyota->main_box_x+c_nijcyota->main_box_w-50);
             draw_factor_y=(int)(c_nijcyota->main_box_y-75);
             draw_factor_color=c_nijcyota->grey_color;
             c_delta_alliu=(c_latest_alliu-c_itsaave->__it_alliu_start)*c_itsaave->__it_alliu_quantity;

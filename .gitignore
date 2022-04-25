@@ -1,0 +1,6 @@
+iicu_assets/communications/regular_key_file.h
+iicu_dumps/*
+*.o
+libwsclient/
+libwsclient/*
+.vscode/

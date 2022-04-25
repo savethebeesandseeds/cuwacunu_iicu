@@ -1,4 +1,8 @@
 MIT licensed.
+# Depends on:
+(Please install) : curl
+(please install) : follow instructions : https://github.com/savethebeesandseeds/libwsclient.git
+
 # Joystick support is enabled
 
 Make sure your computer recognizes the device: 

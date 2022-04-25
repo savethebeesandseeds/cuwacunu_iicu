@@ -59,7 +59,6 @@ void render_scene_panel(__iicu_wikimyei_t *_iicu_wikimyei){
         giicn(_iicu_wikimyei)->line_color,
         _iicu_wikimyei->__obj_sdl->screen_font,
         _iicu_wikimyei->__obj_sdl->renderer);
-
     // --- --- --- --- · --- --- --- --- MAIN PLOT
     if(load_is_empty(giicm(_iicu_wikimyei))){
         sprintf(aux_caption,"loading ...");
@@ -88,7 +87,6 @@ void render_scene_panel(__iicu_wikimyei_t *_iicu_wikimyei){
             sdl_draw_jkimyei_policy(_iicu_wikimyei);
         }
     }
-
     // --- --- --- --- · --- --- --- --- noise box 1
     // if(load_is_empty(giicm(_iicu_wikimyei))){
     //     // #FIXME add loading screen.

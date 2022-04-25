@@ -1,5 +1,7 @@
-#include "../iicu_assets/config/sdl_config.h"
 #include "../iicu_assets/config/general_config.h"
+#include "../iicu_assets/config/sdl_config.h"
+#include "../iicu_assets/config/broker_config.h"
+#include "../iicu_assets/communications/broker_api.h"
 #include "../iicu_assets/data/mewaajacune_utils.h"
 int main(int argc, char* argv[]){
     __iicu_mewaajacune_t *static_mewaajacune=mewaajacune_fabric();

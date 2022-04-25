@@ -57,7 +57,14 @@ void initialize_sdl_object(__sdl_screen_object_t *obj_sdl){
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_SCREEN_WIDTH, 
 		SDL_SCREEN_HEIGHT,
+	#ifdef __cwcn_MAIN_THREAD__
 		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	#else 
+		SDL_WINDOW_HIDDEN);
+		#ifdef __cwcn_CONTROLS_THREAD__
+		fprintf(stderr,"[%s WARNING: %s] controls actions are not detectable without focus and __cwcn_MAIN_THREAD__ is disabled. \n",COLOR_DANGER,COLOR_REGULAR);
+		#endif
+	#endif
 	if(obj_sdl->screen==NULL){
 		fprintf(stderr, "Error cant allocate memory for screen : %s\n", SDL_GetError());
 		exit(-1);

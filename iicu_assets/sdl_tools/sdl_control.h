@@ -5,7 +5,7 @@
 #include "../sdl_tools/sdl_object.h"
 #include "../iicu/iicu_wikimyei.h"
 //-------------------------------------------
-void sdl_abandon_ship();
+void sdl_abandon_ship(__iicu_wikimyei_t *_iicu_wikimyei);
 int event_soup(__iicu_wikimyei_t *_iicu_wikimyei, int _keyCode);
 int miss_or_catch_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);
 int handle_sdl_event(__iicu_wikimyei_t *_iicu_wikimyei);

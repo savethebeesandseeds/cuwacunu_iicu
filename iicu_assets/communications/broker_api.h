@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "curl_utils.h"
 #include "../config/broker_config.h"
+
 typedef struct bnc_price_tick {
     char *symbol;
     float price;
@@ -30,7 +31,9 @@ typedef struct bnc_klines {
     char *interval;
     item_kline_t klines[KLINES_N_LIMIT];
 } bnc_klines_t;
+
 void get_price_ticker(bnc_price_tick_t *payload,char *symbol);
 void get_klines(bnc_klines_t *payload,char *symbol,char *interval);
 int test_network_by_ping();
+
 #endif

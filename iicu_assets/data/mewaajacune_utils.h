@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <math.h>
 #include "../config/general_config.h"
-#include "../communications/broker_api.h"
+
 /* MEWAAJACUNE DEFINITIONS */
 typedef enum {_cwcn_FLAT, _cwcn_BEAR, _cwcn_BULL} __ujcamei_state_t;
 //------------- TRAYECTORY ------------ -------

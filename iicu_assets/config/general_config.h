@@ -14,6 +14,7 @@ typedef __cwcn_type_t (*__function_pointer_t)(__cwcn_type_t);
 #define min(a,b)({__typeof__(a) _a=(a);__typeof__(b) _b=(b);_a < _b ? _a : _b;})
 #define __cwcn_max(a,b)({__typeof__(a) _a=(a);__typeof__(b) _b=(b);_a > _b ? _a : _b;})
 #define __cwcn_min(a,b)({__typeof__(a) _a=(a);__typeof__(b) _b=(b);_a < _b ? _a : _b;})
+#define __cwcn_to_lower(_str) for(char *p=_str;*p;++p){*p=*p>='A'&&*p<='Z'?*p|0x60:*p;}
 typedef void (*__void_function_pointer_t)(void*);
 #define LU_DECOMPOSITION_TOLERANCE (__cwcn_type_t) 0.00000001
 // #define MEWAAJACUNE_DEBUG_LOAD

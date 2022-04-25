@@ -1,13 +1,19 @@
 #ifndef __BROKER_CONFIG__
 #define __BROKER_CONFIG__
+#include <wsclient/wsclient.h>
 #define BROKER_BASE_URL "http://api.binance.com"
 #define BROKER_PING "/api/v1/ping"
 #define BROKER_TICKER_PRICE "/api/v3/ticker/price"
 #define BROKER_KLINES "/api/v3/klines"
-#define BROKER_SYMBOLS "BTCUSDT,ETHUSDT"
-#define BROKER_BLOCK_SYMBOLS ""
-#define MEWAAJACUNE_LOAD_CLOSE_KLINES_DATA
-// #define MEWAAJACUNE_LOAD_OPEN_KLINES_DATA
+#define BINANCE_WEBSOCKET_ENDPOINT "wss://stream.binance.com:9443/ws"
+#define BROKER_WEBSOCKET_SUBSCRIBE_TO "miniTicker"
+
+#define INTERPRET_CURRENT_PRICE_AS_CLOSE_PRICE
+// #define INTERPRET_CURRENT_PRICE_AS_OPEN_PRICE
+#if !defined(INTERPRET_CURRENT_PRICE_AS_CLOSE_PRICE) && !defined(INTERPRET_CURRENT_PRICE_AS_OPEN_PRICE)
+#error (broker_config.h) Please define INTERPRET_CURRENT_PRICE_AS_CLOSE_PRICE or INTERPRET_CURRENT_PRICE_AS_OPEN_PRICE
+#endif
+
 #define KLINES_N_LIMIT (int) 1000 // max of 1000
 #define BROKER_CANDLE_N_INTERVALS (int) 15
 #define BROKER_CANDLE_INTERVALS (char[BROKER_CANDLE_N_INTERVALS][6]) {"1m","3m","5m","15m","30m","1h","2h","4h","6h","8h","12h","1d","3d","1w","1M"}

@@ -1,9 +1,11 @@
 #include "sdl_control.h"
 
 // ---- ---- ---- ---- ---- 
-void sdl_abandon_ship(){
+void sdl_abandon_ship(__iicu_wikimyei_t *_iicu_wikimyei){
+    beseech_all(_iicu_wikimyei);
     fprintf(stdout,"[%s cuwacunu %s:] iicu quit...\n",COLOR_CUWACUNU,COLOR_REGULAR);
     exit(0);
+    release_all(_iicu_wikimyei);
 }
 int test_keyboard(){
     int return_state=STATE_STATUS_UP;
@@ -124,7 +126,7 @@ int handle_keyboard_events(__iicu_wikimyei_t *_iicu_wikimyei){
         case SDL_KEYDOWN:
             switch (event->key.keysym.sym){
             case SDLK_ESCAPE:
-                sdl_abandon_ship();
+                sdl_abandon_ship(_iicu_wikimyei);
             case SDLK_q:
                 keyCode=__cwcn_EVENT_CONTINUE;
                 get_state(_iicu_wikimyei)->__scene_case_button=BUTTON_START;
@@ -316,7 +318,7 @@ int event_soup(__iicu_wikimyei_t *_iicu_wikimyei, int _keyCode){
     // fprintf(stdout,"miss_or_catch_sdl_event waka...\n");
     int keyCode=_keyCode;
     if(is_sdl_quit_event(&_iicu_wikimyei->__obj_sdl->event)){
-        sdl_abandon_ship();
+        sdl_abandon_ship(_iicu_wikimyei);
     } else if(is_sdl_keyboard_event(&_iicu_wikimyei->__obj_sdl->event)){
         keyCode=handle_keyboard_events(_iicu_wikimyei);
     } else if(is_sdl_joystick_event(&_iicu_wikimyei->__obj_sdl->event)){

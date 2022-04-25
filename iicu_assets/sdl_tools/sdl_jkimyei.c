@@ -7,7 +7,7 @@ void sdl_draw_jkimyei_policy(__iicu_wikimyei_t *_iicu_wikimyei){
     __cwcn_type_t main_box_max=max_alliu_in_load(c_mewaajacune,NIJCYOTA_ALLIU_INDEX);
     __cwcn_type_t main_box_min=min_alliu_in_load(c_mewaajacune,NIJCYOTA_ALLIU_INDEX);
     __iicu_jkimyei_t *c_jkimyei=giicjk(_iicu_wikimyei);
-    __inteligent_order_policy_t *c_policy=c_jkimyei->__jk_inteligent_order_policy;
+    __intelligent_order_policy_t *c_policy=c_jkimyei->__jk_inteligent_order_policy;
     SDL_Color draw_factor_color;
     char aux_caption[512]="";
     int alliu_dx=5;

@@ -1,9 +1,7 @@
 #ifndef __IICU_WIKIMYEI__
 #define __IICU_WIKIMYEI__
-#include <stdlib.h>
 #include "../sdl_tools/sdl_object.h"
 #include "../data/kemu_utils.h"
-#include "../data/mewaajacune_utils.h"
 #include "../config/nijcyota_utils.h"
 #include "../config/broker_config.h"
 #include "../config/threads_config.h"
@@ -46,6 +44,7 @@ typedef struct _iicu_state_struct {
 	void **__it_thread_order; // aux holder of type(__itsaave_thread_order_t) to launch staticques threads
 
 	___cwcn_bool_t __req_itsaave;
+	int __req_scene_itsaave;
 	
 	___cwcn_bool_t jkimyei_in_use[MAX_IICU_SCENES];
 	___cwcn_bool_t polinomial_in_use[MAX_IICU_SCENES][BROKER_CANDLE_N_INTERVALS];
@@ -71,6 +70,7 @@ typedef struct _iicu_scene_struct {
 } __iicu_scene_struct_t;
 //------------- WIKIMYEI ------------ ---------
 typedef struct __iicu_wikimyei{
+	__wsclient_t *__broker_wsclient;
 	__sdl_screen_object_t *__obj_sdl;
 	__iicu_itsaave_t *__wk_tsaave;
 	__iicu_state_struct_t *__iicu_state; // there is just one state
@@ -128,6 +128,7 @@ typedef struct __staticques_thread_order{
     __iicu_wikimyei_t *__ref_iicu_wikimyei; // just a copy to reference
 }__staticques_thread_order_t;
 
+#include "../data/mewaajacune_utils.h"
 //------------- FUNKS ------------ ---------
 __iicu_wikimyei_t *iicu_wikimyei_fabric(); // #NOTE wikimyei has multiple scenes, and one v-state.
 void destroy_iicu_wikimyei(__iicu_wikimyei_t *_iicu_wikimyei);
@@ -224,4 +225,6 @@ __cwcn_type_t gentil_get_wk_itsaave_holding_value(__iicu_wikimyei_t *_iicu_wikim
 void wait_scene_kline_load(__iicu_wikimyei_t *_iicu_wikimyei, int _scene_id, int _kline_id);
 #include "../iicu/iicu_state_utils.h"
 #include "../iicu/iicu_scene_utils.h"
+#include "../threads/save_n_load_thread.h"
+#include "../data/broker_utils.h"
 #endif

@@ -39,7 +39,7 @@ void *IICU_main_thread(void *_iicu_wikimyei){
         main_case_launch(_iicu_wikimyei);
         // --- --- --- --- · --- --- --- 
         #ifndef __cwcn_CLOCK_THREAD__
-        if((SDL_GetTicks()-start_time)<(1000*CLOCK_THREAD_PERIOD)){SDL_Delay((1000*CLOCK_THREAD_PERIOD)-(SDL_GetTicks()-start_time));}
+        if((SDL_GetTicks()-start_time)<(1000*CLOCK_MAIN_PERIOD)){SDL_Delay((1000*CLOCK_MAIN_PERIOD)-(SDL_GetTicks()-start_time));}
         ((__iicu_wikimyei_t*)_iicu_wikimyei)->__iicu_state->fps=(float)((float)1000/((float)(SDL_GetTicks()-start_time)));
         #endif
     }
